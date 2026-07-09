@@ -188,71 +188,50 @@ alert("Perfil salvo com sucesso!");
 
 const btnAvaliacao = document.getElementById("btnAvaliacao");
 
-
 if(btnAvaliacao){
 
-
-btnAvaliacao.onclick = () => {
-
+btnAvaliacao.onclick = function(){
 
 document.getElementById("conteudo").innerHTML = `
 
-
 <h2>🩺 Avaliação dos Pés</h2>
-
 
 <div class="card">
 
-
 <label>Nome do paciente</label>
-
 <input type="text" id="avalNome">
 
 
 <label>Idade</label>
-
 <input type="number" id="avalIdade">
 
 
 <label>Cidade</label>
-
 <input type="text" id="avalCidade">
 
 
 <label>Possui calosidade?</label>
 
 <select id="avalCalosidade">
-
 <option>Não</option>
-
 <option>Sim</option>
-
 </select>
-
 
 
 <label>Possui úlcera?</label>
 
 <select id="avalUlcera">
-
 <option>Não</option>
-
 <option>Sim</option>
-
 </select>
-
 
 
 <label>Já realizou amputação?</label>
 
 <select id="avalAmputacao">
-
 <option>Não</option>
-
 <option>Sim</option>
-
 </select>
-
 
 
 <label>Local da amputação</label>
@@ -260,19 +239,15 @@ document.getElementById("conteudo").innerHTML = `
 <input type="text" id="avalLocalAmputacao">
 
 
-
-<label>Nível de risco</label>
+<label>Risco</label>
 
 <select id="avalRisco">
 
 <option>Baixo</option>
-
 <option>Moderado</option>
-
 <option>Alto</option>
 
 </select>
-
 
 
 <button id="salvarAvaliacao">
@@ -284,73 +259,18 @@ Salvar Avaliação
 
 </div>
 
-
 `;
 
 
 
-const salvarAvaliacao = document.getElementById("salvarAvaliacao");
-
-
-if(salvarAvaliacao){
-
-
-salvarAvaliacao.onclick = () => {
-
-
-
-const avaliacao = {
-
-
-nome: document.getElementById("avalNome").value,
-
-idade: document.getElementById("avalIdade").value,
-
-cidade: document.getElementById("avalCidade").value,
-
-calosidade: document.getElementById("avalCalosidade").value,
-
-ulcera: document.getElementById("avalUlcera").value,
-
-amputacao: document.getElementById("avalAmputacao").value,
-
-localAmputacao: document.getElementById("avalLocalAmputacao").value,
-
-risco: document.getElementById("avalRisco").value,
-
-data: new Date().toLocaleDateString()
-
-};
-
-
-
-let historico = JSON.parse(
-
-localStorage.getItem("avaliacoes")
-
-) || [];
-
-
-
-historico.push(avaliacao);
-
-
-
-localStorage.setItem(
-
-"avaliacoes",
-
-JSON.stringify(historico)
-
-);
-
+document.getElementById("salvarAvaliacao").onclick = function(){
 
 
 alert("Avaliação salva com sucesso!");
 
+
 };
 
-}
 
 };
 
