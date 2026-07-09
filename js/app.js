@@ -97,7 +97,41 @@ Salvar Perfil
 </div>
 
 `;
+const salvarPerfil = document.getElementById("salvarPerfil");
 
+if(salvarPerfil){
+
+salvarPerfil.onclick = () => {
+
+
+const perfil = {
+
+nome: document.getElementById("perfilNome").value,
+
+email: document.getElementById("perfilEmail").value,
+
+telefone: document.getElementById("perfilTelefone").value,
+
+nascimento: document.getElementById("perfilNascimento").value,
+
+cidade: document.getElementById("perfilCidade").value,
+
+uf: document.getElementById("perfilUf").value
+
+};
+
+
+localStorage.setItem(
+"perfil",
+JSON.stringify(perfil)
+);
+
+
+alert("Perfil salvo com sucesso!");
+
+};
+
+}
 };
 
 }
