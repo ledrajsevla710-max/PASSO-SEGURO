@@ -201,10 +201,152 @@ document.getElementById("conteudo").innerHTML = `
 <h2>🩺 Avaliação dos Pés</h2>
 
 
-<p>Área onde será feita a avaliação de risco.</p>
+<div class="card">
+
+
+<label>Nome do paciente</label>
+
+<input type="text" id="avalNome">
+
+
+<label>Idade</label>
+
+<input type="number" id="avalIdade">
+
+
+<label>Cidade</label>
+
+<input type="text" id="avalCidade">
+
+
+<label>Possui calosidade?</label>
+
+<select id="avalCalosidade">
+
+<option>Não</option>
+
+<option>Sim</option>
+
+</select>
+
+
+
+<label>Possui úlcera?</label>
+
+<select id="avalUlcera">
+
+<option>Não</option>
+
+<option>Sim</option>
+
+</select>
+
+
+
+<label>Já realizou amputação?</label>
+
+<select id="avalAmputacao">
+
+<option>Não</option>
+
+<option>Sim</option>
+
+</select>
+
+
+
+<label>Local da amputação</label>
+
+<input type="text" id="avalLocalAmputacao">
+
+
+
+<label>Nível de risco</label>
+
+<select id="avalRisco">
+
+<option>Baixo</option>
+
+<option>Moderado</option>
+
+<option>Alto</option>
+
+</select>
+
+
+
+<button id="salvarAvaliacao">
+
+Salvar Avaliação
+
+</button>
+
+
+</div>
 
 
 `;
+
+
+
+const salvarAvaliacao = document.getElementById("salvarAvaliacao");
+
+
+if(salvarAvaliacao){
+
+
+salvarAvaliacao.onclick = () => {
+
+
+
+const avaliacao = {
+
+
+nome: document.getElementById("avalNome").value,
+
+idade: document.getElementById("avalIdade").value,
+
+cidade: document.getElementById("avalCidade").value,
+
+calosidade: document.getElementById("avalCalosidade").value,
+
+ulcera: document.getElementById("avalUlcera").value,
+
+amputacao: document.getElementById("avalAmputacao").value,
+
+localAmputacao: document.getElementById("avalLocalAmputacao").value,
+
+risco: document.getElementById("avalRisco").value,
+
+data: new Date().toLocaleDateString()
+
+};
+
+
+
+let historico = JSON.parse(
+
+localStorage.getItem("avaliacoes")
+
+) || [];
+
+
+
+historico.push(avaliacao);
+
+
+
+localStorage.setItem(
+
+"avaliacoes",
+
+JSON.stringify(historico)
+
+);
+
+
+
+alert("Avaliação salva com sucesso!");
 
 
 };
@@ -213,7 +355,10 @@ document.getElementById("conteudo").innerHTML = `
 }
 
 
+};
 
+
+}
 
 // ===============================
 // HISTÓRICO
