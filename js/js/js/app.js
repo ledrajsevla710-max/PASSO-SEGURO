@@ -1,4 +1,4 @@
-ocument.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
 
 const usuario = localStorage.getItem("usuario");
 
@@ -9,7 +9,10 @@ if(usuario && nomeUsuario){
 }
 
 
-// BOTÃO INÍCIO
+// ===============================
+// INÍCIO
+// ===============================
+
 const btnHome = document.getElementById("btnHome");
 
 if(btnHome){
@@ -38,8 +41,10 @@ document.getElementById("conteudo").innerHTML = `
 }
 
 
+// ===============================
+// PERFIL
+// ===============================
 
-// BOTÃO PERFIL
 const btnPerfil = document.getElementById("btnPerfil");
 
 if(btnPerfil){
@@ -50,7 +55,46 @@ document.getElementById("conteudo").innerHTML = `
 
 <h2>👤 Perfil do Paciente</h2>
 
-<p>Área de cadastro do usuário.</p>
+<div class="card">
+
+<label>Nome</label>
+<input type="text" id="perfilNome">
+
+
+<label>E-mail</label>
+<input type="email" id="perfilEmail">
+
+
+<label>Telefone</label>
+<input type="text" id="perfilTelefone">
+
+
+<label>Data de nascimento</label>
+<input type="date" id="perfilNascimento">
+
+
+<label>Cidade</label>
+<input type="text" id="perfilCidade">
+
+
+<label>Estado</label>
+
+<select id="perfilUf">
+
+<option>PI</option>
+<option>MA</option>
+<option>CE</option>
+<option>BA</option>
+<option>PE</option>
+
+</select>
+
+
+<button id="salvarPerfil">
+Salvar Perfil
+</button>
+
+</div>
 
 `;
 
@@ -59,8 +103,10 @@ document.getElementById("conteudo").innerHTML = `
 }
 
 
+// ===============================
+// AVALIAÇÃO
+// ===============================
 
-// BOTÃO AVALIAÇÃO
 const btnAvaliacao = document.getElementById("btnAvaliacao");
 
 if(btnAvaliacao){
@@ -80,8 +126,10 @@ document.getElementById("conteudo").innerHTML = `
 }
 
 
+// ===============================
+// HISTÓRICO
+// ===============================
 
-// BOTÃO HISTÓRICO
 const btnHistorico = document.getElementById("btnHistorico");
 
 if(btnHistorico){
@@ -101,8 +149,10 @@ document.getElementById("conteudo").innerHTML = `
 }
 
 
-
+// ===============================
 // SAIR
+// ===============================
+
 const btnSair = document.getElementById("btnSair");
 
 if(btnSair){
