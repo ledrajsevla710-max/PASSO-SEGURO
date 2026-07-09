@@ -348,18 +348,13 @@ JSON.stringify(historico)
 
 alert("Avaliação salva com sucesso!");
 
-
 };
-
 
 }
 
-
 };
 
-
 }
-
 // ===============================
 // HISTÓRICO
 // ===============================
