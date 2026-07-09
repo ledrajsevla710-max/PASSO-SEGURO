@@ -160,3 +160,86 @@ a{
     text-decoration:none;
 
 }
+/* ==========================
+   DASHBOARD
+========================== */
+
+
+header{
+
+    width:100%;
+
+    text-align:center;
+
+    padding:20px;
+
+}
+
+
+header h1{
+
+    color:white;
+
+}
+
+
+
+nav{
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+    padding:10px;
+
+}
+
+
+nav button{
+
+    width:auto;
+
+    margin-top:0;
+
+    padding:12px 20px;
+
+}
+
+
+
+main{
+
+    background:white;
+
+    width:90%;
+
+    max-width:800px;
+
+    min-height:300px;
+
+    padding:30px;
+
+    border-radius:20px;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,0.2);
+
+}
+
+
+
+body:has(header){
+
+    flex-direction:column;
+
+    justify-content:flex-start;
+
+    align-items:center;
+
+}
