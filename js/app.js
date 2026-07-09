@@ -1,12 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+
 const usuario = localStorage.getItem("usuario");
 
 const nomeUsuario = document.getElementById("nomeUsuario");
 
 if(usuario && nomeUsuario){
+
     nomeUsuario.innerText = "Olá, " + usuario;
+
 }
+
 
 
 // ===============================
@@ -28,10 +32,15 @@ document.getElementById("conteudo").innerHTML = `
 <h3>Cuidados essenciais:</h3>
 
 <ul>
+
 <li>✔ Examine os pés diariamente</li>
+
 <li>✔ Hidrate a pele corretamente</li>
+
 <li>✔ Não use calçados apertados</li>
+
 <li>✔ Procure ajuda profissional em caso de feridas</li>
+
 </ul>
 
 `;
@@ -39,6 +48,7 @@ document.getElementById("conteudo").innerHTML = `
 };
 
 }
+
 
 
 // ===============================
@@ -51,29 +61,37 @@ if(btnPerfil){
 
 btnPerfil.onclick = () => {
 
+
 document.getElementById("conteudo").innerHTML = `
 
 <h2>👤 Perfil do Paciente</h2>
 
+
 <div class="card">
 
+
 <label>Nome</label>
+
 <input type="text" id="perfilNome">
 
 
 <label>E-mail</label>
+
 <input type="email" id="perfilEmail">
 
 
 <label>Telefone</label>
+
 <input type="text" id="perfilTelefone">
 
 
 <label>Data de nascimento</label>
+
 <input type="date" id="perfilNascimento">
 
 
 <label>Cidade</label>
+
 <input type="text" id="perfilCidade">
 
 
@@ -82,29 +100,43 @@ document.getElementById("conteudo").innerHTML = `
 <select id="perfilUf">
 
 <option>PI</option>
+
 <option>MA</option>
+
 <option>CE</option>
+
 <option>BA</option>
+
 <option>PE</option>
 
 </select>
 
 
 <button id="salvarPerfil">
+
 Salvar Perfil
+
 </button>
+
 
 </div>
 
+
 `;
+
+
+
 const salvarPerfil = document.getElementById("salvarPerfil");
 
+
 if(salvarPerfil){
+
 
 salvarPerfil.onclick = () => {
 
 
 const perfil = {
+
 
 nome: document.getElementById("perfilNome").value,
 
@@ -118,23 +150,36 @@ cidade: document.getElementById("perfilCidade").value,
 
 uf: document.getElementById("perfilUf").value
 
+
 };
 
 
+
 localStorage.setItem(
+
 "perfil",
+
 JSON.stringify(perfil)
+
 );
+
 
 
 alert("Perfil salvo com sucesso!");
 
+
 };
 
-}
-};
 
 }
+
+
+};
+
+
+}
+
+
 
 
 // ===============================
@@ -143,21 +188,31 @@ alert("Perfil salvo com sucesso!");
 
 const btnAvaliacao = document.getElementById("btnAvaliacao");
 
+
 if(btnAvaliacao){
+
 
 btnAvaliacao.onclick = () => {
 
+
 document.getElementById("conteudo").innerHTML = `
+
 
 <h2>🩺 Avaliação dos Pés</h2>
 
+
 <p>Área onde será feita a avaliação de risco.</p>
+
 
 `;
 
+
 };
 
+
 }
+
+
 
 
 // ===============================
@@ -166,21 +221,31 @@ document.getElementById("conteudo").innerHTML = `
 
 const btnHistorico = document.getElementById("btnHistorico");
 
+
 if(btnHistorico){
+
 
 btnHistorico.onclick = () => {
 
+
 document.getElementById("conteudo").innerHTML = `
+
 
 <h2>📊 Histórico</h2>
 
+
 <p>Aqui aparecerão as avaliações salvas.</p>
+
 
 `;
 
+
 };
 
+
 }
+
+
 
 
 // ===============================
@@ -189,18 +254,24 @@ document.getElementById("conteudo").innerHTML = `
 
 const btnSair = document.getElementById("btnSair");
 
+
 if(btnSair){
+
 
 btnSair.onclick = () => {
 
+
 localStorage.clear();
+
 
 window.location="login.html";
 
+
 };
+
 
 }
 
 
-});
 
+});
