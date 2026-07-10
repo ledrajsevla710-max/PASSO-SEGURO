@@ -4,13 +4,18 @@ async function login() {
 
     if(email === "" || senha === ""){
         alert("Preencha todos os campos");
-        return;
+        return; // Corrigido de 'retornar' para 'return'
     }
 
-    const resposta = await window.enviar({ acao: "login", email: email, senha: senha });
+    // Agora o await funciona porque a função é async
+    const resposta = await window.enviar({ 
+        acao: "login", 
+        email: email, 
+        senha: senha 
+    });
 
     if (resposta.sucesso) {
-        // Salvando os dados retornados pelo backend para uso no Dashboard
+        // Salvando os dados no localStorage
         localStorage.setItem("nome", resposta.usuario.nome);
         localStorage.setItem("email", resposta.usuario.email);
         localStorage.setItem("telefone", resposta.usuario.telefone);
