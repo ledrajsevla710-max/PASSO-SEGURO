@@ -1,10 +1,10 @@
 // ==========================================
-// API E INTERFACE - CÓDIGO INTEGRADO
+// API E INTERFACE - CÓDIGO COMPLETO E SEGURO
 // ==========================================
 
 const API_URL = "https://script.google.com/macros/s/AKfycbxEvckYixVIEZcOiNjw2p3feEUT8UvLhSrrm0ERxqYf4jGeWwBbh3kg6K_ZOAPUKYSD/exec";
 
-// Comunicação com o Google
+// Comunicação
 async function enviar(dados) {
     const resposta = await fetch(API_URL, { 
         method: "POST", 
@@ -17,11 +17,13 @@ async function enviar(dados) {
 window.enviar = enviar;
 window.salvarAvaliacaoAPI = async (a) => await enviar({ acao: "avaliacao", avaliacao: a });
 
-// Lógica do Dashboard
 document.addEventListener("DOMContentLoaded", () => {
-    // Carrega dados do login
+    // 1. Definição de elementos e proteção contra erros
+    const conteudo = document.getElementById("conteudo");
+    if (!conteudo) return; // Se não houver div de conteúdo, para o script para evitar erro
+
     const u = {
-        nome: localStorage.getItem("nome"),
+        nome: localStorage.getItem("nome") || "Paciente",
         email: localStorage.getItem("email"),
         nascimento: localStorage.getItem("nascimento"),
         cidade: localStorage.getItem("cidade")
@@ -30,21 +32,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const nomeUI = document.getElementById("nomeUsuario");
     if (u.nome && nomeUI) nomeUI.innerText = "Olá, " + u.nome;
 
-    // Avaliação Automática
+    // 2. Navegação: Início
+    const btnHome = document.getElementById("btnHome");
+    if(btnHome) btnHome.onclick = () => {
+        conteudo.innerHTML = `<h2>🏠 Início</h2><p>Bem-vindo ao Passo Seguro.</p>`;
+    };
+
+    // 3. Navegação: Perfil
+    const btnPerfil = document.getElementById("btnPerfil");
+    if(btnPerfil) btnPerfil.onclick = () => {
+        conteudo.innerHTML = `<h2>👤 Perfil</h2><p>Nome: ${u.nome}<br>Cidade: ${u.cidade}</p>`;
+    };
+
+    // 4. Navegação: Avaliação (O código que você já tinha)
     const btnAvaliacao = document.getElementById("btnAvaliacao");
     if (btnAvaliacao) {
         btnAvaliacao.onclick = () => {
-            document.getElementById("conteudo").innerHTML = `
+            conteudo.innerHTML = `
                 <h2>🩺 Nova Avaliação</h2>
                 <div class="card">
-                    <p>Paciente: <b>${u.nome}</b></p>
                     <label>Possui calosidade?</label>
                     <select id="avalCalosidade"><option>Não</option><option>Sim</option></select>
                     <label>Possui úlcera?</label>
                     <select id="avalUlcera"><option>Não</option><option>Sim</option></select>
-                    <label>Já realizou amputação?</label>
-                    <select id="avalAmputacao"><option>Não</option><option>Sim</option></select>
-                    <label>Local da amputação</label><input type="text" id="avalLocalAmputacao">
                     <label>Nível de risco</label>
                     <select id="avalRisco"><option>Baixo</option><option>Moderado</option><option>Alto</option></select>
                     <button id="btnSalvarAval">Salvar Avaliação</button>
@@ -57,12 +67,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     email: u.email, nome: u.nome, idade: idade, cidade: u.cidade,
                     calosidade: document.getElementById("avalCalosidade").value,
                     ulcera: document.getElementById("avalUlcera").value,
-                    amputacao: document.getElementById("avalAmputacao").value,
-                    localAmputacao: document.getElementById("avalLocalAmputacao").value,
                     risco: document.getElementById("avalRisco").value,
                     data: new Date().toLocaleDateString()
                 };
-                
                 const btn = document.getElementById("btnSalvarAval");
                 btn.innerText = "Salvando...";
                 const resp = await window.salvarAvaliacaoAPI(dados);
@@ -72,6 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     }
 
+    // 5. Sair
     const btnSair = document.getElementById("btnSair");
     if(btnSair) btnSair.onclick = () => { localStorage.clear(); window.location = "login.html"; };
 });
