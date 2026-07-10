@@ -1,106 +1,121 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const usuario = localStorage.getItem("usuario");
-    const nomeUsuario = document.getElementById("nomeUsuario");
+    // 1. CARREGAR DADOS DO USUÁRIO LOGADO
+    // Esses dados devem ter sido salvos no localStorage no momento do Login
+    const usuarioAtual = {
+        nome: localStorage.getItem("nome"),
+        email: localStorage.getItem("email"),
+        telefone: localStorage.getItem("telefone"),
+        nascimento: localStorage.getItem("nascimento"),
+        cidade: localStorage.getItem("cidade"),
+        uf: localStorage.getItem("uf")
+    };
 
-    if (usuario && nomeUsuario) {
-        nomeUsuario.innerText = "Olá, " + usuario;
+    const nomeUsuarioUI = document.getElementById("nomeUsuario");
+    if (usuarioAtual.nome && nomeUsuarioUI) {
+        nomeUsuarioUI.innerText = "Olá, " + usuarioAtual.nome;
     }
 
-    // ===============================
-    // INÍCIO
-    // ===============================
-    const btnHome = document.getElementById("btnHome");
-
-    if (btnHome) {
-        btnHome.onclick = () => {
-            document.getElementById("conteudo").innerHTML = `
-                <h2>🏠 Página Inicial</h2>
-                <p>Bem-vindo ao Passo Seguro.</p>
-                <h3>Cuidados essenciais:</h3>
-                <ul>
-                    <li>✔ Examine os pés diariamente</li>
-                    <li>✔ Hidrate a pele corretamente</li>
-                    <li>✔ Não use calçados apertados</li>
-                    <li>✔ Procure ajuda profissional em caso de feridas</li>
-                </ul>
-            `;
-        };
+    // Função auxiliar para calcular a idade
+    function calcularIdade(dataNascimento) {
+        if(!dataNascimento) return "Não informada";
+        const hoje = new Date();
+        const nascimento = new Date(dataNascimento);
+        let idade = hoje.getFullYear() - nascimento.getFullYear();
+        const mes = hoje.getMonth() - nascimento.getMonth();
+        if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
+            idade--;
+        }
+        return idade;
     }
 
     // ===============================
     // PERFIL
     // ===============================
     const btnPerfil = document.getElementById("btnPerfil");
-
     if (btnPerfil) {
         btnPerfil.onclick = () => {
             document.getElementById("conteudo").innerHTML = `
-                <h2>👤 Perfil do Paciente</h2>
+                <h2>👤 Meu Perfil</h2>
                 <div class="card">
                     <label>Nome</label>
-                    <input type="text" id="perfilNome">
+                    <input type="text" id="perfilNome" value="${usuarioAtual.nome || ''}">
                     
-                    <label>E-mail</label>
-                    <input type="email" id="perfilEmail">
+                    <label>E-mail (Não editável)</label>
+                    <input type="email" id="perfilEmail" value="${usuarioAtual.email || ''}" readonly style="background-color: #f0f0f0;">
                     
                     <label>Telefone</label>
-                    <input type="text" id="perfilTelefone">
+                    <input type="text" id="perfilTelefone" value="${usuarioAtual.telefone || ''}">
                     
                     <label>Data de nascimento</label>
-                    <input type="date" id="perfilNascimento">
+                    <input type="date" id="perfilNascimento" value="${usuarioAtual.nascimento || ''}">
                     
                     <label>Cidade</label>
-                    <input type="text" id="perfilCidade">
+                    <input type="text" id="perfilCidade" value="${usuarioAtual.cidade || ''}">
                     
                     <label>Estado</label>
                     <select id="perfilUf">
-                        <option>PI</option>
-                        <option>MA</option>
-                        <option>CE</option>
-                        <option>BA</option>
-                        <option>PE</option>
+                        <option value="PI" ${usuarioAtual.uf === 'PI' ? 'selected' : ''}>PI</option>
+                        <option value="MA" ${usuarioAtual.uf === 'MA' ? 'selected' : ''}>MA</option>
+                        <option value="CE" ${usuarioAtual.uf === 'CE' ? 'selected' : ''}>CE</option>
+                        <option value="BA" ${usuarioAtual.uf === 'BA' ? 'selected' : ''}>BA</option>
+                        <option value="PE" ${usuarioAtual.uf === 'PE' ? 'selected' : ''}>PE</option>
                     </select>
                     
-                    <button id="salvarPerfil">Salvar Perfil</button>
+                    <button id="salvarPerfil">Salvar Alterações</button>
                 </div>
             `;
 
-            const salvarPerfil = document.getElementById("salvarPerfil");
-
-            if (salvarPerfil) {
-                salvarPerfil.onclick = async () => {
-                    const perfil = {
+            const btnSalvarPerfil = document.getElementById("salvarPerfil");
+            if (btnSalvarPerfil) {
+                btnSalvarPerfil.onclick = async () => {
+                    const perfilAtualizado = {
                         nome: document.getElementById("perfilNome").value,
-                        email: document.getElementById("perfilEmail").value,
+                        email: document.getElementById("perfilEmail").value, 
                         telefone: document.getElementById("perfilTelefone").value,
                         nascimento: document.getElementById("perfilNascimento").value,
                         cidade: document.getElementById("perfilCidade").value,
                         uf: document.getElementById("perfilUf").value
                     };
 
-                    const resposta = await window.atualizarPerfil(perfil);
+                    btnSalvarPerfil.innerText = "Salvando...";
+                    
+                    // Supondo que window.atualizarPerfil está no seu api.js
+                    const resposta = await window.atualizarPerfil(perfilAtualizado);
 
-                    if (resposta.sucesso) {
-                        alert(resposta.mensagem);
+                    if(resposta.sucesso) {
+                        // Atualiza o localStorage com os novos dados
+                        localStorage.setItem("nome", perfilAtualizado.nome);
+                        localStorage.setItem("telefone", perfilAtualizado.telefone);
+                        localStorage.setItem("nascimento", perfilAtualizado.nascimento);
+                        localStorage.setItem("cidade", perfilAtualizado.cidade);
+                        localStorage.setItem("uf", perfilAtualizado.uf);
+                        
+                        // Atualiza a saudação no topo
+                        if(nomeUsuarioUI) nomeUsuarioUI.innerText = "Olá, " + perfilAtualizado.nome;
+                        alert("Perfil atualizado com sucesso!");
                     } else {
                         alert(resposta.mensagem);
                     }
+                    btnSalvarPerfil.innerText = "Salvar Alterações";
                 };
-            } // <-- FECHAMENTO CORRIGIDO DO IF
-        }; // <-- FECHAMENTO CORRIGIDO DO ONCLICK
+            }
+        };
     }
 
     // ===============================
     // AVALIAÇÃO
     // ===============================
     const btnAvaliacao = document.getElementById("btnAvaliacao");
-
     if (btnAvaliacao) {
         btnAvaliacao.onclick = () => {
+            // A tela agora só pergunta dados clínicos
             document.getElementById("conteudo").innerHTML = `
-                <h2>🩺 Avaliação dos Pés</h2>
+                <h2>🩺 Nova Avaliação</h2>
                 <div class="card">
+                    <p style="font-size: 0.9em; color: #555;">Paciente: <b>${usuarioAtual.nome}</b></p>
+                    <hr style="margin-bottom: 15px; border: 0; border-top: 1px solid #eee;">
+
                     <label>Possui calosidade?</label>
                     <select id="avalCalosidade">
                         <option>Não</option>
@@ -120,7 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </select>
                     
                     <label>Local da amputação</label>
-                    <input type="text" id="avalLocalAmputacao">
+                    <input type="text" id="avalLocalAmputacao" placeholder="Se não, deixe em branco">
                     
                     <label>Nível de risco</label>
                     <select id="avalRisco">
@@ -133,11 +148,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
             `;
 
-            const salvarAvaliacao = document.getElementById("salvarAvaliacao");
+            const btnSalvarAvaliacao = document.getElementById("salvarAvaliacao");
+            if (btnSalvarAvaliacao) {
+                btnSalvarAvaliacao.onclick = async () => {
+                    
+                    const idadeCalculada = calcularIdade(usuarioAtual.nascimento);
 
-            if (salvarAvaliacao) {
-                salvarAvaliacao.onclick = () => {
+                    // Objeto híbrido: mescla dados clínicos da tela com dados demográficos ocultos do paciente
                     const avaliacao = {
+                        email: usuarioAtual.email, 
+                        nome: usuarioAtual.nome,
+                        idade: idadeCalculada,
+                        cidade: usuarioAtual.cidade,
                         calosidade: document.getElementById("avalCalosidade").value,
                         ulcera: document.getElementById("avalUlcera").value,
                         amputacao: document.getElementById("avalAmputacao").value,
@@ -146,44 +168,24 @@ document.addEventListener("DOMContentLoaded", () => {
                         data: new Date().toLocaleDateString()
                     };
 
-                    let historico = JSON.parse(localStorage.getItem("avaliacoes")) || [];
-                    historico.push(avaliacao);
-                    localStorage.setItem("avaliacoes", JSON.stringify(historico));
+                    btnSalvarAvaliacao.innerText = "Salvando...";
 
-                    alert("Avaliação salva com sucesso!");
+                    const resposta = await window.salvarAvaliacaoAPI(avaliacao);
+                    
+                    if(resposta.sucesso) {
+                        alert("Avaliação registrada com sucesso!");
+                        document.getElementById("avalLocalAmputacao").value = "";
+                        document.getElementById("avalCalosidade").value = "Não";
+                        document.getElementById("avalUlcera").value = "Não";
+                        document.getElementById("avalAmputacao").value = "Não";
+                        document.getElementById("avalRisco").value = "Baixo";
+                    } else {
+                        alert(resposta.mensagem);
+                    }
+                    
+                    btnSalvarAvaliacao.innerText = "Salvar Avaliação";
                 };
             }
-        };
-    }
-
-    // ===============================
-    // HISTÓRICO
-    // ===============================
-    const btnHistorico = document.getElementById("btnHistorico");
-
-    if (btnHistorico) {
-        btnHistorico.onclick = () => {
-            const historico = JSON.parse(localStorage.getItem("avaliacoes")) || [];
-            let html = `<h2>📊 Histórico</h2>`;
-
-            if (historico.length === 0) {
-                html += "<p>Nenhuma avaliação encontrada.</p>";
-            } else {
-                historico.forEach((item, index) => {
-                    html += `
-                        <div class="card">
-                            <p><b>Avaliação ${index + 1}</b></p>
-                            <p>Calosidade: ${item.calosidade}</p>
-                            <p>Úlcera: ${item.ulcera}</p>
-                            <p>Amputação: ${item.amputacao}</p>
-                            <p>Risco: ${item.risco}</p>
-                            <p>Data: ${item.data}</p>
-                        </div>
-                    `;
-                });
-            }
-
-            document.getElementById("conteudo").innerHTML = html;
         };
     }
 
@@ -191,11 +193,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // SAIR
     // ===============================
     const btnSair = document.getElementById("btnSair");
-
     if (btnSair) {
         btnSair.onclick = () => {
             localStorage.clear();
-            window.location = "login.html";
+            window.location = "login.html"; 
         };
     }
 
