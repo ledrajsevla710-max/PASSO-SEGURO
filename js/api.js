@@ -1,34 +1,36 @@
 // ==========================================
-// API E INTERFACE - CÓDIGO COMPLETO
+// API E INTERFACE - CÓDIGO INTEGRADO
 // ==========================================
 
 const API_URL = "https://script.google.com/macros/s/AKfycbxiqXvtwk2n63j16cw6t6djePX6LNIkqfFFD2eJxGbEZ-YAWh1TgnluSgmtZlVGD-YR/exec";
 
-// Funções de Comunicação
+// Comunicação com o Google
 async function enviar(dados) {
-    const resposta = await fetch(API_URL, { method: "POST", headers: {"Content-Type": "text/plain;charset=utf-8"}, body: JSON.stringify(dados) });
+    const resposta = await fetch(API_URL, { 
+        method: "POST", 
+        headers: {"Content-Type": "text/plain;charset=utf-8"}, 
+        body: JSON.stringify(dados) 
+    });
     return await resposta.json();
 }
 
 window.enviar = enviar;
-window.cadastrar = async (u) => await enviar({ acao: "cadastro", usuario: u });
-window.atualizarPerfil = async (u) => await enviar({ acao: "perfil", usuario: u });
 window.salvarAvaliacaoAPI = async (a) => await enviar({ acao: "avaliacao", avaliacao: a });
 
 // Lógica do Dashboard
 document.addEventListener("DOMContentLoaded", () => {
+    // Carrega dados do login
     const u = {
         nome: localStorage.getItem("nome"),
         email: localStorage.getItem("email"),
         nascimento: localStorage.getItem("nascimento"),
-        cidade: localStorage.getItem("cidade"),
-        uf: localStorage.getItem("uf")
+        cidade: localStorage.getItem("cidade")
     };
 
     const nomeUI = document.getElementById("nomeUsuario");
     if (u.nome && nomeUI) nomeUI.innerText = "Olá, " + u.nome;
 
-    // Avaliação (Automática)
+    // Avaliação Automática
     const btnAvaliacao = document.getElementById("btnAvaliacao");
     if (btnAvaliacao) {
         btnAvaliacao.onclick = () => {
@@ -60,8 +62,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     risco: document.getElementById("avalRisco").value,
                     data: new Date().toLocaleDateString()
                 };
+                
+                const btn = document.getElementById("btnSalvarAval");
+                btn.innerText = "Salvando...";
                 const resp = await window.salvarAvaliacaoAPI(dados);
                 alert(resp.mensagem);
+                btn.innerText = "Salvar Avaliação";
             };
         };
     }
