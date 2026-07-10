@@ -81,8 +81,6 @@ async function atualizarPerfil(usuario) {
     });
 
 }
-
-
 // ==========================================
 // SALVAR AVALIAÇÃO
 // ==========================================
@@ -113,5 +111,7 @@ async function carregarHistorico(email) {
         email: email
 
     });
+    console.log("Funções API carregadas");
+console.log(typeof atualizarPerfil);
 
 }
