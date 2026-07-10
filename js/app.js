@@ -1,16 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-
 const usuario = localStorage.getItem("usuario");
 
 const nomeUsuario = document.getElementById("nomeUsuario");
 
 if(usuario && nomeUsuario){
-
     nomeUsuario.innerText = "Olá, " + usuario;
-
 }
-
 
 
 // ===============================
@@ -32,15 +28,10 @@ document.getElementById("conteudo").innerHTML = `
 <h3>Cuidados essenciais:</h3>
 
 <ul>
-
 <li>✔ Examine os pés diariamente</li>
-
 <li>✔ Hidrate a pele corretamente</li>
-
 <li>✔ Não use calçados apertados</li>
-
 <li>✔ Procure ajuda profissional em caso de feridas</li>
-
 </ul>
 
 `;
@@ -61,69 +52,46 @@ if(btnPerfil){
 
 btnPerfil.onclick = () => {
 
-
 document.getElementById("conteudo").innerHTML = `
 
 <h2>👤 Perfil do Paciente</h2>
 
-
 <div class="card">
 
-
 <label>Nome</label>
-
 <input type="text" id="perfilNome">
 
-
 <label>E-mail</label>
-
 <input type="email" id="perfilEmail">
 
-
 <label>Telefone</label>
-
 <input type="text" id="perfilTelefone">
 
-
 <label>Data de nascimento</label>
-
 <input type="date" id="perfilNascimento">
 
-
 <label>Cidade</label>
-
 <input type="text" id="perfilCidade">
-
 
 <label>Estado</label>
 
 <select id="perfilUf">
 
 <option>PI</option>
-
 <option>MA</option>
-
 <option>CE</option>
-
 <option>BA</option>
-
 <option>PE</option>
 
 </select>
 
-
 <button id="salvarPerfil">
-
 Salvar Perfil
-
 </button>
-
 
 </div>
 
-
 `;
-
 
 
 const salvarPerfil = document.getElementById("salvarPerfil");
@@ -131,12 +99,10 @@ const salvarPerfil = document.getElementById("salvarPerfil");
 
 if(salvarPerfil){
 
-
 salvarPerfil.onclick = () => {
 
 
 const perfil = {
-
 
 nome: document.getElementById("perfilNome").value,
 
@@ -150,36 +116,24 @@ cidade: document.getElementById("perfilCidade").value,
 
 uf: document.getElementById("perfilUf").value
 
-
 };
 
 
-
 localStorage.setItem(
-
 "perfil",
-
 JSON.stringify(perfil)
-
 );
-
 
 
 alert("Perfil salvo com sucesso!");
 
-
 };
-
 
 }
 
-
 };
 
-
 }
-
-
 
 
 
@@ -189,16 +143,15 @@ alert("Perfil salvo com sucesso!");
 
 const btnAvaliacao = document.getElementById("btnAvaliacao");
 
+
 if(btnAvaliacao){
 
-btnAvaliacao.onclick = function(){
+btnAvaliacao.onclick = () => {
 
 
 document.getElementById("conteudo").innerHTML = `
 
-
 <h2>🩺 Avaliação dos Pés</h2>
-
 
 <div class="card">
 
@@ -208,7 +161,6 @@ document.getElementById("conteudo").innerHTML = `
 <select id="avalCalosidade">
 
 <option>Não</option>
-
 <option>Sim</option>
 
 </select>
@@ -220,7 +172,6 @@ document.getElementById("conteudo").innerHTML = `
 <select id="avalUlcera">
 
 <option>Não</option>
-
 <option>Sim</option>
 
 </select>
@@ -232,7 +183,6 @@ document.getElementById("conteudo").innerHTML = `
 <select id="avalAmputacao">
 
 <option>Não</option>
-
 <option>Sim</option>
 
 </select>
@@ -250,9 +200,7 @@ document.getElementById("conteudo").innerHTML = `
 <select id="avalRisco">
 
 <option>Baixo</option>
-
 <option>Moderado</option>
-
 <option>Alto</option>
 
 </select>
@@ -268,76 +216,66 @@ Salvar Avaliação
 
 </div>
 
-
 `;
 
 
 
-document.getElementById("salvarAvaliacao").onclick = function(){
+const salvarAvaliacao = document.getElementById("salvarAvaliacao");
 
+
+if(salvarAvaliacao){
+
+salvarAvaliacao.onclick = () => {
 
 
 const avaliacao = {
 
-
 calosidade:
 document.getElementById("avalCalosidade").value,
-
 
 ulcera:
 document.getElementById("avalUlcera").value,
 
-
 amputacao:
 document.getElementById("avalAmputacao").value,
-
 
 localAmputacao:
 document.getElementById("avalLocalAmputacao").value,
 
-
 risco:
 document.getElementById("avalRisco").value,
-
 
 data:
 new Date().toLocaleDateString()
 
-
 };
 
 
-
-let historico = JSON.parse(
-
-localStorage.getItem("avaliacoes")
-
-) || [];
-
+let historico =
+JSON.parse(localStorage.getItem("avaliacoes")) || [];
 
 
 historico.push(avaliacao);
 
 
-
 localStorage.setItem(
-
 "avaliacoes",
-
 JSON.stringify(historico)
-
 );
-
 
 
 alert("Avaliação salva com sucesso!");
 
+};
 
+}
 
 };
 
-
 }
+
+
+
 // ===============================
 // HISTÓRICO
 // ===============================
@@ -347,27 +285,61 @@ const btnHistorico = document.getElementById("btnHistorico");
 
 if(btnHistorico){
 
-
 btnHistorico.onclick = () => {
 
 
-document.getElementById("conteudo").innerHTML = `
+const historico =
+JSON.parse(localStorage.getItem("avaliacoes")) || [];
 
+
+let html = `
 
 <h2>📊 Histórico</h2>
-
-
-<p>Aqui aparecerão as avaliações salvas.</p>
-
 
 `;
 
 
-};
+if(historico.length === 0){
+
+html += "<p>Nenhuma avaliação encontrada.</p>";
+
+}else{
+
+
+historico.forEach((item,index)=>{
+
+html += `
+
+<div class="card">
+
+<p><b>Avaliação ${index + 1}</b></p>
+
+<p>Calosidade: ${item.calosidade}</p>
+
+<p>Úlcera: ${item.ulcera}</p>
+
+<p>Amputação: ${item.amputacao}</p>
+
+<p>Risco: ${item.risco}</p>
+
+<p>Data: ${item.data}</p>
+
+</div>
+
+`;
+
+});
 
 
 }
 
+
+document.getElementById("conteudo").innerHTML = html;
+
+
+};
+
+}
 
 
 
@@ -380,21 +352,15 @@ const btnSair = document.getElementById("btnSair");
 
 if(btnSair){
 
-
 btnSair.onclick = () => {
-
 
 localStorage.clear();
 
-
 window.location="login.html";
-
 
 };
 
-
 }
-
 
 
 });
