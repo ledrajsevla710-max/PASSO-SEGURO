@@ -115,3 +115,8 @@ async function carregarHistorico(email) {
 console.log(typeof atualizarPerfil);
 
 }
+window.atualizarPerfil = atualizarPerfil;
+window.salvarAvaliacao = salvarAvaliacao;
+window.login = login;
+window.cadastrar = cadastrar;
+window.carregarHistorico = carregarHistorico;
