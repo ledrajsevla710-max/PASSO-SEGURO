@@ -342,8 +342,6 @@ document.getElementById("conteudo").innerHTML = html;
 
 }
 
-
-
 // ===============================
 // SAIR
 // ===============================
@@ -352,13 +350,13 @@ const btnSair = document.getElementById("btnSair");
 
 if(btnSair){
 
-btnSair.onclick = () => {
+    btnSair.onclick = () => {
 
-localStorage.clear();
+        localStorage.clear();
 
-window.location="login.html";
+        window.location = "login.html";
 
-};
+    };
 
 }
 
