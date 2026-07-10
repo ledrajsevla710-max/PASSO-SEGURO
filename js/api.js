@@ -1,3 +1,4 @@
+alert("API carregada");
 // ==========================================
 // PASSO SEGURO - API
 // Comunicação com Google Apps Script
