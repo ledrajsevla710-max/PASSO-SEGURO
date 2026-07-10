@@ -8,7 +8,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxiqXvtwk2n63j16cw6t6dj
 
 
 // ==========================================
-// Função genérica para enviar dados
+// FUNÇÃO GENÉRICA PARA ENVIAR DADOS
 // ==========================================
 
 async function enviar(dados) {
@@ -20,52 +20,34 @@ async function enviar(dados) {
             method: "POST",
 
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "text/plain;charset=utf-8"
             },
 
             body: JSON.stringify(dados)
 
         });
 
-        return await resposta.json();
+
+        const resultado = await resposta.json();
+
+        return resultado;
+
 
     } catch (erro) {
 
-        console.error(erro);
+        console.error("Erro API:", erro);
 
         return {
 
-            sucesso: false,
+            sucesso:false,
 
-            mensagem: "Erro de conexão com a API."
+            mensagem:"Erro de conexão com a API."
 
         };
 
     }
 
-}
-
-
-// ==========================================
-// LOGIN
-// ==========================================
-
-async function login(email, senha) {
-
-    return await enviar({
-
-        acao: "login",
-
-        email: email,
-
-        senha: senha
-
-    });
-
-}
-
-
-// ==========================================
+}// ==========================================
 // CADASTRO
 // ==========================================
 
