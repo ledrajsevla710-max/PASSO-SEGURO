@@ -119,13 +119,27 @@ uf: document.getElementById("perfilUf").value
 };
 
 
-localStorage.setItem(
-"perfil",
-JSON.stringify(perfil)
-);
+atualizarPerfil(perfil)
+.then((resposta) => {
 
+    if(resposta.sucesso){
 
-alert("Perfil salvo com sucesso!");
+        alert("Perfil atualizado com sucesso!");
+
+    }else{
+
+        alert(resposta.mensagem);
+
+    }
+
+})
+.catch((erro)=>{
+
+    console.error(erro);
+
+    alert("Erro ao conectar com a API.");
+
+});
 
 };
 
