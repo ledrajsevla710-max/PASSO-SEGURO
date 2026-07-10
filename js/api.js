@@ -98,25 +98,14 @@ async function salvarAvaliacao(avaliacao) {
 }
 
 
-// ==========================================
-// HISTÓRICO
-// ==========================================
-
 async function carregarHistorico(email) {
 
     return await enviar({
 
-        acao: "historico",
+        acao:"historico",
 
-        email: email
+        email:email
 
     });
-    console.log("Funções API carregadas");
-console.log(typeof atualizarPerfil);
 
 }
-window.atualizarPerfil = atualizarPerfil;
-window.salvarAvaliacao = salvarAvaliacao;
-window.login = login;
-window.cadastrar = cadastrar;
-window.carregarHistorico = carregarHistorico;
