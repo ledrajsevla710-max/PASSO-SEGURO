@@ -99,7 +99,7 @@ const salvarPerfil = document.getElementById("salvarPerfil");
 
 if(salvarPerfil){
 
-salvarPerfil.onclick = () => {
+salvarPerfil.onclick = async () => {
 
 
 const perfil = {
@@ -119,36 +119,23 @@ uf: document.getElementById("perfilUf").value
 };
 
 
-atualizarPerfil(perfil)
-.then((resposta) => {
 
-    if(resposta.sucesso){
+const resposta = await window.atualizarPerfil(perfil);
 
-        alert("Perfil atualizado com sucesso!");
 
-    }else{
 
-        alert(resposta.mensagem);
+if(resposta.sucesso){
 
-    }
+alert(resposta.mensagem);
 
-})
-.catch((erro)=>{
+}else{
 
-    console.error(erro);
-
-    alert("Erro ao conectar com a API.");
-
-});
-
-};
+alert(resposta.mensagem);
 
 }
 
+
 };
-
-}
-
 
 
 // ===============================
