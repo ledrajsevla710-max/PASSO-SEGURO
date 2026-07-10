@@ -350,7 +350,6 @@ document.getElementById("conteudo").innerHTML = html;
 
 const btnSair = document.getElementById("btnSair");
 
-
 if(btnSair){
 
 btnSair.onclick = () => {
@@ -362,6 +361,5 @@ window.location="login.html";
 };
 
 }
-
 
 });
