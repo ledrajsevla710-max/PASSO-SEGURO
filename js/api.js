@@ -2,7 +2,7 @@
 // API E INTERFACE - CÓDIGO INTEGRADO
 // ==========================================
 
-const API_URL = "https://script.google.com/macros/s/AKfycbw2ZsgulP2O0Sainzi7tsjoMI-J2dp2CNJRe0-nMHkgmLDlBitFd-9VjLIJoRCJ6bvh/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxEvckYixVIEZcOiNjw2p3feEUT8UvLhSrrm0ERxqYf4jGeWwBbh3kg6K_ZOAPUKYSD/exec";
 
 // Comunicação com o Google
 async function enviar(dados) {
