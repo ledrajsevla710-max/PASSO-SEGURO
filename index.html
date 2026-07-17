@@ -2,63 +2,175 @@
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Passo Seguro</title>
+
+    <title>Passo Seguro - Cadastro</title>
+
 
     <link rel="stylesheet" href="css/style.css">
+
 </head>
+
 
 <body>
 
+
 <div class="container">
 
+
     <div class="logo">
+
         👣
+
     </div>
 
-    <h1>Passo Seguro</h1>
+
+
+    <h1>
+        Passo Seguro
+    </h1>
+
+
 
     <p class="subtitulo">
+
         Monitoramento e autocuidado do pé diabético
+
     </p>
+
+
 
 
     <div class="card">
 
-        <h2>🔐 Login</h2>
+
+        <h2>
+            📝 Criar Cadastro
+        </h2>
 
 
-        <label>E-mail</label>
 
-        <input 
-        type="email" 
+        <label>
+            Nome
+        </label>
+
+        <input
+        type="text"
+        id="nome"
+        placeholder="Digite seu nome">
+
+
+
+        <label>
+            E-mail
+        </label>
+
+        <input
+        type="email"
         id="email"
         placeholder="Digite seu e-mail">
 
 
-        <label>Senha</label>
 
-        <input 
+        <label>
+            Senha
+        </label>
+
+        <input
         type="password"
         id="senha"
-        placeholder="Digite sua senha">
+        placeholder="Crie uma senha">
 
 
-        <button onclick="login()">
-            Entrar
+
+        <label>
+            Telefone
+        </label>
+
+        <input
+        type="text"
+        id="telefone"
+        placeholder="Telefone">
+
+
+
+        <label>
+            Data de nascimento
+        </label>
+
+        <input
+        type="date"
+        id="nascimento">
+
+
+
+        <label>
+            Cidade
+        </label>
+
+        <input
+        type="text"
+        id="cidade"
+        placeholder="Cidade">
+
+
+
+        <label>
+            Estado
+        </label>
+
+        <select id="uf">
+
+            <option value="PI">
+                PI
+            </option>
+
+            <option value="MA">
+                MA
+            </option>
+
+            <option value="CE">
+                CE
+            </option>
+
+            <option value="BA">
+                BA
+            </option>
+
+            <option value="PE">
+                PE
+            </option>
+
+        </select>
+
+
+
+
+        <button id="btnCadastro">
+
+            Criar Conta
+
         </button>
 
 
+
+
         <p>
-            Ainda não possui conta?
+            Já possui conta?
         </p>
 
 
-        <a href="cadastro.html">
-            Criar cadastro
+
+        <a href="login.html">
+
+            Fazer Login
+
         </a>
+
 
 
     </div>
@@ -67,7 +179,15 @@
 </div>
 
 
+
+
+<script src="js/config.js"></script>
+
+<script src="js/api.js"></script>
+
 <script src="js/login.js"></script>
+
+
 
 </body>
 
