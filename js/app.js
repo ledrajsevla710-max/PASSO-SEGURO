@@ -430,17 +430,26 @@ function sair() {
 // FUNÇÕES AUXILIARES
 // ==========================================
 
+
 function calcularIdade(dataNascimento) {
 
-    if (!dataNascimento) return "";
+    if (!dataNascimento) {
+
+        return "";
+
+    }
+
 
     const hoje = new Date();
 
     const nascimento = new Date(dataNascimento);
 
+
     let idade = hoje.getFullYear() - nascimento.getFullYear();
 
+
     const mes = hoje.getMonth() - nascimento.getMonth();
+
 
     if (
 
@@ -454,6 +463,25 @@ function calcularIdade(dataNascimento) {
 
     }
 
+
     return idade;
+
+}
+
+
+
+function formatarData(data) {
+
+    if (!data) {
+
+        return "";
+
+    }
+
+
+    const dataFormatada = new Date(data);
+
+
+    return dataFormatada.toLocaleDateString("pt-BR");
 
 }
