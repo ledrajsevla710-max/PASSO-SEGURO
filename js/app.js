@@ -47,3 +47,28 @@ function configurarMenu() {
     document.getElementById("btnSair").onclick = sair;
 
 }
+function abrirInicio() {
+
+    document.getElementById("conteudo").innerHTML = `
+
+        <h2>🏠 Página Inicial</h2>
+
+        <p>Bem-vindo ao Passo Seguro.</p>
+
+        <h3>Cuidados essenciais</h3>
+
+        <ul>
+
+            <li>✔ Examine os pés diariamente</li>
+
+            <li>✔ Hidrate a pele</li>
+
+            <li>✔ Nunca ande descalço</li>
+
+            <li>✔ Procure atendimento ao notar feridas</li>
+
+        </ul>
+
+    `;
+
+}
