@@ -204,7 +204,121 @@ function abrirPerfil() {
 
 function abrirAvaliacao() {
 
-    // Próxima etapa
+    const idade = calcularIdade(usuario.nascimento);
+
+    document.getElementById("conteudo").innerHTML = `
+
+        <h2>🩺 Avaliação dos Pés</h2>
+
+        <div class="card">
+
+            <p><b>Paciente:</b> ${usuario.nome}</p>
+
+            <p><b>Idade:</b> ${idade} anos</p>
+
+            <p><b>Cidade:</b> ${usuario.cidade} - ${usuario.uf}</p>
+
+            <hr>
+
+            <label>Possui calosidade?</label>
+
+            <select id="avalCalosidade">
+
+                <option value="Não">Não</option>
+                <option value="Sim">Sim</option>
+
+            </select>
+
+            <label>Possui úlcera?</label>
+
+            <select id="avalUlcera">
+
+                <option value="Não">Não</option>
+                <option value="Sim">Sim</option>
+
+            </select>
+
+            <label>Já realizou amputação?</label>
+
+            <select id="avalAmputacao">
+
+                <option value="Não">Não</option>
+                <option value="Sim">Sim</option>
+
+            </select>
+
+            <label>Local da amputação</label>
+
+            <input
+                type="text"
+                id="avalLocalAmputacao"
+                placeholder="Informe o local">
+
+            <label>Nível de risco</label>
+
+            <select id="avalRisco">
+
+                <option value="Baixo">Baixo</option>
+                <option value="Moderado">Moderado</option>
+                <option value="Alto">Alto</option>
+
+            </select>
+
+            <br><br>
+
+            <button id="salvarAvaliacao">
+
+                Salvar Avaliação
+
+            </button>
+
+        </div>
+
+    `;
+
+    document.getElementById("salvarAvaliacao").onclick = async function () {
+
+        const avaliacao = {
+
+            nome: usuario.nome,
+
+            email: usuario.email,
+
+            idade: idade,
+
+            cidade: usuario.cidade,
+
+            uf: usuario.uf,
+
+            telefone: usuario.telefone,
+
+            nascimento: usuario.nascimento,
+
+            calosidade: document.getElementById("avalCalosidade").value,
+
+            ulcera: document.getElementById("avalUlcera").value,
+
+            amputacao: document.getElementById("avalAmputacao").value,
+
+            localAmputacao: document.getElementById("avalLocalAmputacao").value,
+
+            risco: document.getElementById("avalRisco").value
+
+        };
+
+        const resposta = await salvarAvaliacao(avaliacao);
+
+        if (resposta.sucesso) {
+
+            alert("Avaliação salva com sucesso!");
+
+        } else {
+
+            alert(resposta.mensagem);
+
+        }
+
+    };
 
 }
 
