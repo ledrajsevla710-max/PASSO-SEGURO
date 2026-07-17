@@ -40,7 +40,27 @@ async function enviar(dados) {
 
 
 
-        return await resposta.json();
+       const texto = await resposta.text();
+
+
+try {
+
+    return JSON.parse(texto);
+
+
+} catch(e){
+
+
+    return {
+
+        sucesso:false,
+
+        mensagem:"Resposta inválida do servidor."
+
+    };
+
+
+}
 
 
 
