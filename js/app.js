@@ -34,3 +34,16 @@ function carregarUsuario() {
     }
 
 }
+function configurarMenu() {
+
+    document.getElementById("btnHome").onclick = abrirInicio;
+
+    document.getElementById("btnPerfil").onclick = abrirPerfil;
+
+    document.getElementById("btnAvaliacao").onclick = abrirAvaliacao;
+
+    document.getElementById("btnHistorico").onclick = abrirHistorico;
+
+    document.getElementById("btnSair").onclick = sair;
+
+}
