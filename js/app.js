@@ -28,6 +28,10 @@ function iniciarSistema() {
     abrirInicio();
 
 }
+// ==========================================
+// PASSO SEGURO
+// CARREGAR USUÁRIO
+// ==========================================
 function carregarUsuario() {
 
     const usuario = JSON.parse(localStorage.getItem("usuario"));
@@ -48,6 +52,10 @@ function carregarUsuario() {
     }
 
 }
+// ==========================================
+// PASSO SEGURO
+// CONFIGURAR MENU
+// ==========================================
 function configurarMenu() {
 
     document.getElementById("btnHome").onclick = abrirInicio;
@@ -61,6 +69,10 @@ function configurarMenu() {
     document.getElementById("btnSair").onclick = sair;
 
 }
+// ==========================================
+// PASSO SEGURO
+// CONFIGURAR INICIO
+// ==========================================
 function abrirInicio() {
 
     document.getElementById("conteudo").innerHTML = `
