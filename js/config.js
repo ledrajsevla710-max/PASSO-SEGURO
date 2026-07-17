@@ -5,7 +5,7 @@
 
 
 const API_URL =
-"https://script.google.com/macros/s/AKfycbzOoHiXCW1xl0ivYwRezjj8Hqz0V9cZ5T6Tn1j_wg2ZlPSgE7RioXnzuHdVpjcX7NDE/exec";
+"https://script.google.com/macros/s/AKfycbx0-Rz5C8Jk-xwHHt2QMXMbXPVk2qBWdIMrKoAmBnncUtfX6o8GftRzhuS3v0ojJRtn/exec";
 
 
 const APP_NOME = "Passo Seguro";
