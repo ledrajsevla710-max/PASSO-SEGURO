@@ -182,11 +182,27 @@ function abrirPerfil() {
 
         const resposta = await atualizarPerfil(usuario);
 
-        if (resposta.sucesso) {
+      if (resposta.sucesso) {
 
-            alert("Perfil atualizado com sucesso!");
 
-        } else {
+    localStorage.setItem(
+
+        "usuario",
+
+        JSON.stringify(usuario)
+
+    );
+
+
+    alert(
+        "Perfil atualizado com sucesso!"
+    );
+
+
+    carregarUsuario();
+
+
+}  else {
 
             alert(resposta.mensagem);
 
