@@ -107,7 +107,92 @@ function abrirInicio() {
 
 function abrirPerfil() {
 
-    // Próxima etapa
+    document.getElementById("conteudo").innerHTML = `
+
+        <h2>👤 Perfil do Paciente</h2>
+
+        <div class="card">
+
+            <label>Nome</label>
+            <input
+                type="text"
+                id="perfilNome"
+                value="${usuario.nome || ""}">
+
+            <label>E-mail</label>
+            <input
+                type="email"
+                id="perfilEmail"
+                value="${usuario.email || ""}"
+                readonly>
+
+            <label>Telefone</label>
+            <input
+                type="text"
+                id="perfilTelefone"
+                value="${usuario.telefone || ""}">
+
+            <label>Data de Nascimento</label>
+            <input
+                type="date"
+                id="perfilNascimento"
+                value="${usuario.nascimento || ""}">
+
+            <label>Cidade</label>
+            <input
+                type="text"
+                id="perfilCidade"
+                value="${usuario.cidade || ""}">
+
+            <label>Estado</label>
+
+            <select id="perfilUf">
+
+                <option value="PI">PI</option>
+                <option value="MA">MA</option>
+                <option value="CE">CE</option>
+                <option value="BA">BA</option>
+                <option value="PE">PE</option>
+
+            </select>
+
+            <br><br>
+
+            <button id="salvarPerfil">
+                Salvar Perfil
+            </button>
+
+        </div>
+
+    `;
+
+    document.getElementById("perfilUf").value = usuario.uf || "PI";
+
+    document.getElementById("salvarPerfil").onclick = async function () {
+
+        usuario.nome = document.getElementById("perfilNome").value;
+
+        usuario.telefone = document.getElementById("perfilTelefone").value;
+
+        usuario.nascimento = document.getElementById("perfilNascimento").value;
+
+        usuario.cidade = document.getElementById("perfilCidade").value;
+
+        usuario.uf = document.getElementById("perfilUf").value;
+
+        const resposta = await atualizarPerfil(usuario);
+
+        if (resposta.sucesso) {
+
+            alert("Perfil atualizado com sucesso!");
+
+        } else {
+
+            alert(resposta.mensagem);
+
+        }
+
+    };
 
 }
 
