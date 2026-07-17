@@ -6,7 +6,15 @@
 
 
 // ==========================================
-// Enviar dados para a API
+// CONFIGURAÇÃO DA API
+// ==========================================
+
+const API_URL = "COLE_AQUI_SUA_URL_DO_APPS_SCRIPT";
+
+
+// ==========================================
+// PASSO SEGURO
+// ENVIAR DADOS PARA API
 // ==========================================
 
 async function enviar(dados) {
@@ -18,26 +26,36 @@ async function enviar(dados) {
             method: "POST",
 
             headers: {
+
                 "Content-Type": "application/json"
+
             },
 
             body: JSON.stringify(dados)
 
         });
 
+
         return await resposta.json();
+
 
     } catch (erro) {
 
-        console.error("Erro na API:", erro);
+
+        console.error(
+            "Erro na API:",
+            erro
+        );
+
 
         return {
 
-            sucesso: false,
+            sucesso:false,
 
-            mensagem: "Erro de conexão com o servidor."
+            mensagem:"Erro de conexão com o servidor."
 
         };
+
 
     }
 
@@ -45,87 +63,102 @@ async function enviar(dados) {
 
 
 // ==========================================
+// PASSO SEGURO
 // LOGIN
 // ==========================================
 
 async function login(email, senha) {
 
+
     return await enviar({
 
-        acao: "login",
+        acao:"login",
 
-        email: email,
+        email:email,
 
-        senha: senha
+        senha:senha
 
     });
+
 
 }
 
 
 // ==========================================
-// CADASTRO
+// PASSO SEGURO
+// CADASTRO DE USUÁRIO
 // ==========================================
 
 async function cadastrar(usuario) {
 
+
     return await enviar({
 
-        acao: "cadastro",
+        acao:"cadastro",
 
-        usuario: usuario
+        usuario:usuario
 
     });
+
 
 }
 
 
 // ==========================================
+// PASSO SEGURO
 // ATUALIZAR PERFIL
 // ==========================================
 
 async function atualizarPerfil(usuario) {
 
+
     return await enviar({
 
-        acao: "perfil",
+        acao:"perfil",
 
-        usuario: usuario
+        usuario:usuario
 
     });
+
 
 }
 
 
 // ==========================================
+// PASSO SEGURO
 // SALVAR AVALIAÇÃO
 // ==========================================
 
 async function salvarAvaliacao(avaliacao) {
 
+
     return await enviar({
 
-        acao: "avaliacao",
+        acao:"avaliacao",
 
-        avaliacao: avaliacao
+        avaliacao:avaliacao
 
     });
+
 
 }
 
 
 // ==========================================
+// PASSO SEGURO
 // BUSCAR HISTÓRICO
 // ==========================================
 
 async function carregarHistorico(email) {
 
+
     return await enviar({
 
-        acao: "historico",
+        acao:"historico",
 
-        email: email
+        email:email
 
     });
+
 
 }
