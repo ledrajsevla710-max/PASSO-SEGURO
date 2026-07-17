@@ -8,67 +8,43 @@
 
 // ==========================================
 // PASSO SEGURO
-// ENVIAR DADOS PARA API
+// ENVIO DE DADOS PARA API
 // ==========================================
 
-async function enviar(dados) {
+async function enviar(dados){
 
-
-    try {
-
+    try{
 
         const resposta = await fetch(API_URL, {
 
-    method:"POST",
+            method:"POST",
 
-    headers:{
+            headers:{
+                "Content-Type":"text/plain"
+            },
 
-        "Content-Type":"text/plain"
+            body: JSON.stringify(dados)
 
-    },
-
-    body:JSON.stringify(dados)
-
-});
+        });
 
 
+        const resultado = await resposta.json();
 
-        return await resposta.json();
-
-
-
-    } catch(erro){
+        return resultado;
 
 
+    }catch(erro){
 
-        console.error(
-            "Erro na API:",
-            erro
-        );
-
-
+        console.error("Erro ao comunicar com API:", erro);
 
         return {
-
-
             sucesso:false,
-
-
-            mensagem:"Erro de conexão com o servidor."
-
-
+            mensagem:"Erro de comunicação com servidor."
         };
-
-
 
     }
 
-
-
 }
-
-
-
 // ==========================================
 // PASSO SEGURO
 // LOGIN
