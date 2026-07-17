@@ -19,24 +19,17 @@ async function enviar(dados) {
 
         const resposta = await fetch(API_URL, {
 
+    method:"POST",
 
-            method:"POST",
+    headers:{
 
+        "Content-Type":"text/plain"
 
-            headers:{
+    },
 
+    body:JSON.stringify(dados)
 
-                "Content-Type":"application/json"
-
-
-            },
-
-
-            body:JSON.stringify(dados)
-
-
-
-        });
+});
 
 
 
