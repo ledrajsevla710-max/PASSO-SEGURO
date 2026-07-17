@@ -414,9 +414,13 @@ function abrirHistorico() {
 
 function sair() {
 
-    localStorage.removeItem("usuario");
+    if (confirm("Deseja realmente sair do sistema?")) {
 
-    window.location.href = "login.html";
+        localStorage.clear();
+
+        window.location.href = "login.html";
+
+    }
 
 }
 
