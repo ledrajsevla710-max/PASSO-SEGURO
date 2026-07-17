@@ -501,3 +501,15 @@ function formatarData(data) {
     return dataFormatada.toLocaleDateString("pt-BR");
 
 }
+
+function respostaJSON(dados){
+
+    return HtmlService
+    .createHtmlOutput(
+        JSON.stringify(dados)
+    )
+    .setXFrameOptionsMode(
+        HtmlService.XFrameOptionsMode.ALLOWALL
+    );
+
+}
