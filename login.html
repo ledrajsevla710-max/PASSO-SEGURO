@@ -1,30 +1,59 @@
-async function login() {
-    let email = document.getElementById("email").value;
-    let senha = document.getElementById("senha").value;
+<!DOCTYPE html>
+<html lang="pt-BR">
 
-    if(email === "" || senha === ""){
-        alert("Preencha todos os campos");
-        return; // Corrigido de 'retornar' para 'return'
-    }
+<head>
 
-    // Agora o await funciona porque a função é async
-    const resposta = await window.enviar({ 
-        acao: "login", 
-        email: email, 
-        senha: senha 
-    });
+    <meta charset="UTF-8">
 
-    if (resposta.sucesso) {
-        // Salvando os dados no localStorage
-        localStorage.setItem("nome", resposta.usuario.nome);
-        localStorage.setItem("email", resposta.usuario.email);
-        localStorage.setItem("telefone", resposta.usuario.telefone);
-        localStorage.setItem("nascimento", resposta.usuario.nascimento);
-        localStorage.setItem("cidade", resposta.usuario.cidade);
-        localStorage.setItem("uf", resposta.usuario.uf);
-        
-        window.location.href = "dashboard.html";
-    } else {
-        alert(resposta.mensagem);
-    }
-}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Passo Seguro - Login</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="card">
+
+            <h1>👣 Passo Seguro</h1>
+
+            <h2>Entrar</h2>
+
+            <input
+                type="email"
+                id="email"
+                placeholder="E-mail">
+
+            <input
+                type="password"
+                id="senha"
+                placeholder="Senha">
+
+            <button id="btnLogin">
+                Entrar
+            </button>
+
+            <hr>
+
+            <p>Não possui cadastro?</p>
+
+            <button
+                onclick="window.location.href='index.html'">
+                Criar Conta
+            </button>
+
+        </div>
+
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/login.js"></script>
+
+</body>
+
+</html>
