@@ -330,7 +330,79 @@ function abrirAvaliacao() {
 
 function abrirHistorico() {
 
-    // Próxima etapa
+    document.getElementById("conteudo").innerHTML = `
+
+        <h2>📊 Histórico de Avaliações</h2>
+
+        <p>Carregando histórico...</p>
+
+    `;
+
+    carregarHistorico(usuario.email)
+
+    .then(function(resposta){
+
+        if(!resposta.sucesso){
+
+            document.getElementById("conteudo").innerHTML = `
+
+                <h2>📊 Histórico de Avaliações</h2>
+
+                <p>${resposta.mensagem}</p>
+
+            `;
+
+            return;
+
+        }
+
+        let html = `
+
+            <h2>📊 Histórico de Avaliações</h2>
+
+        `;
+
+        if(resposta.avaliacoes.length === 0){
+
+            html += `
+
+                <p>Nenhuma avaliação encontrada.</p>
+
+            `;
+
+        }else{
+
+            resposta.avaliacoes.forEach(function(item, indice){
+
+                html += `
+
+                    <div class="card">
+
+                        <h3>Avaliação ${indice + 1}</h3>
+
+                        <p><b>Data:</b> ${item.data}</p>
+
+                        <p><b>Calosidade:</b> ${item.calosidade}</p>
+
+                        <p><b>Úlcera:</b> ${item.ulcera}</p>
+
+                        <p><b>Amputação:</b> ${item.amputacao}</p>
+
+                        <p><b>Local:</b> ${item.localAmputacao}</p>
+
+                        <p><b>Risco:</b> ${item.risco}</p>
+
+                    </div>
+
+                `;
+
+            });
+
+        }
+
+        document.getElementById("conteudo").innerHTML = html;
+
+    });
 
 }
 
