@@ -5,9 +5,23 @@
 
 document.addEventListener("DOMContentLoaded", iniciarSistema);
 
+let usuario = null;
+
 function iniciarSistema() {
 
-    carregarUsuario();
+    usuario = JSON.parse(
+        localStorage.getItem("usuario")
+    );
+
+    if (!usuario) {
+
+        window.location.href = "login.html";
+        return;
+
+    }
+
+    document.getElementById("nomeUsuario").innerHTML =
+        "Olá, " + usuario.nome;
 
     configurarMenu();
 
