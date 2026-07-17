@@ -1,1 +1,131 @@
+// ==========================================
+// PASSO SEGURO
+// API
+// Comunicação com Google Apps Script
+// ==========================================
 
+
+// ==========================================
+// Enviar dados para a API
+// ==========================================
+
+async function enviar(dados) {
+
+    try {
+
+        const resposta = await fetch(API_URL, {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(dados)
+
+        });
+
+        return await resposta.json();
+
+    } catch (erro) {
+
+        console.error("Erro na API:", erro);
+
+        return {
+
+            sucesso: false,
+
+            mensagem: "Erro de conexão com o servidor."
+
+        };
+
+    }
+
+}
+
+
+// ==========================================
+// LOGIN
+// ==========================================
+
+async function login(email, senha) {
+
+    return await enviar({
+
+        acao: "login",
+
+        email: email,
+
+        senha: senha
+
+    });
+
+}
+
+
+// ==========================================
+// CADASTRO
+// ==========================================
+
+async function cadastrar(usuario) {
+
+    return await enviar({
+
+        acao: "cadastro",
+
+        usuario: usuario
+
+    });
+
+}
+
+
+// ==========================================
+// ATUALIZAR PERFIL
+// ==========================================
+
+async function atualizarPerfil(usuario) {
+
+    return await enviar({
+
+        acao: "perfil",
+
+        usuario: usuario
+
+    });
+
+}
+
+
+// ==========================================
+// SALVAR AVALIAÇÃO
+// ==========================================
+
+async function salvarAvaliacao(avaliacao) {
+
+    return await enviar({
+
+        acao: "avaliacao",
+
+        avaliacao: avaliacao
+
+    });
+
+}
+
+
+// ==========================================
+// BUSCAR HISTÓRICO
+// ==========================================
+
+async function carregarHistorico(email) {
+
+    return await enviar({
+
+        acao: "historico",
+
+        email: email
+
+    });
+
+}
