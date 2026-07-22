@@ -136,7 +136,7 @@ function abrirPerfil() {
             <input
                 type="date"
                 id="perfilNascimento"
-                value="${usuario.nascimento || ""}">
+                value="${usuario.nascimento ? usuario.nascimento.substring(0,10) : ""}"
 
             <label>Cidade</label>
             <input
