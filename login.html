@@ -124,6 +124,7 @@
             text-align: center;
             margin-top: 18px;
             font-size: 13px;
+            color: #475569;
         }
 
         .modo-toggle a {
@@ -242,13 +243,21 @@
         }
 
         function atualizarTextoAlternancia() {
+            const textoAlternanciaDiv = document.getElementById('texto-alternancia');
             if (modoAtual === 'cadastro') {
-                linkAlternar.textContent = 'Já possui conta? Faça login';
-                document.querySelector('.modo-toggle').firstChild.textContent = 'Já tem cadastro? ';
+                textoAlternanciaDiv.innerHTML = 'Já tem cadastro? <a href="#" id="link-alternar-modo" onclick="alternarModoManual(event)">Faça login</a>';
             } else {
-                linkAlternar.textContent = `Cadastre-se como ${perfilAtual === 'paciente' ? 'Paciente' : 'Profissional'}`;
-                document.querySelector('.modo-toggle').firstChild.textContent = 'Não tem cadastro? ';
+                let nomePerfil = perfilAtual === 'paciente' ? 'Paciente' : 'Profissional';
+                textoAlternanciaDiv.innerHTML = `Não tem cadastro? <a href="#" id="link-alternar-modo" onclick="alternarModoManual(event)">Cadastre-se como ${nomePerfil}</a>`;
             }
+        }
+
+        function alternarModoManual(e) {
+            e.preventDefault();
+            modoAtual = (modoAtual === 'login') ? 'cadastro' : 'login';
+            document.getElementById('btn-submit').textContent = (modoAtual === 'cadastro') ? 'Cadastrar' : 'Entrar';
+            atualizarVisibilidadeCampos();
+            atualizarTextoAlternancia();
         }
 
         // Lógica Principal de Autenticação e Cadastro com o Supabase
