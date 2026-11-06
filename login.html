@@ -6,80 +6,79 @@
     <title>Passo Seguro - Autenticação</title>
     <link rel="stylesheet" href="css/style.css">
     
-    <!-- 1º: Biblioteca Oficial do Supabase (Carregada obrigatoriamente primeiro) -->
+    <!-- 1º: Biblioteca Oficial do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- 2º: Arquivo de Configuração e Chaves -->
+    <!-- 2º: Configurações de Conexão -->
     <script src="js/config.js"></script>
 
-    <!-- 3º: Lógica do Formulário (defer garante o carregamento após o HTML) -->
+    <!-- 3º: Lógica do Formulário -->
     <script src="js/login.js" defer></script>
 </head>
-<body>
-    <header class="header-app">
+<body style="background-color: #f4f6f9; font-family: Arial, sans-serif;">
+    <header class="header-app" style="background-color: #003366; color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;">
         <div class="logo-container">
-            <h1>Passo Seguro</h1>
-            <p>Acesso ao Sistema de Autocuidado</p>
+            <h1 style="margin: 0; font-size: 20px;">Passo Seguro</h1>
+            <p style="margin: 0; font-size: 12px; opacity: 0.8;">Secretaria de Estado da Saúde - Piauí</p>
         </div>
         <nav class="nav-links">
-            <a href="index.html" class="btn-secundario">Voltar ao Início</a>
+            <a href="index.html" class="btn-secundario" style="background: #fff; color: #003366; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 13px; font-weight: bold;">Voltar ao Início</a>
         </nav>
     </header>
 
-    <main class="dashboard-container" style="max-width: 450px; margin: 40px auto;">
+    <main class="dashboard-container" style="max-width: 450px; margin: 40px auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
         <section class="card-modulo">
             <!-- ABAS DE NAVEGAÇÃO ENTRE LOGIN E CADASTRO -->
             <div style="display: flex; border-bottom: 2px solid #ddd; margin-bottom: 20px;">
-                <button id="tab-login" type="button" style="flex: 1; padding: 12px; border: none; background: none; font-weight: bold; border-bottom: 3px solid #007bff; color: #007bff; cursor: pointer;">Entrar</button>
-                <button id="tab-cadastro" type="button" style="flex: 1; padding: 12px; border: none; background: none; font-weight: bold; color: #666; cursor: pointer;">Cadastrar</button>
+                <button id="tab-login" type="button" style="flex: 1; padding: 12px; border: none; background: none; font-weight: bold; border-bottom: 3px solid #003366; color: #003366; cursor: pointer; font-size: 14px;">Entrar</button>
+                <button id="tab-cadastro" type="button" style="flex: 1; padding: 12px; border: none; background: none; font-weight: bold; color: #666; cursor: pointer; font-size: 14px;">Cadastrar</button>
             </div>
 
             <!-- FORMULÁRIO DE LOGIN -->
             <form id="form-login">
-                <div class="form-group">
-                    <label for="email-login">E-mail:</label>
-                    <input type="email" id="email-login" class="form-control" placeholder="seu@email.com" required>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label for="email-login" style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 13px;">E-mail:</label>
+                    <input type="email" id="email-login" class="form-control" placeholder="seu@email.com" required style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
                 </div>
-                <div class="form-group" style="margin-top: 15px;">
-                    <label for="senha-login">Senha:</label>
-                    <input type="password" id="senha-login" class="form-control" placeholder="********" required>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label for="senha-login" style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 13px;">Senha:</label>
+                    <input type="password" id="senha-login" class="form-control" placeholder="********" required style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
                 </div>
-                <button type="submit" class="btn-primario" style="width: 100%; margin-top: 20px; padding: 12px;">Entrar no Sistema</button>
+                <button type="submit" class="btn-primario" style="width: 100%; background-color: #003366; color: #fff; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer;">Entrar no Sistema</button>
             </form>
 
             <!-- FORMULÁRIO DE CADASTRO -->
             <form id="form-cadastro" style="display: none;">
-                <div class="form-group">
-                    <label for="nome-cadastro">Nome Completo:</label>
-                    <input type="text" id="nome-cadastro" class="form-control" placeholder="Digite seu nome completo" required>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label for="nome-cadastro" style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 13px;">Nome Completo:</label>
+                    <input type="text" id="nome-cadastro" class="form-control" placeholder="Digite seu nome completo" required style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
                 </div>
-                <div class="form-group" style="margin-top: 15px;">
-                    <label for="email-cadastro">E-mail:</label>
-                    <input type="email" id="email-cadastro" class="form-control" placeholder="seu@email.com" required>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label for="email-cadastro" style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 13px;">E-mail:</label>
+                    <input type="email" id="email-cadastro" class="form-control" placeholder="seu@email.com" required style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
                 </div>
-                <div class="form-group" style="margin-top: 15px;">
-                    <label for="senha-cadastro">Senha:</label>
-                    <input type="password" id="senha-cadastro" class="form-control" placeholder="Crie uma senha" required>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label for="senha-cadastro" style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 13px;">Senha:</label>
+                    <input type="password" id="senha-cadastro" class="form-control" placeholder="Crie uma senha" required style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
                 </div>
-                <div class="form-group" style="margin-top: 15px;">
-                    <label for="tipo-usuario">Tipo de Perfil:</label>
-                    <select id="tipo-usuario" class="form-control" required>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label for="tipo-usuario" style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 13px;">Tipo de Perfil:</label>
+                    <select id="tipo-usuario" class="form-control" required style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
                         <option value="paciente">Pessoa com úlcera cicatrizada (Paciente)</option>
                         <option value="profissional">Profissional de Saúde (Enfermagem / Estomaterapia)</option>
                         <option value="cuidador">Cuidador Autorizado</option>
                     </select>
                 </div>
-                <button type="submit" class="btn-primario" style="width: 100%; margin-top: 20px; padding: 12px;">Criar Conta Segura</button>
+                <button type="submit" class="btn-primario" style="width: 100%; background-color: #003366; color: #fff; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer;">Criar Conta Segura</button>
             </form>
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2026 Passo Seguro - Projeto de Pesquisa Aplicado à Saúde. Todos os direitos reservados.</p>
+    <footer style="text-align: center; margin-top: 30px; font-size: 12px; color: #666;">
+        <p>&copy; 2026 Passo Seguro - Governo do Estado do Piauí / Saúde. Todos os direitos reservados.</p>
     </footer>
 
     <script>
-        // Alternância entre as abas de Login e Cadastro
         document.addEventListener("DOMContentLoaded", () => {
             const tabLogin = document.getElementById("tab-login");
             const tabCadastro = document.getElementById("tab-cadastro");
@@ -90,8 +89,8 @@
                 tabLogin.addEventListener("click", () => {
                     formLogin.style.display = "block";
                     formCadastro.style.display = "none";
-                    tabLogin.style.borderBottom = "3px solid #007bff";
-                    tabLogin.style.color = "#007bff";
+                    tabLogin.style.borderBottom = "3px solid #003366";
+                    tabLogin.style.color = "#003366";
                     tabCadastro.style.borderBottom = "none";
                     tabCadastro.style.color = "#666";
                 });
@@ -99,8 +98,8 @@
                 tabCadastro.addEventListener("click", () => {
                     formLogin.style.display = "none";
                     formCadastro.style.display = "block";
-                    tabCadastro.style.borderBottom = "3px solid #007bff";
-                    tabCadastro.style.color = "#007bff";
+                    tabCadastro.style.borderBottom = "3px solid #003366";
+                    tabCadastro.style.color = "#003366";
                     tabLogin.style.borderBottom = "none";
                     tabLogin.style.color = "#666";
                 });
