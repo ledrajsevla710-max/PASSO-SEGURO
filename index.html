@@ -6,63 +6,43 @@
     <title>Passo Seguro - Autocuidado e Prevenção no Pé Diabético</title>
     <link rel="stylesheet" href="css/style.css">
     
-    <!-- Biblioteca Oficial do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
 </head>
-<body>
-    <header class="header-app">
+<body style="background-color: #f4f6f9; font-family: Arial, sans-serif; margin: 0;">
+    <header class="header-app" style="background-color: #003366; color: #fff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center;">
         <div class="logo-container">
-            <h1>Passo Seguro</h1>
-            <p>Apoio ao Autocuidado na Fase de Remissão do Pé Diabético</p>
+            <h1 style="margin: 0; font-size: 22px;">Passo Seguro</h1>
+            <p style="margin: 0; font-size: 12px; opacity: 0.8;">Secretaria de Estado da Saúde - Piauí</p>
         </div>
         <nav class="nav-links">
-            <a href="login.html" class="btn-primario">Acessar Conta</a>
+            <a href="login.html" class="btn-primario" style="background-color: #ffffff; color: #003366; padding: 8px 16px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px;">Acessar Conta</a>
         </nav>
     </header>
 
-    <main class="dashboard-container">
-        <!-- APRESENTAÇÃO INSTITUCIONAL E ACADÊMICA -->
-        <section class="card-modulo" style="text-align: center; padding: 30px 20px;">
-            <h2>Bem-vindo ao Passo Seguro</h2>
-            <p style="font-size: 1.1em; line-height: 1.6; max-width: 800px; margin: 15px auto;">
-                Uma tecnologia digital desenvolvida para apoiar pessoas com diabetes que tiveram úlcera nos pés e estão com a lesão cicatrizada. O objetivo é promover a inspeção regular dos pés, a identificação precoce de alterações e a continuidade do acompanhamento com a equipe de saúde.
+    <main class="dashboard-container" style="max-width: 900px; margin: 30px auto; padding: 0 20px;">
+        <!-- APRESENTAÇÃO INSTITUCIONAL -->
+        <section class="card-modulo" style="background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center;">
+            <h2 style="color: #003366; margin-top: 0;">Bem-vindo ao Passo Seguro</h2>
+            <p style="font-size: 1.1em; line-height: 1.6; color: #333; max-width: 800px; margin: 15px auto;">
+                Tecnologia digital de apoio ao autocuidado para pessoas com diabetes que possuem histórico de úlcera nos pés e encontram-se em fase de remissão. Promovemos a inspeção regular e a continuidade do acompanhamento com a rede estadual de saúde.
             </p>
             <div style="margin-top: 25px;">
-                <a href="login.html" class="btn-primario" style="padding: 12px 25px; font-size: 1.1em;">Iniciar Acompanhamento</a>
+                <a href="login.html" class="btn-primario" style="background-color: #003366; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 1.1em; display: inline-block;">Iniciar Acompanhamento</a>
             </div>
         </section>
 
         <!-- AVISO DE SEGURANÇA CLÍNICA -->
         <section class="alerta-urgencia" style="background-color: #fff3cd; border-left: 6px solid #ffc107; padding: 15px; margin-top: 20px; border-radius: 4px;">
-            <h3 style="margin-top:0; color: #856404;">⚠️ Aviso Importante de Segurança Saúde</h3>
-            <p style="margin-bottom:0; color: #856404;">
-                O <strong>Passo Seguro</strong> é uma ferramenta complementar de autocuidado e <strong>não substitui consultas, diagnósticos ou avaliações clínicas presenciais</strong> com profissionais de saúde. Em caso de dor, pé quente, vermelho, inchado ou feridas novas, procure a sua unidade de saúde imediatamente.
+            <h3 style="margin-top:0; color: #856404; font-size: 16px;">⚠️ Aviso Importante de Saúde</h3>
+            <p style="margin-bottom:0; color: #856404; font-size: 14px;">
+                O <strong>Passo Seguro</strong> é uma ferramenta complementar e <strong>não substitui consultas ou avaliações clínicas presenciais</strong>. Em caso de dor, vermelhidão, inchaço ou calor excessivo nos pés, procure a unidade de saúde mais próxima imediatamente.
             </p>
-        </section>
-
-        <!-- RECURSOS DO APLICATIVO -->
-        <section class="card-modulo" style="margin-top: 20px;">
-            <h3>Recursos Principais</h3>
-            <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 15px;">
-                <div style="flex: 1; min-width: 240px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 6px;">
-                    <h4> Inspeção Guiada</h4>
-                    <p>Roteiro simples e ilustrado para verificação diária dos pés por parte do paciente ou cuidador.</p>
-                </div>
-                <div style="flex: 1; min-width: 240px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 6px;">
-                    <h4> Registro de Remissão</h4>
-                    <p>Acompanhamento longitudinal da data e localização da última lesão cicatrizada.</p>
-                </div>
-                <div style="flex: 1; min-width: 240px; padding: 15px; border: 1px solid #e0e0e0; border-radius: 6px;">
-                    <h4> Ficha para Estomaterapia</h4>
-                    <p>Geração automática de fichas clínicas padronizadas para acompanhamento pelo profissional de saúde.</p>
-                </div>
-            </div>
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2026 Passo Seguro - Projeto de Pesquisa Aplicado à Saúde. Todos os direitos reservados.</p>
+    <footer style="text-align: center; margin-top: 40px; padding: 20px; font-size: 12px; color: #666; background-color: #e9ecef;">
+        <p>&copy; 2026 Passo Seguro - Secretaria de Estado da Saúde do Piauí. Todos os direitos reservados.</p>
     </footer>
 </body>
 </html>
