@@ -141,3 +141,56 @@ async function salvarInspecaoPes() {
         console.error("Erro inspeção:", error);
     }
 }
+function exportarFichaPDF(dadosPaciente, listaInspecoes) {
+    // 1. Preenche os dados no modelo HTML
+    document.getElementById("pdf-nome-paciente").textContent = dadosPaciente.nome || "Paciente Registrado";
+    document.getElementById("pdf-data").textContent = new Date().toLocaleDateString("pt-BR");
+    document.getElementById("pdf-status").textContent = dadosPaciente.statusClinico || "Em Acompanhamento";
+    document.getElementById("pdf-amputacao").textContent = dadosPaciente.temAmputacao ? "Sim" : "Não";
+
+    // 2. Preenche o histórico de inspeções
+    const containerInspecoes = document.getElementById("pdf-conteudo-inspecoes");
+    if (listaInspecoes && listaInspecoes.length > 0) {
+        let html = `<table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+            <thead>
+                <tr style="background-color: #003366; color: white;">
+                    <th style="padding: 6px; border: 1px solid #ccc;">Data</th>
+                    <th style="padding: 6px; border: 1px solid #ccc;">Pé</th>
+                    <th style="padding: 6px; border: 1px solid #ccc;">Região</th>
+                    <th style="padding: 6px; border: 1px solid #ccc;">Alterações Identificadas</th>
+                </tr>
+            </thead><tbody>`;
+
+        listaInspecoes.forEach(item => {
+            html += `<tr>
+                <td style="padding: 6px; border: 1px solid #ccc;">${new Date(item.created_at).toLocaleDateString("pt-BR")}</td>
+                <td style="padding: 6px; border: 1px solid #ccc;">${item.pe_observado}</td>
+                <td style="padding: 6px; border: 1px solid #ccc;">${item.regiao_pe}</td>
+                <td style="padding: 6px; border: 1px solid #ccc;">${item.alteracoes ? item.alteracoes.join(", ") : "Nenhuma"}</td>
+            </tr>`;
+        });
+
+        html += `</tbody></table>`;
+        containerInspecoes.innerHTML = html;
+    } else {
+        containerInspecoes.innerHTML = "<p>Nenhuma inspeção registrada até o momento.</p>";
+    }
+
+    // 3. Exibe temporariamente para captura
+    const elemento = document.getElementById("modelo-ficha-pdf");
+    elemento.style.display = "block";
+
+    // 4. Configuração e Geração do PDF
+    const opcoes = {
+        margin:       10,
+        filename:     `Ficha_Clinica_Passo_Seguro_${dadosPaciente.nome || 'Paciente'}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opcoes).from(elemento).save().then(() => {
+        // Oculta novamente após a geração
+        elemento.style.display = "none";
+    });
+}
