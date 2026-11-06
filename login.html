@@ -151,15 +151,11 @@
         </div>
 
         <form id="form-auth">
-            <!-- Campos específicos para Paciente -->
+            <!-- Campos específicos para Paciente (apenas Nome Completo no cadastro) -->
             <div id="campos-paciente" class="hidden">
                 <div class="form-group">
                     <label for="nome-paciente">Nome Completo:</label>
                     <input type="text" id="nome-paciente" class="form-control" placeholder="Seu nome completo">
-                </div>
-                <div class="form-group">
-                    <label for="cartao-sus">Nº do Cartão SUS:</label>
-                    <input type="text" id="cartao-sus" class="form-control" placeholder="Ex: 123 4567 8901 2345">
                 </div>
             </div>
 
@@ -259,8 +255,6 @@
             const senha = document.getElementById("senha-input").value;
             
             const nomePaciente = document.getElementById("nome-paciente")?.value.trim() || '';
-            const cartaoSus = document.getElementById("cartao-sus")?.value.trim() || '';
-            
             const nomeProfissional = document.getElementById("nome-profissional")?.value.trim() || '';
             const corenProfissional = document.getElementById("coren-profissional")?.value.trim() || '';
 
@@ -270,8 +264,8 @@
                         alert("Por favor, preencha o Nome Completo e o COREN.");
                         return;
                     }
-                    if (perfilAtual === 'paciente' && (!nomePaciente || !cartaoSus)) {
-                        alert("Por favor, preencha o Nome Completo e o Cartão SUS.");
+                    if (perfilAtual === 'paciente' && !nomePaciente) {
+                        alert("Por favor, preencha o Nome Completo.");
                         return;
                     }
 
@@ -288,15 +282,15 @@
                                 tipo: perfilAtual,
                                 nome_completo: isProfissional ? nomeProfissional : nomePaciente,
                                 coren: isProfissional ? corenProfissional : null,
-                                cartao_sus: !isProfissional ? cartaoSus : null,
-                                aprovado: !isProfissional // Profissionais aguardam aprovação inicial
+                                cartao_sus: null, // Cartão SUS será preenchido dentro do dashboard do paciente
+                                aprovado: !isProfissional // Profissionais nascem false para moderação
                             }
                         ]);
                         if (dbError) throw dbError;
                     }
 
                     if (perfilAtual === 'profissional') {
-                        alert("Cadastro realizado! Sua conta de profissional está pendente de moderação.");
+                        alert("Cadastro realizado! Sua conta de profissional aguarda aprovação.");
                     } else {
                         alert("Cadastro realizado com sucesso!");
                         window.location.href = "dashboard.html";
@@ -325,7 +319,7 @@
 
                     if (perfilData.tipo === 'profissional') {
                         if (!perfilData.aprovado) {
-                            alert("Acesso restrito: Sua conta profissional ainda aguarda aprovação.");
+                            alert("Acesso restrito: Sua conta profissional ainda não foi aprovada.");
                             await window.supabase.auth.signOut();
                             return;
                         }
