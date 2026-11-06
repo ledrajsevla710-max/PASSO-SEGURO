@@ -1,15 +1,17 @@
 // js/api.js
-// Camada de Serviços para Consulta de Dados no Supabase
+// Camada de Serviços para Consulta de Dados no Supabase (Passo Seguro SESAPI/HGV)
 
 const ApiService = {
-    // Busca o histórico de inspeções do paciente logado
+    // Busca o histórico de inspeções diárias do paciente logado
     async obterHistoricoInspecoes(pacienteId) {
         try {
-            const { data, error } = await supabaseClient
-                .from('inspecoes_pes')
+            if (typeof window.supabase === 'undefined') throw new Error("Supabase não inicializado.");
+
+            const { data, error } = await window.supabase
+                .from('inspecoes_diarias')
                 .select('*')
-                .eq('paciente_id', pacienteId)
-                .order('data_inspecao', { ascending: false });
+                .eq('user_id', pacienteId)
+                .order('created_at', { ascending: false });
 
             if (error) throw error;
             return data || [];
@@ -19,21 +21,21 @@ const ApiService = {
         }
     },
 
-    // Busca os dados clínicos de remissão do paciente
-    async obterHistoricoRemissao(pacienteId) {
+    // Busca os dados clínicos, Cartão SUS e situação de remissão do paciente
+    async obterPerfilPaciente(pacienteId) {
         try {
-            const { data, error } = await supabaseClient
-                .from('historico_pacientes')
+            if (typeof window.supabase === 'undefined') throw new Error("Supabase não inicializado.");
+
+            const { data, error } = await window.supabase
+                .from('perfis_usuarios')
                 .select('*')
-                .eq('paciente_id', pacienteId)
-                .order('created_at', { ascending: false })
-                .limit(1)
+                .eq('id', pacienteId)
                 .single();
 
             if (error && error.code !== 'PGRST116') throw error;
             return data || null;
         } catch (error) {
-            console.error("Erro ao carregar histórico de remissão:", error.message);
+            console.error("Erro ao carregar perfil do paciente:", error.message);
             return null;
         }
     }
