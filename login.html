@@ -1,118 +1,101 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Passo Seguro - Login</title>
-
+    <title>Passo Seguro - Autenticação</title>
     <link rel="stylesheet" href="css/style.css">
-
+    
+    <!-- Biblioteca Oficial do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/login.js" defer></script>
 </head>
-
-
 <body>
+    <header class="header-app">
+        <div class="logo-container">
+            <h1>Passo Seguro</h1>
+            <p>Acesso ao Sistema</p>
+        </div>
+        <nav class="nav-links">
+            <a href="index.html" class="btn-secundario">Voltar ao Início</a>
+        </nav>
+    </header>
 
+    <main class="dashboard-container" style="max-width: 450px; margin: 40px auto;">
+        <section class="card-modulo">
+            <!-- ABAS DE NAVEGAÇÃO -->
+            <div style="display: flex; border-bottom: 2px solid #ddd; margin-bottom: 20px;">
+                <button id="tab-login" style="flex: 1; padding: 10px; border: none; background: none; font-weight: bold; border-bottom: 3px solid #007bff; cursor: pointer;">Entrar</button>
+                <button id="tab-cadastro" style="flex: 1; padding: 10px; border: none; background: none; font-weight: bold; color: #666; cursor: pointer;">Cadastrar</button>
+            </div>
 
-<div class="container">
+            <!-- FORMULÁRIO DE LOGIN -->
+            <form id="form-login">
+                <div class="form-group">
+                    <label for="email-login">E-mail:</label>
+                    <input type="email" id="email-login" class="form-control" placeholder="seu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="senha-login">Senha:</label>
+                    <input type="password" id="senha-login" class="form-control" placeholder="********" required>
+                </div>
+                <button type="submit" class="btn-primario" style="width: 100%; margin-top: 10px;">Entrar no Sistema</button>
+            </form>
 
+            <!-- FORMULÁRIO DE CADASTRO -->
+            <form id="form-cadastro" style="display: none;">
+                <div class="form-group">
+                    <label for="nome-cadastro">Nome Completo:</label>
+                    <input type="text" id="nome-cadastro" class="form-control" placeholder="Digite seu nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="email-cadastro">E-mail:</label>
+                    <input type="email" id="email-cadastro" class="form-control" placeholder="seu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="senha-cadastro">Senha:</label>
+                    <input type="password" id="senha-cadastro" class="form-control" placeholder="Crie uma senha forte" required>
+                </div>
+                <div class="form-group">
+                    <label for="tipo-usuario">Tipo de Perfil:</label>
+                    <select id="tipo-usuario" class="form-control" required>
+                        <option value="paciente">Pessoa com úlcera cicatrizada (Paciente)</option>
+                        <option value="profissional">Profissional de Saúde (Enfermagem / Estomaterapia)</option>
+                        <option value="cuidador">Cuidador Autorizado</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primario" style="width: 100%; margin-top: 10px;">Criar Conta Segura</button>
+            </form>
+        </section>
+    </main>
 
-    <div class="card">
+    <script>
+        // Alternância simples entre as abas de Login e Cadastro
+        document.addEventListener("DOMContentLoaded", () => {
+            const tabLogin = document.getElementById("tab-login");
+            const tabCadastro = document.getElementById("tab-cadastro");
+            const formLogin = document.getElementById("form-login");
+            const formCadastro = document.getElementById("form-cadastro");
 
+            tabLogin.addEventListener("click", () => {
+                formLogin.style.display = "block";
+                formCadastro.style.display = "none";
+                tabLogin.style.borderBottom = "3px solid #007bff";
+                tabLogin.style.color = "#000";
+                tabCadastro.style.borderBottom = "none";
+                tabCadastro.style.color = "#666";
+            });
 
-        <h1>👣 Passo Seguro</h1>
-
-
-        <h2>Entrar</h2>
-
-
-
-        <!-- ==========================
-             LOGIN
-        =========================== -->
-
-
-        <input
-            type="email"
-            id="email"
-            placeholder="E-mail">
-
-
-
-        <input
-            type="password"
-            id="senha"
-            placeholder="Senha">
-
-
-
-        <button id="btnLogin">
-
-            Entrar
-
-        </button>
-
-
-
-        <!-- ==========================
-             RECUPERAÇÃO DE SENHA
-        =========================== -->
-
-
-        <button id="btnRecuperar">
-
-            Esqueci minha senha
-
-        </button>
-
-
-
-        <hr>
-
-
-
-        <!-- ==========================
-             CADASTRO
-        =========================== -->
-
-
-        <p>
-            Não possui cadastro?
-        </p>
-
-
-
-        <button
-        onclick="window.location.href='index.html'">
-
-            Criar Conta
-
-        </button>
-
-
-
-    </div>
-
-
-</div>
-
-
-
-<!-- ==========================
-     SCRIPTS
-=========================== -->
-
-
-<script src="js/config.js"></script>
-
-<script src="js/api.js"></script>
-
-<script src="js/login.js"></script>
-
-
+            tabCadastro.addEventListener("click", () => {
+                formLogin.style.display = "none";
+                formCadastro.style.display = "block";
+                tabCadastro.style.borderBottom = "3px solid #007bff";
+                tabCadastro.style.color = "#000";
+                tabLogin.style.borderBottom = "none";
+                tabLogin.style.color = "#666";
+            });
+        });
+    </script>
 </body>
-
 </html>
