@@ -32,7 +32,38 @@
             </p>
         </section>
 
-        <!-- REGISTRO DE HISTÓRICO CLÍNICO (PREVENÇÃO / TRATAMENTO / REMISSÃO) -->
+        <!-- MÓDULO DA SANDRINHA (ASSISTENTE VIRTUAL DE SAÚDE) -->
+        <section class="card-modulo" style="border-left: 5px solid #003366; background: #f8fbff;">
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px; border-bottom: 2px solid #e1ecf7; padding-bottom: 10px;">
+                <div style="background-color: #003366; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: font-weight: bold; font-size: 20px;">S</div>
+                <div>
+                    <h2 style="margin: 0; color: #003366; border: none; padding: 0;">Sandrinha - Orientadora de Saúde</h2>
+                    <p style="margin: 0; font-size: 12px; color: #555;">Sua companheira diária para orientações sobre o cuidado com os pés.</p>
+                </div>
+            </div>
+
+            <!-- Caixa de Diálogo da Sandrinha -->
+            <div id="sandrinha-chatbox" style="background: white; border: 1px solid #cce0ff; border-radius: 6px; padding: 15px; height: 160px; overflow-y: auto; margin-bottom: 15px; font-size: 14px; line-height: 1.5; color: #333;">
+                <p><strong>Sandrinha diz:</strong> Olá! Sou a Sandrinha, sua assistente virtual no <em>Passo Seguro</em>. Estou aqui para ajudar você a cuidar bem dos seus pés todos os dias. Como posso ajudar você agora?</p>
+            </div>
+
+            <!-- Botões de Perguntas Rápidas -->
+            <p style="font-size: 12px; font-weight: bold; color: #495057; margin-bottom: 8px;">Dúvidas frequentes (clique para perguntar):</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">
+                <button type="button" class="btn-secundario btn-pergunta" data-topico="sinais">Quais sinais devo me preocupar?</button>
+                <button type="button" class="btn-secundario btn-pergunta" data-topico="banho">Como devo lavar e secar os pés?</button>
+                <button type="button" class="btn-secundario btn-pergunta" data-topico="calcados">Qual o sapato ideal para mim?</button>
+                <button type="button" class="btn-secundario btn-pergunta" data-topico="hidratacao">Posso passar creme entre os dedos?</button>
+            </div>
+
+            <!-- Entrada de Texto Personalizada -->
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="input-duvida-sandrinha" class="form-control" placeholder="Digite sua dúvida sobre o cuidado com os pés..." style="flex: 1;">
+                <button type="button" id="btn-enviar-sandrinha" class="btn-primario" style="padding: 10px 20px;">Perguntar</button>
+            </div>
+        </section>
+
+        <!-- REGISTRO DE HISTÓRICO CLÍNICO -->
         <section class="card-modulo">
             <h2> Histórico e Situação Clínica dos Pés</h2>
             <form id="form-historico">
@@ -122,5 +153,76 @@
     <footer>
         <p>&copy; 2026 Passo Seguro - Secretaria de Estado da Saúde do Piauí. Todos os direitos reservados.</p>
     </footer>
+
+    <!-- SCRIPT DE INTELIGÊNCIA DA SANDRINHA -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const chatbox = document.getElementById("sandrinha-chatbox");
+            const inputDuvida = document.getElementById("input-duvida-sandrinha");
+            const btnEnviar = document.getElementById("btn-enviar-sandrinha");
+            const botoesPergunta = document.querySelectorAll(".btn-pergunta");
+
+            const respostasBase = {
+                "sinais": "⚠️ Fique atento a: vermelhidão intensa, inchaço, áreas quentes ao toque, bolhas, dor súbita ou feridas que não cicatrizam. Se notar isso, procure sua unidade de saúde!",
+                "banho": "🚿 Lave os pés com água morna (sempre teste a temperatura com a mão antes!) e sabão neutro. O mais importante: **seque muito bem**, especialmente entre os dedos para evitar frieiras e umidade.",
+                "calcados": "👟 Use sapatos macios, fechados, com solado grosso e sem costuras internas que possam machucar. Evite sandálias de dedo ou andar descalço, mesmo dentro de casa!",
+                "hidratacao": "🧴 Você pode hidratar o dorso e a sola dos pés para evitar rachaduras, **mas NUNCA passe creme entre os dedos**, pois o excesso de umidade ali pode abrir feridas."
+            };
+
+            function adicionarMensagem(autor, texto) {
+                const p = document.createElement("p");
+                p.style.margin = "8px 0";
+                p.innerHTML = `<strong>${autor}:</strong> ${texto}`;
+                chatbox.appendChild(p);
+                chatbox.scrollTop = chatbox.scrollHeight;
+            }
+
+            function responderSandrinha(perguntaTexto) {
+                adicionarMensagem("Você", perguntaTexto);
+                
+                // Simulação inteligente baseada em palavras-chave ou tópicos
+                let resposta = "Entendi sua dúvida. Lembre-se de que a inspeção diária e o acompanhamento na rede de saúde são essenciais. Se tiver feridas ativas, siga sempre as orientações do seu enfermeiro estomaterapeuta!";
+                
+                const textoLower = perguntaTexto.toLowerCase();
+                if (textoLower.includes("sinal") || textoLower.includes("preocupar") || textoLower.includes("vermelho") || textoLower.includes("inchado")) {
+                    resposta = respostasBase["sinais"];
+                } else if (textoLower.includes("banho") || textoLower.includes("lavar") || textoLower.includes("secar")) {
+                    resposta = respostasBase["banho"];
+                } else if (textoLower.includes("sapato") || textoLower.includes("calcado") || textoLower.includes("calçado")) {
+                    resposta = respostasBase["calcados"];
+                } else if (textoLower.includes("creme") || textoLower.includes("hidratar") || textoLower.includes("entre os dedos")) {
+                    resposta = respostasBase["hidratacao"];
+                }
+
+                setTimeout(() => {
+                    adicionarMensagem("Sandrinha", resposta);
+                }, 500);
+            }
+
+            // Clique nos botões rápidos
+            botoesPergunta.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const topico = btn.getAttribute("data-topico");
+                    responderSandrinha(btn.textContent);
+                });
+            });
+
+            // Enviar pelo botão de texto
+            btnEnviar.addEventListener("click", () => {
+                const texto = inputDuvida.value.trim();
+                if (texto) {
+                    responderSandrinha(texto);
+                    inputDuvida.value = "";
+                }
+            });
+
+            // Enviar com a tecla Enter
+            inputDuvida.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") {
+                    btnEnviar.click();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
