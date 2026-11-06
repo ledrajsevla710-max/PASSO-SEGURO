@@ -3,8 +3,8 @@
 
 document.addEventListener("DOMContentLoaded", async () => {
     // 1. Verificar se o usuário está autenticado de forma segura pelo Supabase
-    if (typeof supabaseClient !== 'undefined') {
-        const { data: { session }, error } = await supabaseClient.auth.getSession();
+    if (typeof window.supabase !== 'undefined') {
+        const { data: { session }, error } = await window.supabase.auth.getSession();
         
         if (error || !session) {
             alert("Sessão expirada ou acesso não autorizado. Faça login novamente.");
@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const user = session.user;
         carregarPerfilUsuario(user.id);
+        carregarHistoricoInspecoes(user.id);
     } else {
         console.error("Cliente Supabase não inicializado.");
     }
@@ -23,23 +24,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (btnSair) {
         btnSair.addEventListener("click", async (e) => {
             e.preventDefault();
-            if (typeof supabaseClient !== 'undefined') {
-                await supabaseClient.auth.signOut();
+            if (typeof window.supabase !== 'undefined') {
+                await window.supabase.auth.signOut();
             }
             window.location.href = "login.html";
         });
     }
 
-    // 3. Configurar o envio do Histórico de Remissão
-    const formHistorico = document.getElementById("form-historico-remissao");
+    // 3. Configurar o envio dos Dados Cadastrais e Situação Clínica (com Cartão SUS)
+    const formHistorico = document.getElementById("form-historico");
     if (formHistorico) {
         formHistorico.addEventListener("submit", async (e) => {
             e.preventDefault();
-            await salvarHistoricoRemissao();
+            await salvarDadosCadastrais();
         });
     }
 
-    // 4. Configurar o formulário de Inspeção dos Pés
+    // 4. Configurar o formulário de Inspeção Diária dos Pés
     const formInspecao = document.getElementById("form-inspecao");
     if (formInspecao) {
         formInspecao.addEventListener("submit", async (e) => {
@@ -47,13 +48,37 @@ document.addEventListener("DOMContentLoaded", async () => {
             await salvarInspecaoPes();
         });
     }
+
+    // 5. Configurar o botão de exportar PDF no modelo HGV / SESAPI
+    const btnExportarPdf = document.getElementById("btn-exportar-pdf");
+    if (btnExportarPdf) {
+        btnExportarPdf.addEventListener("click", async () => {
+            const { data: { session } } = await window.supabase.auth.getSession();
+            if (!session) return;
+
+            // Busca dados do perfil e inspeções para compor o PDF
+            const { data: perfil } = await window.supabase
+                .from('perfis_usuarios')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+
+            const { data: inspecoes } = await window.supabase
+                .from('inspecoes_diarias')
+                .select('*')
+                .eq('user_id', session.user.id)
+                .order('created_at', { ascending: false });
+
+            exportarFichaPDF(perfil || { nome_completo: "Paciente" }, inspecoes || []);
+        });
+    }
 });
 
-// Função para carregar o nome do perfil com segurança
+// Função para carregar o perfil do usuário
 async function carregarPerfilUsuario(userId) {
     try {
-        const { data, error } = await supabaseClient
-            .from('profiles')
+        const { data, error } = await window.supabase
+            .from('perfis_usuarios')
             .select('*')
             .eq('id', userId)
             .single();
@@ -61,9 +86,18 @@ async function carregarPerfilUsuario(userId) {
         if (error) throw error;
 
         if (data) {
-            const elementoNome = document.getElementById("nome-usuario-display");
+            const elementoNome = document.getElementById("nome-paciente-display");
             if (elementoNome) {
-                elementoNome.textContent = data.nome_completo;
+                elementoNome.textContent = data.nome_completo || data.email || "Paciente";
+            }
+
+            // Preenche os campos caso já estejam salvos
+            if (data.cartao_sus) document.getElementById("num-sus").value = data.cartao_sus;
+            if (data.status_clinico) document.getElementById("status-clinico").value = data.status_clinico;
+            if (data.data_ultima_lesao) document.getElementById("data-lesao").value = data.data_ultima_lesao;
+            if (data.localizacao_lesao) document.getElementById("localizacao-lesao").value = data.localizacao_lesao;
+            if (data.historico_amputacao !== undefined) {
+                document.getElementById("historico-amputacao").checked = data.historico_amputacao;
             }
         }
     } catch (error) {
@@ -71,126 +105,145 @@ async function carregarPerfilUsuario(userId) {
     }
 }
 
-// Função para salvar o Histórico da Úlcera Cicatrizada
-async function salvarHistoricoRemissao() {
+// Função para salvar dados cadastrais, situação clínica e Cartão SUS
+async function salvarDadosCadastrais() {
     try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
+        const { data: { session } } = await window.supabase.auth.getSession();
         if (!session) return;
 
-        const dataLesao = document.getElementById("data-ultima-lesao").value;
-        const localLesao = document.getElementById("local-ultima-lesao").value;
-        const amputacaoRadio = document.querySelector('input[name="amputacao"]:checked');
-        const antecedenteAmputacao = amputacaoRadio ? amputacaoRadio.value === 'sim' : false;
+        const numSus = document.getElementById("num-sus").value;
+        const statusClinico = document.getElementById("status-clinico").value;
+        const dataLesao = document.getElementById("data-lesao").value || null;
+        const localizacao = document.getElementById("localizacao-lesao").value;
+        const amputacao = document.getElementById("historico-amputacao").checked;
 
-        const { error } = await supabaseClient
-            .from('historico_pacientes')
-            .insert([
-                {
-                    paciente_id: session.user.id,
-                    data_ultima_lesao: dataLesao || null,
-                    localizacao_ultima_lesao: localLesao,
-                    antecedente_amputacao: antecedenteAmputacao
-                }
-            ]);
+        const { error } = await window.supabase
+            .from('perfis_usuarios')
+            .update({
+                cartao_sus: numSus,
+                status_clinico: statusClinico,
+                data_ultima_lesao: dataLesao,
+                localizacao_lesao: localizacao,
+                historico_amputacao: amputacao
+            })
+            .eq('id', session.user.id);
 
         if (error) throw error;
 
-        alert("Histórico de remissão salvo com sucesso!");
+        alert("Situação clínica e Cartão SUS salvos com sucesso!");
     } catch (error) {
-        alert("Erro ao salvar histórico: " + error.message);
-        console.error("Erro histórico:", error);
+        alert("Erro ao salvar dados cadastrais: " + error.message);
+        console.error("Erro:", error);
     }
 }
 
-// Função para registrar a inspeção dos pés no banco de dados
+// Função para registrar a inspeção diária dos pés
 async function salvarInspecaoPes() {
     try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
+        const { data: { session } } = await window.supabase.auth.getSession();
         if (!session) return;
 
-        const realizadoPor = document.getElementById("realizado-por").value;
         const peObservado = document.getElementById("pe-observado").value;
-        const regiao = document.getElementById("regiao-observada").value;
-        const procurouAtendimento = document.getElementById("procurou-atendimento").checked;
+        const regiaoPe = document.getElementById("regiao-pe").value;
 
         // Capturar alterações marcadas nas caixas de seleção
-        const alteracoesSelecionadas = [];
-        document.querySelectorAll('.chk-alteracao:checked').forEach(checkbox => {
-            alteracoesSelecionadas.push(checkbox.value);
-        });
+        const alteracoesChecked = document.querySelectorAll('input[name="alteracao"]:checked');
+        const alteracoes = Array.from(alteracoesChecked).map(cb => cb.value);
 
-        const { error } = await supabaseClient
-            .from('inspecoes_pes')
+        const { error } = await window.supabase
+            .from('inspecoes_diarias')
             .insert([
                 {
-                    paciente_id: session.user.id,
-                    realizado_por: realizadoPor,
+                    user_id: session.user.id,
                     pe_observado: peObservado,
-                    regiao: regiao,
-                    alteracoes_percebidas: alteracoesSelecionadas,
-                    procurou_atendimento: procurouAtendimento
+                    regiao_pe: regiaoPe,
+                    alteracoes: alteracoes
                 }
             ]);
 
         if (error) throw error;
 
-        alert("Inspeção registrada com sucesso!");
+        alert("Inspeção diária registrada com sucesso!");
         document.getElementById("form-inspecao").reset();
+        carregarHistoricoInspecoes(session.user.id);
     } catch (error) {
         alert("Erro ao salvar inspeção: " + error.message);
         console.error("Erro inspeção:", error);
     }
 }
+
+// Função para listar o histórico de inspeções na tela
+async function carregarHistoricoInspecoes(userId) {
+    try {
+        const container = document.getElementById("container-historico-inspecoes");
+        if (!container) return;
+
+        const { data, error } = await window.supabase
+            .from('inspecoes_diarias')
+            .select('*')
+            .eq('user_id', userId)
+            .order('created_at', { ascending: false })
+            .limit(10);
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+            let html = `<div style="display: flex; flex-direction: column; gap: 8px;">`;
+            data.forEach(item => {
+                const dataFormatada = new Date(item.created_at).toLocaleDateString("pt-BR", {
+                    day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                });
+                html += `
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 10px 14px; border-radius: 6px; font-size: 13px;">
+                        <strong>Data:</strong> ${dataFormatada} | <strong>Pé:</strong> ${item.pe_observado} | <strong>Região:</strong> ${item.regiao_pe}<br>
+                        <strong>Achados:</strong> ${item.alteracoes && item.alteracoes.length > 0 ? item.alteracoes.join(", ") : "Nenhuma alteração relatada"}
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            container.innerHTML = html;
+        } else {
+            container.innerHTML = `<p style="color: #64748b; font-size: 13px;">Nenhum registro de inspeção encontrado.</p>`;
+        }
+    } catch (error) {
+        console.error("Erro ao carregar histórico de inspeções:", error);
+    }
+}
+
+// Função para exportar o PDF oficial do HGV / SESAPI
 function exportarFichaPDF(dadosPaciente, listaInspecoes) {
-    // 1. Preenche os dados no modelo HTML
-    document.getElementById("pdf-nome-paciente").textContent = dadosPaciente.nome || "Paciente Registrado";
+    // 1. Preenche os dados no modelo HTML oculto
+    document.getElementById("pdf-nome-paciente").textContent = dadosPaciente.nome_completo || "Paciente Registrado";
+    document.getElementById("pdf-sus").textContent = dadosPaciente.cartao_sus || "Não informado";
     document.getElementById("pdf-data").textContent = new Date().toLocaleDateString("pt-BR");
-    document.getElementById("pdf-status").textContent = dadosPaciente.statusClinico || "Em Acompanhamento";
-    document.getElementById("pdf-amputacao").textContent = dadosPaciente.temAmputacao ? "Sim" : "Não";
+    document.getElementById("pdf-status").textContent = dadosPaciente.status_clinico === 'prevencao' ? 'Prevenção' : (dadosPaciente.status_clinico === 'em_tratamento' ? 'Em Tratamento Ativo' : 'Remissão');
 
-    // 2. Preenche o histórico de inspeções
-    const containerInspecoes = document.getElementById("pdf-conteudo-inspecoes");
+    // 2. Preenche o histórico de inspeções no PDF se houver
+    const detalhesInspecao = document.getElementById("pdf-detalhes-inspecao");
     if (listaInspecoes && listaInspecoes.length > 0) {
-        let html = `<table style="width: 100%; border-collapse: collapse; font-size: 11px;">
-            <thead>
-                <tr style="background-color: #003366; color: white;">
-                    <th style="padding: 6px; border: 1px solid #ccc;">Data</th>
-                    <th style="padding: 6px; border: 1px solid #ccc;">Pé</th>
-                    <th style="padding: 6px; border: 1px solid #ccc;">Região</th>
-                    <th style="padding: 6px; border: 1px solid #ccc;">Alterações Identificadas</th>
-                </tr>
-            </thead><tbody>`;
-
-        listaInspecoes.forEach(item => {
-            html += `<tr>
-                <td style="padding: 6px; border: 1px solid #ccc;">${new Date(item.created_at).toLocaleDateString("pt-BR")}</td>
-                <td style="padding: 6px; border: 1px solid #ccc;">${item.pe_observado}</td>
-                <td style="padding: 6px; border: 1px solid #ccc;">${item.regiao_pe}</td>
-                <td style="padding: 6px; border: 1px solid #ccc;">${item.alteracoes ? item.alteracoes.join(", ") : "Nenhuma"}</td>
-            </tr>`;
-        });
-
-        html += `</tbody></table>`;
-        containerInspecoes.innerHTML = html;
-    } else {
-        containerInspecoes.innerHTML = "<p>Nenhuma inspeção registrada até o momento.</p>";
+        let ultima = listaInspecoes[0];
+        detalhesInspecao.innerHTML = `
+            <p style="margin: 2px 0;"><strong>Última Inspeção Registrada:</strong> ${new Date(ultima.created_at).toLocaleDateString("pt-BR")}</p>
+            <p style="margin: 2px 0;"><strong>Pé / Região:</strong> ${ultima.pe_observado} - ${ultima.regiao_pe}</p>
+            <p style="margin: 2px 0;"><strong>Alterações Notadas:</strong> ${ultima.alteracoes ? ultima.alteracoes.join(", ") : "Nenhuma"}</p>
+            <p style="margin: 2px 0; margin-top: 6px;"><em>Paciente em acompanhamento regular pelo protocolo Passo Seguro SESAPI/HGV.</em></p>
+        `;
     }
 
-    // 3. Exibe temporariamente para captura
+    // 3. Exibe temporariamente para captura pelo html2pdf
     const elemento = document.getElementById("modelo-ficha-pdf");
     elemento.style.display = "block";
 
     // 4. Configuração e Geração do PDF
     const opcoes = {
         margin:       10,
-        filename:     `Ficha_Clinica_Passo_Seguro_${dadosPaciente.nome || 'Paciente'}.pdf`,
+        filename:     `Ficha_HGV_SESAPI_${dadosPaciente.cartao_sus || 'Paciente'}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2 },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
     html2pdf().set(opcoes).from(elemento).save().then(() => {
-        // Oculta novamente após a geração
         elemento.style.display = "none";
     });
 }
