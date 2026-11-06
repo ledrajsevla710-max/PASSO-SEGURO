@@ -3,47 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Passo Seguro - Painel do Profissional</title>
-    <link rel="stylesheet" href="css/style.css">
-    
-    <!-- Biblioteca Oficial do Supabase -->
+    <title>Passo Seguro - Painel do Profissional (Estomaterapia)</title>
+    <!-- Supabase e Config -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
-    <script src="js/profissional.js" defer></script>
+    <style>
+        :root {
+            --azul-governo: #004080;
+            --azul-escuro: #002244;
+            --azul-claro: #e8f0fe;
+            --verde-sucesso: #137333;
+            --cinza-fundo: #f0f4f8;
+            --cinza-borda: #cbd5e1;
+            --texto-principal: #1e293b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--cinza-fundo);
+            color: var(--texto-principal);
+            margin: 0;
+            padding: 0;
+        }
+
+        .header-app {
+            background: linear-gradient(135deg, var(--azul-escuro), var(--azul-governo));
+            color: #ffffff;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .logo-container h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .logo-container p {
+            margin: 4px 0 0 0;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .dashboard-container {
+            max-width: 1100px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .card-modulo {
+            background-color: #ffffff;
+            border: 1px solid var(--cinza-borda);
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+        }
+
+        .card-modulo h2 {
+            color: var(--azul-governo);
+            margin-top: 0;
+            border-bottom: 3px solid var(--azul-claro);
+            padding-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .tabela-pacientes {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .tabela-pacientes th, .tabela-pacientes td {
+            padding: 12px 15px;
+            border: 1px solid var(--cinza-borda);
+            text-align: left;
+        }
+
+        .tabela-pacientes th {
+            background-color: var(--azul-governo);
+            color: white;
+        }
+
+        .tabela-pacientes tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .badge-prevencao { background-color: #e2e8f0; color: #334155; }
+        .badge-tratamento { background-color: #fee2e2; color: #991b1b; }
+        .badge-remissao { background-color: #dcfce7; color: #166534; }
+
+        .btn-acao {
+            background-color: var(--azul-governo);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .btn-acao:hover {
+            background-color: var(--azul-escuro);
+        }
+
+        .btn-secundario {
+            background-color: #475569;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 25px;
+            font-size: 13px;
+            color: #64748b;
+            background-color: #e2e8f0;
+            border-top: 1px solid var(--cinza-borda);
+        }
+    </style>
 </head>
 <body>
     <header class="header-app">
         <div class="logo-container">
-            <h1>Passo Seguro</h1>
-            <p>Painel do Profissional de Saúde / Estomaterapia</p>
+            <h1>Passo Seguro - Área Profissional</h1>
+            <p>Secretaria de Estado da Saúde - Piauí | Acompanhamento Clínico e Estomaterapia</p>
         </div>
         <div class="user-info">
-            <span>Dr(a). <strong id="nome-profissional-display">Profissional</strong></span>
-            <button id="btn-sair-prof" class="btn-secundario">Sair</button>
+            <span>Profissional: <strong id="nome-profissional-display">Enfermeiro(a)</strong></span>
+            <a href="login.html" class="btn-secundario">Sair</a>
         </div>
     </header>
 
     <main class="dashboard-container">
-        <!-- VÍNCULOS E PACIENTES -->
+        <!-- FILTROS E BUSCA -->
         <section class="card-modulo">
-            <h2> Pacientes Vinculados</h2>
-            <p>Lista de pacientes autorizados sob o seu acompanhamento clínico na fase de remissão:</p>
-            <div id="container-pacientes-vinculados">
-                <p>Carregando pacientes...</p>
+            <h2>👥 Monitoramento de Pacientes</h2>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 20px;">
+                Acompanhe o cadastro, o status clínico e o histórico de inspeções diárias dos pacientes cadastrados na rede de atenção.
+            </p>
+
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px;">
+                <input type="text" id="filtro-nome" class="form-control" placeholder="Buscar paciente por nome..." style="flex: 1; min-width: 250px; padding: 10px; border: 1.5px solid var(--cinza-borda); border-radius: 6px;">
+                <select id="filtro-status" class="form-control" style="width: 220px; padding: 10px; border: 1.5px solid var(--cinza-borda); border-radius: 6px;">
+                    <option value="">Todas as Situações</option>
+                    <option value="prevencao">Prevenção</option>
+                    <option value="em_tratamento">Em Tratamento Ativo</option>
+                    <option value="remissao">Remissão (Cicatrizada)</option>
+                </select>
+                <button type="button" id="btn-filtrar" class="btn-acao" style="padding: 10px 20px;">Filtrar</button>
+            </div>
+
+            <!-- TABELA DE PACIENTES CADASTRADOS -->
+            <div style="overflow-x: auto;">
+                <table class="tabela-pacientes">
+                    <thead>
+                        <tr>
+                            <th>Nome do Paciente</th>
+                            <th>Situação Clínica</th>
+                            <th>Hist. Amputação</th>
+                            <th>Última Inspeção</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabela-corpo-pacientes">
+                        <tr>
+                            <td>Maria da Conceição Silva</td>
+                            <td><span class="badge badge-tratamento">Em Tratamento Ativo</span></td>
+                            <td>Não</td>
+                            <td>Hoje, 09:30</td>
+                            <td><button class="btn-acao" onclick="alert('Abrindo prontuário clínico detalhado do paciente...')">Ver Prontuário</button></td>
+                        </tr>
+                        <tr>
+                            <td>Antônio José de Sousa</td>
+                            <td><span class="badge badge-remissao">Remissão / Cicatrizada</span></td>
+                            <td>Sim</td>
+                            <td>Ontem, 16:45</td>
+                            <td><button class="btn-acao" onclick="alert('Abrindo prontuário clínico detalhado do paciente...')">Ver Prontuário</button></td>
+                        </tr>
+                        <tr>
+                            <td>Francisca das Chagas Lima</td>
+                            <td><span class="badge badge-prevencao">Prevenção</span></td>
+                            <td>Não</td>
+                            <td>Há 3 dias</td>
+                            <td><button class="btn-acao" onclick="alert('Abrindo prontuário clínico detalhado do paciente...')">Ver Prontuário</button></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </section>
 
-        <!-- REGISTROS DO PACIENTE SELECIONADO -->
-        <section class="card-modulo" style="margin-top: 20px;">
-            <h2> Histórico e Inspeções do Paciente</h2>
-            <div id="container-detalhes-paciente">
-                <p>Selecione um paciente na lista acima para visualizar os registros detalhados.</p>
-            </div>
+        <!-- ORIENTAÇÃO CLÍNICA PARA A EQUIPE -->
+        <section class="card-modulo" style="border-left: 6px solid var(--verde-sucesso);">
+            <h2 style="color: var(--verde-sucesso); border-color: #dcfce7;">📌 Diretrizes de Estomaterapia e Avaliação</h2>
+            <ul style="margin: 10px 0 0 20px; font-size: 14px; line-height: 1.6; color: #334155;">
+                <li><strong>Pacientes em Tratamento Ativo:</strong> Verificar frequência de troca de curativos e presença de exsudato ou sinais flogísticos.</li>
+                <li><strong>Pacientes em Remissão:</strong> Reforçar orientações de autocuidado diário com a Sandrinha e inspeção interdigital.</li>
+                <li><strong>Encaminhamento:</strong> Acionar o serviço de alta complexidade vascular do HGV em caso de alterações graves na perfusão ou infecção ascendente.</li>
+            </ul>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2026 Passo Seguro - Projeto de Pesquisa Aplicado à Saúde. Todos os direitos reservados.</p>
+        <p>&copy; 2026 Passo Seguro - Secretaria de Estado da Saúde do Piauí. Todos os direitos reservados.</p>
     </footer>
+
+    <script>
+        // Integração futura com o Supabase para carregar a lista real de pacientes do sistema
+        document.addEventListener("DOMContentLoaded", () => {
+            console.log("Painel profissional carregado com sucesso.");
+        });
+    </script>
 </body>
 </html>
