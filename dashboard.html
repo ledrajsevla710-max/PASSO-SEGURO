@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Passo Seguro - Painel do Paciente</title>
     <link rel="stylesheet" href="css/style.css">
-    
+    <!-- CDN para geração de PDF a partir do HTML (STEP 1) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- Biblioteca Oficial do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
@@ -226,3 +227,46 @@
     </script>
 </body>
 </html>
+<!-- MODELO DE FICHA CLÍNICA PARA IMPRESSÃO (STEP 2 - Fica invisível com display: none) -->
+<div id="modelo-ficha-pdf" style="display: none; padding: 20px; font-family: Arial, sans-serif; color: #333;">
+    <!-- CABEÇALHO INSTITUCIONAL -->
+    <div style="text-align: center; border-bottom: 2px solid #003366; padding-bottom: 10px; margin-bottom: 20px;">
+        <h2 style="color: #003366; margin: 0; font-size: 18px;">GOVERNO DO ESTADO DO PIAUÍ</h2>
+        <h3 style="color: #555; margin: 5px 0; font-size: 14px;">SECRETARIA DE ESTADO DA SAÚDE - SESAPI</h3>
+        <h4 style="color: #003366; margin: 5px 0; font-size: 16px;">SISTEMA PASSO SEGURO - FICHA DE AVALIAÇÃO DO PÉ DIABÉTICO</h4>
+    </div>
+
+    <!-- DADOS DO PACIENTE -->
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px;">
+        <tr style="background-color: #f2f2f2;">
+            <td style="padding: 8px; border: 1px solid #ccc;"><strong>Nome do Paciente:</strong> <span id="pdf-nome-paciente">-</span></td>
+            <td style="padding: 8px; border: 1px solid #ccc;"><strong>Data da Avaliação:</strong> <span id="pdf-data">-</span></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ccc;"><strong>Situação Clínica:</strong> <span id="pdf-status">-</span></td>
+            <td style="padding: 8px; border: 1px solid #ccc;"><strong>Histórico de Amputação:</strong> <span id="pdf-amputacao">-</span></td>
+        </tr>
+    </table>
+
+    <!-- REGISTROS DE INSPEÇÃO -->
+    <h4 style="color: #003366; border-bottom: 1px solid #003366; padding-bottom: 4px; font-size: 14px;">Últimas Alterações e Achados Clínicos</h4>
+    <div id="pdf-conteudo-inspecoes" style="font-size: 12px; margin-bottom: 30px;">
+        <p>Aguardando registros...</p>
+    </div>
+
+    <!-- RECOMENDAÇÕES DA SANDRINHA / ESTOMATERAPIA -->
+    <div style="background-color: #f8fbff; border-left: 4px solid #003366; padding: 10px; margin-bottom: 40px; font-size: 11px;">
+        <strong>Orientações de Autocuidado (Passo Seguro):</strong>
+        <p style="margin: 5px 0 0 0;">Inspecionar os pés diariamente, lavar com água morna, secar bem entre os dedos e nunca andar descalço. Procurar a unidade de saúde se houver sinais de calor, rubor ou feridas.</p>
+    </div>
+
+    <!-- CAMPO PARA ASSINATURAS -->
+    <div style="display: flex; justify-content: space-around; margin-top: 50px; font-size: 12px; text-align: center;">
+        <div style="border-top: 1px solid #333; width: 40%; padding-top: 5px;">
+            Assinatura do Paciente / Cuidador
+        </div>
+        <div style="border-top: 1px solid #333; width: 40%; padding-top: 5px;">
+            Enfermeiro(a) / Estomaterapeuta<br>COREN-PI
+        </div>
+    </div>
+</div>
