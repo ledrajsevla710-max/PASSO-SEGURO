@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passo Seguro - Painel do Profissional</title>
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Biblioteca Oficial do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/profissional.js" defer></script>
+</head>
+<body>
+    <header class="header-app">
+        <div class="logo-container">
+            <h1>Passo Seguro</h1>
+            <p>Painel do Profissional de Saúde / Estomaterapia</p>
+        </div>
+        <div class="user-info">
+            <span>Dr(a). <strong id="nome-profissional-display">Profissional</strong></span>
+            <button id="btn-sair-prof" class="btn-secundario">Sair</button>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <!-- VÍNCULOS E PACIENTES -->
+        <section class="card-modulo">
+            <h2> Pacientes Vinculados</h2>
+            <p>Lista de pacientes autorizados sob o seu acompanhamento clínico na fase de remissão:</p>
+            <div id="container-pacientes-vinculados">
+                <p>Carregando pacientes...</p>
+            </div>
+        </section>
+
+        <!-- REGISTROS DO PACIENTE SELECIONADO -->
+        <section class="card-modulo" style="margin-top: 20px;">
+            <h2> Histórico e Inspeções do Paciente</h2>
+            <div id="container-detalhes-paciente">
+                <p>Selecione um paciente na lista acima para visualizar os registros detalhados.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Passo Seguro - Projeto de Pesquisa Aplicado à Saúde. Todos os direitos reservados.</p>
+    </footer>
+</body>
+</html>
