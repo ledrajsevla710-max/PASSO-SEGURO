@@ -164,7 +164,8 @@
 
         <!-- FORMULÁRIO -->
         <form id="form-login">
-            <div id="campos-profissional-extra" style="display: none;">
+            <!-- CAMPOS EXTRAS DE CADASTRO (Aparecem apenas se for Profissional E estiver no modo Cadastro) -->
+            <div id="campos-cadastro-profissional" style="display: none;">
                 <div class="form-group">
                     <label for="nome-profissional">Nome Completo do Profissional:</label>
                     <input type="text" id="nome-profissional" class="form-control" placeholder="Ex: Dr(a). Nome Sobrenome">
@@ -197,40 +198,51 @@
         let modoAtual = "login"; // 'login' ou 'cadastro'
         let perfilAtual = "paciente"; // 'paciente' ou 'profissional'
 
-        function alternarPerfil(perfil) {
-            perfilAtual = perfil;
+        function atualizarInterface() {
             const btnPaciente = document.getElementById("btn-tab-paciente");
             const btnProfissional = document.getElementById("btn-tab-profissional");
-            const camposExtra = document.getElementById("campos-profissional-extra");
+            const divCadastroProf = document.getElementById("campos-cadastro-profissional");
             const btnSubmit = document.getElementById("btn-acao-submit");
+            const linkModo = document.getElementById("link-modo-cadastro");
 
-            if (perfil === "paciente") {
+            if (perfilAtual === "paciente") {
                 btnPaciente.classList.add("ativo");
                 btnProfissional.classList.remove("ativo");
-                camposExtra.style.display = "none";
-                btnSubmit.textContent = modoAtual === 'login' ? "Entrar como Paciente" : "Criar Conta de Paciente";
+                divCadastroProf.style.display = "none";
+
+                if (modoAtual === "login") {
+                    btnSubmit.textContent = "Entrar como Paciente";
+                    linkModo.innerHTML = "Cadastre-se aqui";
+                } else {
+                    btnSubmit.textContent = "Criar Conta de Paciente";
+                    linkModo.innerHTML = "Já tem uma conta? Faça login";
+                }
             } else {
                 btnProfissional.classList.add("ativo");
                 btnPaciente.classList.remove("ativo");
-                camposExtra.style.display = "block";
-                btnSubmit.textContent = modoAtual === 'login' ? "Entrar como Profissional" : "Cadastrar Profissional (Estomaterapeuta)";
+
+                // O COREN e Nome aparecem APENAS se for Profissional E estiver no modo Cadastro
+                if (modoAtual === "cadastro") {
+                    divCadastroProf.style.display = "block";
+                    btnSubmit.textContent = "Cadastrar Profissional (Estomaterapeuta)";
+                    linkModo.innerHTML = "Já tem uma conta? Faça login";
+                } else {
+                    divCadastroProf.style.display = "none";
+                    btnSubmit.textContent = "Entrar como Profissional";
+                    linkModo.innerHTML = "Cadastre-se aqui";
+                }
             }
+        }
+
+        function alternarPerfil(perfil) {
+            perfilAtual = perfil;
+            atualizarInterface();
         }
 
         function toggleModo(e) {
             e.preventDefault();
-            const linkModo = document.getElementById("link-modo-cadastro");
-            const btnSubmit = document.getElementById("btn-acao-submit");
-
-            if (modoAtual === "login") {
-                modoAtual = "cadastro";
-                btnSubmit.textContent = perfilAtual === 'paciente' ? "Criar Conta de Paciente" : "Cadastrar Profissional (Estomaterapeuta)";
-                linkModo.innerHTML = "Já tem uma conta? Faça login";
-            } else {
-                modoAtual = "login";
-                btnSubmit.textContent = perfilAtual === 'paciente' ? "Entrar como Paciente" : "Entrar como Profissional";
-                linkModo.innerHTML = "Cadastre-se aqui";
-            }
+            modoAtual = (modoAtual === "login") ? "cadastro" : "login";
+            atualizarInterface();
         }
 
         // Lógica de Autenticação Segura com Supabase V2
@@ -241,7 +253,6 @@
             const nomeProfissional = document.getElementById("nome-profissional")?.value || "";
             const corenProfissional = document.getElementById("coren-profissional")?.value || "";
 
-            // Garante que o cliente Supabase está disponível (global ou via window)
             const clienteSupabase = window.supabase || supabase;
 
             if (!clienteSupabase) {
@@ -267,7 +278,7 @@
                                 tipo_perfil: perfilAtual,
                                 nome: isProfissional ? nomeProfissional : 'Paciente',
                                 coren: isProfissional ? corenProfissional : null,
-                                aprovado: !isProfissional // Pacientes aprovados direto; profissionais exigem liberação
+                                aprovado: !isProfissional // Pacientes aprovados direto; profissionais exigem moderação
                             }
                         ]);
                         if (dbError) console.warn("Aviso ao salvar perfil complementar:", dbError.message);
@@ -282,7 +293,7 @@
                     }
 
                 } else {
-                    // 1. Faz o login utilizando o método correto da V2
+                    // 1. Faz o login utilizando apenas e-mail e senha
                     const { data: authData, error: authError } = await clienteSupabase.auth.signInWithPassword({ email, senha });
                     if (authError) throw authError;
 
@@ -295,7 +306,6 @@
                         .eq('id', userId)
                         .single();
 
-                    // Se porventura o perfil não estiver na tabela, assume o perfil selecionado na aba
                     const tipoBanco = perfilData ? perfilData.tipo_perfil : perfilAtual;
                     const estaAprovado = perfilData ? perfilData.aprovado : true;
 
