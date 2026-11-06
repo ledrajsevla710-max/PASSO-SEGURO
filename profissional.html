@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Passo Seguro - Painel do Profissional (Estomaterapia)</title>
+    <title>Passo Seguro - Painel do Profissional / Estomaterapia</title>
     <!-- CDN de PDF e Supabase -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
+    
     <style>
         :root {
             --azul-governo: #004080;
             --azul-escuro: #002244;
             --azul-claro: #e8f0fe;
             --verde-sucesso: #137333;
+            --verde-hover: #0d5223;
             --cinza-fundo: #f0f4f8;
             --cinza-borda: #cbd5e1;
             --texto-principal: #1e293b;
@@ -42,7 +44,7 @@
 
         .dashboard-container {
             max-width: 1100px;
-            margin: 35px auto;
+            margin: 30px auto;
             padding: 0 20px;
         }
 
@@ -50,138 +52,103 @@
             background-color: #ffffff;
             border: 1px solid var(--cinza-borda);
             border-radius: 12px;
-            padding: 28px;
+            padding: 25px;
             margin-bottom: 25px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         .card-modulo h2 {
             color: var(--azul-governo);
             margin-top: 0;
-            border-bottom: 3px solid var(--azul-claro);
-            padding-bottom: 10px;
-            font-size: 20px;
+            border-bottom: 2.5px solid var(--azul-claro);
+            padding-bottom: 8px;
+            font-size: 19px;
         }
 
-        .tabela-pacientes {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 14px;
-        }
-
-        .tabela-pacientes th, .tabela-pacientes td {
-            padding: 12px 15px;
-            border: 1px solid var(--cinza-borda);
-            text-align: left;
-        }
-
-        .tabela-pacientes th {
-            background-color: var(--azul-governo);
-            color: white;
-        }
-
-        .tabela-pacientes tr:nth-child(even) { background-color: #f8fafc; }
-
-        .badge {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            display: inline-block;
-        }
-
-        .badge-prevencao { background-color: #e2e8f0; color: #334155; }
-        .badge-tratamento { background-color: #fee2e2; color: #991b1b; }
-        .badge-remissao { background-color: #dcfce7; color: #166534; }
-
-        .btn-acao {
-            background-color: var(--azul-governo);
-            color: white;
+        .btn-primario {
+            background-color: var(--verde-sucesso);
+            color: #ffffff;
             border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: bold;
             font-size: 13px;
-            font-weight: 600;
+            cursor: pointer;
         }
-        .btn-acao:hover { background-color: var(--azul-escuro); }
+        .btn-primario:hover { background-color: var(--verde-hover); }
 
         .btn-secundario {
             background-color: #475569;
-            color: white;
+            color: #ffffff;
             border: none;
-            padding: 8px 15px;
+            padding: 8px 14px;
             border-radius: 6px;
-            font-weight: 600;
             font-size: 13px;
             cursor: pointer;
-            text-decoration: none;
         }
+        .btn-secundario:hover { background-color: #334155; }
+
+        .tabela-dados {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .tabela-dados th, .tabela-dados td {
+            border: 1px solid var(--cinza-borda);
+            padding: 10px 12px;
+            text-align: left;
+        }
+
+        .tabela-dados th {
+            background-color: var(--azul-claro);
+            color: var(--azul-escuro);
+        }
+
+        .badge-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .badge-pendente { background-color: #fef9c3; color: #854d0e; }
+        .badge-aprovado { background-color: #dcfce7; color: #166534; }
     </style>
 </head>
 <body>
     <header class="header-app">
         <div class="logo-container">
             <h1>Passo Seguro - Área Profissional</h1>
-            <p>Secretaria de Estado da Saúde - Piauí | Acesso Total às Fichas e Prontuários</p>
+            <p>Hospital Getúlio Vargas - HGV | Serviço de Estomaterapia e Moderação</p>
         </div>
         <div class="user-info">
-            <span>Profissional: <strong id="nome-profissional-display">Enfermeiro(a) Estomaterapeuta</strong></span>
-            <a href="login.html" class="btn-secundario">Sair</a>
+            <span>Dr(a). <strong id="nome-profissional-display">Profissional</strong></span>
+            <button id="btn-sair" class="btn-secundario" style="margin-left: 10px;">Sair</button>
         </div>
     </header>
 
     <main class="dashboard-container">
-        <!-- MONITORAMENTO E ACESSO A TODAS AS FICHAS -->
+        <!-- MODERAÇÃO DE NOVOS PROFISSIONAIS / CADASTROS PENDENTES -->
         <section class="card-modulo">
-            <h2>📁 Prontuários e Fichas de Todos os Pacientes</h2>
-            <p style="color: #64748b; font-size: 14px; margin-bottom: 20px;">
-                Como profissional de saúde, você tem acesso completo ao histórico clínico, número do SUS e fichas de avaliação de todos os pacientes cadastrados na rede.
-            </p>
-
-            <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px;">
-                <input type="text" id="filtro-nome" class="form-control" placeholder="Buscar por nome ou Cartão SUS..." style="flex: 1; min-width: 250px; padding: 10px; border: 1.5px solid var(--cinza-borda); border-radius: 6px;">
-                <select id="filtro-status" class="form-control" style="width: 220px; padding: 10px; border: 1.5px solid var(--cinza-borda); border-radius: 6px;">
-                    <option value="">Todas as Situações</option>
-                    <option value="prevencao">Prevenção</option>
-                    <option value="em_tratamento">Em Tratamento Ativo</option>
-                    <option value="remissao">Remissão (Cicatrizada)</option>
-                </select>
-                <button type="button" id="btn-filtrar" class="btn-acao" style="padding: 10px 20px;">Atualizar Lista</button>
-            </div>
-
-            <!-- TABELA DINÂMICA DE PACIENTES -->
-            <div style="overflow-x: auto;">
-                <table class="tabela-pacientes">
-                    <thead>
-                        <tr>
-                            <th>Nome do Paciente</th>
-                            <th>Nº do Cartão SUS</th>
-                            <th>Situação Clínica</th>
-                            <th>Amputação?</th>
-                            <th>Ação / Ficha HGV</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabela-corpo-pacientes">
-                        <tr>
-                            <td colspan="5" style="text-align: center; color: #64748b;">Carregando pacientes do banco de dados...</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <h2>🛡️ Moderação de Cadastros (Estratégia de Segurança)</h2>
+            <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Novos profissionais aguardam liberação institucional para acessar dados confidenciais dos pacientes.</p>
+            <div id="container-pendentes">
+                <p style="color: #64748b; font-size: 13px;">Carregando cadastros pendentes...</p>
             </div>
         </section>
 
-        <!-- DIRETRIZES CLÍNICAS -->
-        <section class="card-modulo" style="border-left: 6px solid var(--verde-sucesso);">
-            <h2 style="color: var(--verde-sucesso); border-color: #dcfce7;">📌 Diretrizes de Estomaterapia (HGV / SESAPI)</h2>
-            <p style="font-size: 14px; color: #334155; line-height: 1.6; margin: 0;">
-                O profissional pode visualizar a ficha de qualquer paciente a qualquer momento para conferir insumos utilizados, mensuração de feridas e assinar o atendimento conforme os protocolos da Secretaria de Estado da Saúde do Piauí[cite: 1].
-            </p>
+        <!-- LISTAGEM GERAL DE PACIENTES CADASTRADOS -->
+        <section class="card-modulo">
+            <h2>📋 Monitoramento Clínico de Pacientes (SESAPI / HGV)</h2>
+            <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Lista completa de pacientes cadastrados no sistema institucional com seus respectivos números do Cartão SUS.</p>
+            <div id="container-pacientes">
+                <p style="color: #64748b; font-size: 13px;">Carregando base de pacientes...</p>
+            </div>
         </section>
     </main>
 
-    <!-- MODELO OCULTO PARA IMPRESSÃO DA FICHA DO PACIENTE SELECIONADO -->
+    <!-- MODELO OFICIAL DO HGV / SESAPI PARA IMPRESSÃO DE FICHA DO PACIENTE -->
     <div id="modelo-ficha-pdf" style="display: none; padding: 20px; font-family: Arial, sans-serif; color: #000; font-size: 11px;">
         <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 10px;">
             <h3 style="margin: 0;">GOVERNO DO ESTADO DO PIAUÍ</h3>
@@ -193,17 +160,17 @@
 
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
             <tr>
-                <td style="border: 1px solid #000; padding: 4px;" colspan="2"><strong>Nome do Paciente:</strong> <span id="pdf-nome-paciente">-</span></td>
-                <td style="border: 1px solid #000; padding: 4px;"><strong>Nº SUS:</strong> <span id="pdf-sus">-</span></td>
+                <td style="border: 1px solid #000; padding: 4px;" colspan="2"><strong>Nome do Paciente:</strong> <span id="pdf-nome-paciente">--</span></td>
+                <td style="border: 1px solid #000; padding: 4px;"><strong>Nº SUS:</strong> <span id="pdf-sus">--</span></td>
             </tr>
             <tr>
-                <td style="border: 1px solid #000; padding: 4px;"><strong>Data:</strong> <span id="pdf-data">-</span></td>
+                <td style="border: 1px solid #000; padding: 4px;"><strong>Data da Emissão:</strong> <span id="pdf-data">--/--/----</span></td>
                 <td style="border: 1px solid #000; padding: 4px;"><strong>Tipo de Ferida:</strong> Pé Diabético</td>
-                <td style="border: 1px solid #000; padding: 4px;"><strong>Situação:</strong> <span id="pdf-status">-</span></td>
+                <td style="border: 1px solid #000; padding: 4px;"><strong>Situação:</strong> <span id="pdf-status">Em Tratamento</span></td>
             </tr>
         </table>
 
-        <h4 style="margin: 10px 0 4px 0; border-bottom: 1px solid #000;">MATERIAIS E COBERTURAS UTILIZADAS</h4>
+        <h4 style="margin: 10px 0 4px 0; border-bottom: 1px solid #000;">MATERIAIS E COBERTURAS UTILIZADAS (ESTOMATERAPIA)</h4>
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; text-align: left;">
             <thead>
                 <tr style="background-color: #eee;">
@@ -217,16 +184,21 @@
                 <tr>
                     <td style="border: 1px solid #000; padding: 4px;">Gaze Estéril / Atadura</td>
                     <td style="border: 1px solid #000; padding: 4px;">[ X ] Sim</td>
-                    <td style="border: 1px solid #000; padding: 4px;">Hidrogel c/ Alginato / Prata</td>
+                    <td style="border: 1px solid #000; padding: 4px;">Hidrogel c/ Alginato</td>
+                    <td style="border: 1px solid #000; padding: 4px;">1 Unid.</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000; padding: 4px;">Soro Fisiológico 0.9%</td>
+                    <td style="border: 1px solid #000; padding: 4px;">[ X ] Sim</td>
+                    <td style="border: 1px solid #000; padding: 4px;">Espuma com Prata / PHMB</td>
                     <td style="border: 1px solid #000; padding: 4px;">1 Unid.</td>
                 </tr>
             </tbody>
         </table>
 
-        <h4 style="margin: 10px 0 4px 0; border-bottom: 1px solid #000;">AVALIAÇÃO CLÍNICA</h4>
-        <div style="border: 1px solid #000; padding: 8px; margin-bottom: 25px;">
-            <p style="margin: 2px 0;"><strong>Histórico de Amputação:</strong> <span id="pdf-amputacao">-</span></p>
-            <p style="margin: 2px 0;"><strong>Observações do Estomaterapeuta:</strong> Paciente avaliado via sistema Passo Seguro. Seguir protocolo de troca de curativos e inspeção diária.</p>
+        <h4 style="margin: 10px 0 4px 0; border-bottom: 1px solid #000;">HISTÓRICO E AVALIAÇÃO DE ENFERMAGEM</h4>
+        <div id="pdf-detalhes-inspecao" style="border: 1px solid #000; padding: 8px; margin-bottom: 25px;">
+            <p style="margin: 2px 0;">Carregando histórico clínico do paciente...</p>
         </div>
 
         <div style="display: flex; justify-content: space-between; margin-top: 40px; text-align: center;">
@@ -234,88 +206,205 @@
                 Assinatura do Paciente / Cuidador
             </div>
             <div style="border-top: 1px solid #000; width: 45%; padding-top: 4px;">
-                Assinatura do Enfermeiro e Carimbo<br>
-                <strong>Estomaterapeuta - COREN-PI</strong>
+                Assinatura do Enfermeiro Estomaterapeuta e Carimbo<br>
+                <strong id="pdf-nome-assinatura">Profissional HGV</strong> - COREN-PI
             </div>
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2026 Passo Seguro - Secretaria de Estado da Saúde do Piauí. Todos os direitos reservados.</p>
-    </footer>
-
-    <!-- LÓGICA DE CARREGAMENTO DO SUPABASE -->
+    <!-- LÓGICA DO PAINEL PROFISSIONAL -->
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
-            const tabelaCorpo = document.getElementById("tabela-corpo-pacientes");
-
-            async function carregarListaPacientes() {
-                try {
-                    // Busca todos os registros salvos na tabela do Supabase (ex: historico_clinico ou perfis)
-                    const { data, error } = await supabase.from('historico_clinico').select('*');
-
-                    if (error) throw error;
-
-                    if (!data || data.length === 0) {
-                        tabelaCorpo.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #64748b;">Nenhum paciente cadastrado no momento.</td></tr>`;
-                        return;
-                    }
-
-                    tabelaCorpo.innerHTML = "";
-                    data.forEach(paciente => {
-                        let badgeClass = "badge-prevencao";
-                        let badgeText = "Prevenção";
-                        if (paciente.status_clinico === "em_tratamento") {
-                            badgeClass = "badge-tratamento";
-                            badgeText = "Em Tratamento Ativo";
-                        } else if (paciente.status_clinico === "remissao") {
-                            badgeClass = "badge-remissao";
-                            badgeText = "Remissão / Cicatrizada";
-                        }
-
-                        const tr = document.createElement("tr");
-                        tr.innerHTML = `
-                            <td>${paciente.nome_paciente || 'Paciente (ID: ' + paciente.id.substring(0,6) + ')'}</td>
-                            <td>${paciente.num_sus || 'Não informado'}</td>
-                            <td><span class="badge ${badgeClass}">${badgeText}</span></td>
-                            <td>${paciente.historico_amputacao ? 'Sim' : 'Não'}</td>
-                            <td><button class="btn-acao" onclick='gerarPdfPaciente(${JSON.stringify(paciente)})'>📄 Ver Ficha HGV</button></td>
-                        `;
-                        tabelaCorpo.appendChild(tr);
-                    });
-
-                } catch (err) {
-                    console.error("Erro ao carregar pacientes:", err.message);
-                    tabelaCorpo.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #dc2626;">Erro ao conectar com o banco de dados.</td></tr>`;
-                }
+            if (typeof window.supabase === 'undefined') {
+                alert("Erro crítico: Supabase não inicializado.");
+                return;
             }
 
-            carregarListaPacientes();
+            // 1. Verificar sessão ativa
+            const { data: { session }, error } = await window.supabase.auth.getSession();
+            if (error || !session) {
+                window.location.href = "login.html";
+                return;
+            }
 
-            document.getElementById("btn-filtrar").addEventListener("click", carregarListaPacientes);
+            // 2. Buscar perfil do profissional logado
+            const { data: perfilLogado, error: errPerfil } = await window.supabase
+                .from('perfis_usuarios')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+
+            if (errPerfil || !perfilLogado || perfilLogado.tipo !== 'profissional') {
+                alert("Acesso restrito a profissionais cadastrados.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            // Validação de segurança: Profissional precisa estar aprovado
+            if (!perfilLogado.aprovado) {
+                alert("Seu cadastro profissional está aguardando liberação da moderação SESAPI/HGV.");
+                await window.supabase.auth.signOut();
+                window.location.href = "login.html";
+                return;
+            }
+
+            document.getElementById("nome-profissional-display").textContent = perfilLogado.nome_completo || session.user.email;
+
+            // Botão Sair
+            document.getElementById("btn-sair").addEventListener("click", async () => {
+                await window.supabase.auth.signOut();
+                window.location.href = "login.html";
+            });
+
+            // Carregar painéis
+            carregarCadastrosPendentes();
+            carregarListaPacientes(perfilLogado.nome_completo);
         });
 
-        // Função para preencher e gerar o PDF da ficha HGV de qualquer paciente selecionado
-        function gerarPdfPaciente(paciente) {
-            document.getElementById("pdf-nome-paciente").textContent = paciente.nome_paciente || "Paciente Registrado";
-            document.getElementById("pdf-sus").textContent = paciente.num_sus || "Não informado";
+        // Função para carregar profissionais pendentes de aprovação
+        async function carregarCadastrosPendentes() {
+            const container = document.getElementById("container-pendentes");
+            
+            const { data, error } = await window.supabase
+                .from('perfis_usuarios')
+                .select('*')
+                .eq('tipo', 'profissional')
+                .eq('aprovado', false);
+
+            if (error) {
+                container.innerHTML = `<p style="color: red; font-size: 13px;">Erro ao carregar pendências: ${error.message}</p>`;
+                return;
+            }
+
+            if (data && data.length > 0) {
+                let html = `<table class="tabela-dados">
+                    <thead>
+                        <tr>
+                            <th>Nome do Profissional</th>
+                            <th>E-mail</th>
+                            <th>COREN</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+                
+                data.forEach(prof => {
+                    html += `<tr>
+                        <td>${prof.nome_completo || 'Não informado'}</td>
+                        <td>${prof.email}</td>
+                        <td>${prof.coren || 'Não informado'}</td>
+                        <td><button class="btn-primario" onclick="aprovarProfissional('${prof.id}')">Aprovar Acesso</button></td>
+                    </tr>`;
+                });
+
+                html += `</tbody></table>`;
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `<p style="color: #64748b; font-size: 13px;">Nenhum cadastro profissional pendente de moderação no momento.</p>`;
+            }
+        }
+
+        // Função para aprovar o profissional
+        window.aprovarProfissional = async function(id) {
+            const { error } = await window.supabase
+                .from('perfis_usuarios')
+                .update({ aprovado: true })
+                .eq('id', id);
+
+            if (error) {
+                alert("Erro ao aprovar profissional: " + error.message);
+            } else {
+                alert("Profissional aprovado com sucesso!");
+                carregarCadastrosPendentes();
+            }
+        };
+
+        // Função para carregar a listagem de pacientes
+        async function carregarListaPacientes(nomeProfissional) {
+            const container = document.getElementById("container-pacientes");
+
+            const { data, error } = await window.supabase
+                .from('perfis_usuarios')
+                .select('*')
+                .eq('tipo', 'paciente');
+
+            if (error) {
+                container.innerHTML = `<p style="color: red; font-size: 13px;">Erro ao carregar pacientes: ${error.message}</p>`;
+                return;
+            }
+
+            if (data && data.length > 0) {
+                let html = `<table class="tabela-dados">
+                    <thead>
+                        <tr>
+                            <th>Nome do Paciente</th>
+                            <th>Nº Cartão SUS</th>
+                            <th>Situação Clínica</th>
+                            <th>Ações Clínicas</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+                data.forEach(pac => {
+                    let statusTexto = pac.status_clinico === 'prevencao' ? 'Prevenção' : (pac.status_clinico === 'em_tratamento' ? 'Em Tratamento' : 'Remissão');
+                    html += `<tr>
+                        <td>${pac.nome_completo || 'Paciente'}</td>
+                        <td><strong>${pac.cartao_sus || 'Não cadastrado'}</strong></td>
+                        <td>${statusTexto}</td>
+                        <td>
+                            <button class="btn-primario" onclick='gerarPdfPaciente(${JSON.stringify(pac)}, "${nomeProfissional}")'>Gerar Ficha HGV</button>
+                        </td>
+                    </tr>`;
+                });
+
+                html += `</tbody></table>`;
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `<p style="color: #64748b; font-size: 13px;">Nenhum paciente cadastrado no sistema no momento.</p>`;
+            }
+        }
+
+        // Função para gerar a ficha em PDF do paciente selecionado pelo profissional
+        window.gerarPdfPaciente = async function(paciente, nomeProfissional) {
+            document.getElementById("pdf-nome-paciente").textContent = paciente.nome_completo || "Paciente";
+            document.getElementById("pdf-sus").textContent = paciente.cartao_sus || "Não informado";
             document.getElementById("pdf-data").textContent = new Date().toLocaleDateString("pt-BR");
             document.getElementById("pdf-status").textContent = paciente.status_clinico || "Em Acompanhamento";
-            document.getElementById("pdf-amputacao").textContent = paciente.historico_amputacao ? "Sim" : "Não";
+            document.getElementById("pdf-nome-assinatura").textContent = nomeProfissional;
 
-            const el = document.getElementById("modelo-ficha-pdf");
-            el.style.display = "block";
+            // Buscar últimas inspeções do paciente
+            const { data: inspecoes } = await window.supabase
+                .from('inspecoes_diarias')
+                .select('*')
+                .eq('user_id', paciente.id)
+                .order('created_at', { ascending: false })
+                .limit(1);
+
+            const detalhesInspecao = document.getElementById("pdf-detalhes-inspecao");
+            if (inspecoes && inspecoes.length > 0) {
+                let ultima = inspecoes[0];
+                detalhesInspecao.innerHTML = `
+                    <p style="margin: 2px 0;"><strong>Última Inspeção:</strong> ${new Date(ultima.created_at).toLocaleDateString("pt-BR")}</p>
+                    <p style="margin: 2px 0;"><strong>Pé / Região Observada:</strong> ${ultima.pe_observado} - ${ultima.regiao_pe}</p>
+                    <p style="margin: 2px 0;"><strong>Alterações Notadas:</strong> ${ultima.alteracoes ? ultima.alteracoes.join(", ") : "Nenhuma"}</p>
+                `;
+            } else {
+                detalhesInspecao.innerHTML = `<p style="margin: 2px 0;">Nenhuma inspeção diária registrada recentemente pelo paciente.</p>`;
+            }
+
+            const elemento = document.getElementById("modelo-ficha-pdf");
+            elemento.style.display = "block";
 
             html2pdf().set({
-                margin: 8,
-                filename: `Ficha_HGV_${paciente.num_sus || 'Paciente'}.pdf`,
+                margin: 10,
+                filename: `Ficha_Clinica_HGV_${paciente.cartao_sus || 'Paciente'}.pdf`,
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            }).from(el).save().then(() => {
-                el.style.display = "none";
+            }).from(elemento).save().then(() => {
+                elemento.style.display = "none";
             });
-        }
+        };
     </script>
 </body>
 </html>
