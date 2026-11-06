@@ -1,80 +1,345 @@
-document.getElementById("form-login").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = document.getElementById("email-input").value;
-    const senha = document.getElementById("senha-input").value;
-    const nomeProfissional = document.getElementById("nome-profissional")?.value || "";
-    const corenProfissional = document.getElementById("coren-profissional")?.value || "";
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passo Seguro - Acesso ao Sistema</title>
+    <!-- CDN do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    
+    <style>
+        :root {
+            --azul-governo: #004080;
+            --azul-escuro: #002244;
+            --azul-claro: #e8f0fe;
+            --verde-sucesso: #137333;
+            --verde-hover: #0d5223;
+            --cinza-fundo: #f0f4f8;
+            --cinza-borda: #cbd5e1;
+            --texto-principal: #1e293b;
+        }
 
-    const clienteSupabase = window.supabase || supabase;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--cinza-fundo);
+            color: var(--texto-principal);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-    if (!clienteSupabase) {
-        alert("Erro: Cliente Supabase não carregado. Verifique o arquivo config.js.");
-        return;
-    }
+        .login-card {
+            background-color: #ffffff;
+            border: 1px solid var(--cinza-borda);
+            border-radius: 12px;
+            padding: 30px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            box-sizing: border-box;
+        }
 
-    try {
-        if (modoAtual === "cadastro") {
-            // 1. Cria a conta no Auth do Supabase
-            const { data: authData, error: authError } = await clienteSupabase.auth.signUp({ email, senha });
-            if (authError) throw authError;
+        .login-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
 
-            const userId = authData.user?.id;
+        .login-header h1 {
+            color: var(--azul-governo);
+            font-size: 24px;
+            margin: 0 0 6px 0;
+        }
 
-            // 2. Salva o perfil na tabela (Se for profissional, nasce com aprovado: false)
-            if (userId) {
-                const isProfissional = (perfilAtual === 'profissional');
-                const { error: dbError } = await clienteSupabase.from('perfis_usuarios').insert([
-                    { 
-                        id: userId, 
-                        email: email, 
-                        tipo_perfil: perfilAtual,
-                        nome: isProfissional ? nomeProfissional : 'Paciente',
-                        coren: isProfissional ? corenProfissional : null,
-                        aprovado: !isProfissional // Pacientes aprovados direto; profissionais exigem moderação
-                    }
-                ]);
-                if (dbError) console.warn("Erro ao salvar perfil:", dbError.message);
-            }
+        .login-header p {
+            font-size: 13px;
+            color: #64748b;
+            margin: 0;
+        }
 
-            if (perfilAtual === 'profissional') {
-                alert("Cadastro realizado com sucesso! Sua conta de profissional está pendente de aprovação pela coordenação da SESAPI/HGV.");
-                window.location.href = "login.html";
+        /* Seletor de Abas (Paciente / Profissional) */
+        .tabs-container {
+            display: flex;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1.5px solid var(--azul-governo);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background-color: #ffffff;
+            color: var(--azul-governo);
+            border: none;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.ativo {
+            background-color: var(--azul-governo);
+            color: #ffffff;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #334155;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            box-sizing: border-box;
+            border: 1.5px solid var(--cinza-borda);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn-acao {
+            width: 100%;
+            background-color: var(--verde-sucesso);
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn-acao:hover { background-color: var(--verde-hover); }
+
+        .modo-toggle {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 13px;
+        }
+
+        .modo-toggle a {
+            color: var(--azul-governo);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .modo-toggle a:hover { text-decoration: underline; }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-header">
+            <h1>Passo Seguro</h1>
+            <p>SESAPI / Hospital Getúlio Vargas - HGV</p>
+        </div>
+
+        <!-- ABAS DE SELEÇÃO DO PERFIL -->
+        <div class="tabs-container">
+            <button type="button" class="tab-btn ativo" id="tab-paciente" onclick="alternarPerfil('paciente')">Paciente</button>
+            <button type="button" class="tab-btn" id="tab-profissional" onclick="alternarPerfil('profissional')">Profissional / HGV</button>
+        </div>
+
+        <form id="form-auth">
+            <!-- Campos específicos para profissionais (visíveis apenas quando aba profissional estiver ativa e no modo cadastro) -->
+            <div id="campos-profissional" class="hidden">
+                <div class="form-group">
+                    <label for="nome-completo">Nome Completo:</label>
+                    <input type="text" id="nome-completo" class="form-control" placeholder="Ex: Dr. Carlos Eduardo">
+                </div>
+                <div class="form-group">
+                    <label for="coren">Nº do COREN:</label>
+                    <input type="text" id="coren" class="form-control" placeholder="Ex: COREN-PI 123456">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">E-mail de Acesso:</label>
+                <input type="email" id="email" class="form-control" required placeholder="seu.email@exemplo.com">
+            </div>
+
+            <div class="form-group">
+                <label for="senha">Senha:</label>
+                <input type="password" id="senha" class="form-control" required placeholder="********">
+            </div>
+
+            <button type="submit" id="btn-submit" class="btn-acao">Entrar</button>
+        </form>
+
+        <div class="modo-toggle">
+            <span id="texto-alternancia">Não tem cadastro? <a href="#" id="link-alternar-modo">Cadastre-se como Paciente</a></span>
+        </div>
+    </div>
+
+    <script>
+        let perfilAtual = 'paciente'; // 'paciente' ou 'profissional'
+        let modoCadastro = false;
+
+        function alternarPerfil(perfil) {
+            perfilAtual = perfil;
+            if (perfil === 'paciente') {
+                document.getElementById('tab-paciente').classList.add('ativo');
+                document.getElementById('tab-profissional').classList.remove('ativo');
+                document.getElementById('campos-profissional').classList.add('hidden');
             } else {
-                alert("Cadastro de paciente realizado com sucesso!");
-                window.location.href = "dashboard.html";
-            }
-
-        } else {
-            // 1. Faz o login
-            const { data: authData, error: authError } = await clienteSupabase.auth.signInWithPassword({ email, senha });
-            if (authError) throw authError;
-
-            const userId = authData.user?.id;
-
-            // 2. Consulta o perfil e o status de aprovação no banco
-            const { data: perfilData, error: perfilError } = await clienteSupabase
-                .from('perfis_usuarios')
-                .select('tipo_perfil, aprovado')
-                .eq('id', userId)
-                .single();
-
-            const tipoBanco = perfilData ? perfilData.tipo_perfil : perfilAtual;
-            const estaAprovado = perfilData ? perfilData.aprovado : true;
-
-            if (tipoBanco === 'profissional') {
-                if (!estaAprovado) {
-                    alert("Acesso restrito: Sua conta de profissional ainda não foi aprovada pela coordenação da SESAPI/HGV.");
-                    await clienteSupabase.auth.signOut(); // Desloga o usuário
-                    return;
+                document.getElementById('tab-profissional').classList.add('ativo');
+                document.getElementById('tab-paciente').classList.remove('ativo');
+                if (modoCadastro) {
+                    document.getElementById('campos-profissional').classList.remove('hidden');
                 }
-                alert("Login de profissional efetuado com sucesso!");
-                window.location.href = "profissional.html";
+            }
+            atualizarTextoAlternancia();
+        }
+
+        const linkAlternar = document.getElementById('link-alternar-modo');
+        linkAlternar.addEventListener('click', (e) => {
+            e.preventDefault();
+            modoCadastro = !modoCadastro;
+            
+            if (modoCadastro) {
+                document.getElementById('btn-submit').textContent = 'Cadastrar';
+                if (perfilAtual === 'profissional') {
+                    document.getElementById('campos-profissional').classList.remove('hidden');
+                }
             } else {
-                alert("Login efetuado com sucesso!");
-                window.location.href = "dashboard.html";
+                document.getElementById('btn-submit').textContent = 'Entrar';
+                document.getElementById('campos-profissional').classList.add('hidden');
+            }
+            atualizarTextoAlternancia();
+        });
+
+        function atualizarTextoAlternancia() {
+            if (modoCadastro) {
+                linkAlternar.textContent = 'Já possui conta? Faça login';
+                document.querySelector('.modo-toggle').firstChild.textContent = 'Já tem cadastro? ';
+            } else {
+                linkAlternar.textContent = `Cadastre-se como ${perfilAtual === 'paciente' ? 'Paciente' : 'Profissional'}`;
+                document.querySelector('.modo-toggle').firstChild.textContent = 'Não tem cadastro? ';
             }
         }
-    } catch (err) {
-        alert("Erro na autenticação: " + err.message);
-    }
-});
+
+        // Lógica de Autenticação com Supabase
+        document.getElementById('form-auth').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (typeof window.supabase === 'undefined') {
+                alert("Erro: Cliente Supabase não inicializado.");
+                return;
+            }
+
+            const email = document.getElementById('email').value.trim();
+            const senha = document.getElementById('senha').value.trim();
+
+            if (modoCadastro) {
+                // FLUXO DE CADASTRO
+                const nomeCompleto = perfilAtual === 'profissional' ? document.getElementById('nome-completo').value.trim() : (email.split('@')[0]);
+                const coren = perfilAtual === 'profissional' ? document.getElementById('coren').value.trim() : null;
+                const aprovadoInicial = perfilAtual === 'paciente' ? true : false; // Profissionais nascem bloqueados
+
+                if (perfilAtual === 'profissional' && (!nomeCompleto || !coren)) {
+                    alert("Por favor, preencha o Nome Completo e o COREN.");
+                    return;
+                }
+
+                // 1. Cadastra no Auth do Supabase
+                const { data, error: errAuth } = await window.supabase.auth.signUp({
+                    email: email,
+                    password: senha,
+                    options: {
+                        data: {
+                            nome: nomeCompleto,
+                            tipo: perfilAtual
+                        }
+                    }
+                });
+
+                if (errAuth) {
+                    alert("Erro no cadastro: " + errAuth.message);
+                    return;
+                }
+
+                // 2. Insere os dados complementares na tabela perfis_usuarios
+                if (data.user) {
+                    const { error: errPerfil } = await window.supabase
+                        .from('perfis_usuarios')
+                        .insert([
+                            {
+                                id: data.user.id,
+                                email: email,
+                                nome_completo: nomeCompleto,
+                                tipo: perfilAtual,
+                                coren: coren,
+                                aprovado: aprovadoInicial
+                            }
+                        ]);
+
+                    if (errPerfil) {
+                        console.error("Erro ao inserir perfil:", errPerfil.message);
+                    }
+                }
+
+                if (perfilAtual === 'profissional') {
+                    alert("Cadastro realizado com sucesso! Sua conta profissional aguarda liberação da moderação SESAPI/HGV para acesso.");
+                } else {
+                    alert("Cadastro realizado com sucesso! Redirecionando...");
+                    window.location.href = "dashboard.html";
+                }
+
+                modoCadastro = false;
+                document.getElementById('btn-submit').textContent = 'Entrar';
+                document.getElementById('campos-profissional').classList.add('hidden');
+                atualizarTextoAlternancia();
+                document.getElementById('form-auth').reset();
+
+            } else {
+                // FLUXO DE LOGIN
+                const { data, error: errLogin } = await window.supabase.auth.signInWithPassword({
+                    email: email,
+                    password: senha
+                });
+
+                if (errLogin) {
+                    alert("Erro ao entrar: " + errLogin.message);
+                    return;
+                }
+
+                // Verifica o perfil na tabela perfis_usuarios para checar aprovação de profissional
+                const { data: perfil, error: errPerfil } = await window.supabase
+                    .from('perfis_usuarios')
+                    .select('*')
+                    .eq('id', data.user.id)
+                    .single();
+
+                if (errPerfil || !perfil) {
+                    alert("Erro ao carregar dados do usuário.");
+                    return;
+                }
+
+                // Validação de segurança institucional para profissionais
+                if (perfil.tipo === 'profissional' && !perfil.aprovado) {
+                    alert("Acesso pendente! Seu cadastro profissional aguarda liberação da moderação SESAPI/HGV.");
+                    await window.supabase.auth.signOut();
+                    return;
+                }
+
+                // Redireciona conforme o tipo de usuário
+                if (perfil.tipo === 'profissional') {
+                    window.location.href = "profissional.html";
+                } else {
+                    window.location.href = "dashboard.html";
+                }
+            }
+        });
+    </script>
+</body>
+</html>
