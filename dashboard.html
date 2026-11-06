@@ -1,199 +1,132 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-<title>Passo Seguro - Dashboard</title>
-
-
-<link rel="stylesheet" href="css/style.css">
-
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passo Seguro - Painel de Autocuidado</title>
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Biblioteca Oficial do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/app.js" defer></script>
 </head>
-
-
 <body>
+    <header class="header-app">
+        <div class="logo-container">
+            <h1>Passo Seguro</h1>
+            <p>Acompanhamento na fase de remissão</p>
+        </div>
+        <div class="user-info">
+            <span>Olá, <strong id="nome-usuario-display">Usuário</strong></span>
+            <button id="btn-sair" class="btn-secundario">Sair</button>
+        </div>
+    </header>
 
+    <main class="dashboard-container">
+        <!-- ALERTA CLÍNICO DE SEGURANÇA -->
+        <section class="alerta-urgencia" style="background-color: #fff3cd; border-left: 6px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+            <h3 style="margin-top:0; color: #856404;">⚠️ Atenção aos Sinais de Alerta</h3>
+            <p style="margin-bottom:0; color: #856404;">
+                Se você notar o <strong>pé muito quente, vermelho, inchado, com bolhas ou saída de líquido</strong>, procure a sua unidade de saúde ou serviço de estomaterapia imediatamente. O aplicativo é para acompanhamento e não substitui a avaliação presencial por um profissional.
+            </p>
+        </section>
 
-<header>
+        <!-- MÓDULO 1: HISTÓRICO DE REMISSÃO E ANTECEDENTES -->
+        <section class="card-modulo">
+            <h2> Histórico da Úlcera Cicatrizada</h2>
+            <form id="form-historico-remissao">
+                <div class="form-group">
+                    <label for="data-ultima-lesao">Data aproximada em que a última ferida cicatrizou:</label>
+                    <input type="date" id="data-ultima-lesao" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="local-ultima-lesao">Localização da última lesão:</label>
+                    <select id="local-ultima-lesao" class="form-control">
+                        <option value="">Selecione a região...</option>
+                        <option value="halux-dir">Hálux (dedão) - Pé Direito</option>
+                        <option value="planta-dir">Planta do Pé - Direito</option>
+                        <option value="calcanhar-dir">Calcanhar - Pé Direito</option>
+                        <option value="halux-esq">Hálux (dedão) - Pé Esquerdo</option>
+                        <option value="planta-esq">Planta do Pé - Esquerdo</option>
+                        <option value="calcanhar-esq">Calcanhar - Pé Esquerdo</option>
+                        <option value="outra">Outra região</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Possui histórico de amputação prévia?</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="amputacao" value="sim"> Sim</label>
+                        <label><input type="radio" name="amputacao" value="nao" checked> Não</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primario">Salvar Histórico</button>
+            </form>
+        </section>
 
+        <!-- MÓDULO 2: INSPEÇÃO GUIADA DOS PÉS -->
+        <section class="card-modulo" style="margin-top: 20px;">
+            <h2> Inspeção Diária dos Pés</h2>
+            <form id="form-inspecao">
+                <div class="form-group">
+                    <label for="realizado-por">Quem está realizando a verificação?</label>
+                    <select id="realizado-por" class="form-control">
+                        <option value="proprio_paciente">Próprio paciente</option>
+                        <option value="cuidador">Cuidador autorizado</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="pe-observado">Qual pé está sendo observado?</label>
+                    <select id="pe-observado" class="form-control" required>
+                        <option value="direito">Pé Direito</option>
+                        <option value="esquerdo">Pé Esquerdo</option>
+                        <option value="ambos">Ambos os pés</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="regiao-observada">Região observada:</label>
+                    <select id="regiao-observada" class="form-control" required>
+                        <option value="planta">Planta do pé (sola)</option>
+                        <option value="calcanhar">Calcanhar</option>
+                        <option value="entre_dedos">Entre os dedos</option>
+                        <option value="peito_pe">Peito do pé / Parte superior</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Notou alguma alteração hoje?</label>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" class="chk-alteracao" value="vermelhidao"> Vermelhidão</label>
+                        <label><input type="checkbox" class="chk-alteracao" value="calosidade"> Calosidade nova</label>
+                        <label><input type="checkbox" class="chk-alteracao" value="bolha"> Bolha / Lesão nova</label>
+                        <label><input type="checkbox" class="chk-alteracao" value="pe_quente"> Pé mais quente que o habitual</label>
+                        <label><input type="checkbox" class="chk-alteracao" value="nenhuma"> Nenhuma alteração</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><input type="checkbox" id="procurou-atendimento"> Procurei ou vou procurar atendimento de saúde por conta dessa observação</label>
+                </div>
+                <button type="submit" class="btn-primario">Registrar Inspeção</button>
+            </form>
+        </section>
 
-<h1>
-👣 Passo Seguro
-</h1>
+        <!-- MÓDULO 3: EDUCAÇÃO E ORIENTAÇÕES -->
+        <section class="card-modulo" style="margin-top: 20px;">
+            <h2> Orientações de Autocuidado</h2>
+            <div id="container-flashcards" class="flashcards-grid">
+                <div class="card-educativo">
+                    <h4> Calçados Adequados</h4>
+                    <p>Verifique o interior dos sapatos com as mãos antes de calçar para garantir que não existem pedras, costuras sobressalentes ou objetos rígidos.</p>
+                </div>
+                <div class="card-educativo">
+                    <h4> Secagem Cuidadosa</h4>
+                    <p>Após o banho, enxugue bem a pele entre os dedos usando uma toalha macia, sem esfregar com força.</p>
+                </div>
+            </div>
+        </section>
+    </main>
 
-
-<p id="nomeUsuario"></p>
-
-
-</header>
-
-
-
-
-<nav>
-
-
-<button id="btnHome">
-
-🏠 Início
-
-</button>
-
-
-
-<button id="btnPerfil">
-
-👤 Perfil
-
-</button>
-
-
-
-<button id="btnAvaliacao">
-
-🩺 Avaliação
-
-</button>
-
-
-
-<button id="btnHistorico">
-
-📊 Histórico
-
-</button>
-
-
-
-<button id="btnSair">
-
-🚪 Sair
-
-</button>
-
-
-
-</nav>
-
-
-
-
-
-<main id="conteudo">
-
-
-<h2>
-Bem-vindo!
-</h2>
-
-
-<p>
-Escolha uma opção acima.
-</p>
-
-
-
-</main>
-
-
-
-
-
-<script src="js/config.js"></script>
-
-<script src="js/api.js"></script>
-
-<script src="js/app.js"></script>
-
-
-
+    <footer>
+        <p>&copy; 2026 Passo Seguro - Projeto de Pesquisa Aplicado à Saúde. Todos os direitos reservados.</p>
+    </footer>
 </body>
-
-
 </html>
-<!-- ========================================== -->
-<!-- PASSO SEGURO -->
-<!-- EDUCAÇÃO EM SAÚDE -->
-<!-- ========================================== -->
-
-<section id="educacaoSaude" class="card-modulo">
-
-    <h2>📚 Educação em Saúde</h2>
-
-    <p>
-        Aprenda a identificar alterações nos pés,
-        prevenir complicações e conhecer os
-        cuidados diários recomendados.
-    </p>
-
-    <div class="cards-educacao">
-
-        <button class="card-educacao" onclick="abrirFlashCard('pe-saudavel')">
-
-            <img
-                src="imagens/educacao/pe-saudavel.png"
-                alt="Pé saudável">
-
-            <h3>Pé Saudável</h3>
-
-            <p>
-                Conheça as características
-                de um pé saudável.
-            </p>
-
-        </button>
-
-        <button class="card-educacao" onclick="abrirFlashCard('calosidade')">
-
-            <img
-                src="imagens/educacao/calosidade.png"
-                alt="Calosidade">
-
-            <h3>Calosidade</h3>
-
-            <p>
-                Aprenda como prevenir
-                e identificar.
-            </p>
-
-        </button>
-
-        <button class="card-educacao" onclick="abrirFlashCard('ulcera')">
-
-            <img
-                src="imagens/educacao/ulcera.png"
-                alt="Úlcera">
-
-            <h3>Úlcera</h3>
-
-            <p>
-                Saiba quando procurar
-                atendimento.
-            </p>
-
-        </button>
-
-        <button class="card-educacao" onclick="abrirFlashCard('calcado')">
-
-            <img
-                src="imagens/educacao/calcado.png"
-                alt="Calçado">
-
-            <h3>Calçado Correto</h3>
-
-            <p>
-                Escolha o calçado ideal
-                para proteger seus pés.
-            </p>
-
-        </button>
-
-    </div>
-
-</section>
