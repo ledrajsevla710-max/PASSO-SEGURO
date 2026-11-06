@@ -1,14 +1,15 @@
-// ==========================================
-// PASSO SEGURO
-// CONFIGURAÇÕES GERAIS
-// ==========================================
+// js/config.js
+// Configurações Globais e Conexão com o Supabase
 
+const SUPABASE_URL = "https://gfavissgogrkhgsrrfey.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_1MQ_vcYAdYYuyvqTUeG0jw_PsycjH80";
 
-const API_URL =
-"https://script.google.com/macros/s/AKfycbx0-Rz5C8Jk-xwHHt2QMXMbXPVk2qBWdIMrKoAmBnncUtfX6o8GftRzhuS3v0ojJRtn/exec";
+// Inicializa o cliente Supabase de forma segura para o frontend
+let supabaseClient = null;
 
-
-const APP_NOME = "Passo Seguro";
-
-
-const APP_VERSAO = "1.0.0";
+if (typeof supabase !== 'undefined') {
+    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log("Supabase conectado com sucesso!");
+} else {
+    console.error("Erro: A biblioteca do Supabase não foi carregada no HTML.");
+}
