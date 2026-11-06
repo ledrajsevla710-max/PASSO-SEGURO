@@ -141,17 +141,17 @@
     <div class="login-card">
         <div class="login-header">
             <h1>Passo Seguro</h1>
-            <p>SESAPI / Hospital Getúlio Vargas - HGV</p>
+            <p>Sistema de Monitoramento Clínico</p>
         </div>
 
         <!-- ABAS DE SELEÇÃO DO PERFIL -->
         <div class="tabs-container">
             <button type="button" class="tab-btn ativo" id="tab-paciente" onclick="alternarPerfil('paciente')">Paciente</button>
-            <button type="button" class="tab-btn" id="tab-profissional" onclick="alternarPerfil('profissional')">Profissional / HGV</button>
+            <button type="button" class="tab-btn" id="tab-profissional" onclick="alternarPerfil('profissional')">Profissional / Enfermeiro(a)</button>
         </div>
 
         <form id="form-auth">
-            <!-- Campos específicos para Paciente (visíveis apenas no cadastro de paciente) -->
+            <!-- Campos específicos para Paciente -->
             <div id="campos-paciente" class="hidden">
                 <div class="form-group">
                     <label for="nome-paciente">Nome Completo:</label>
@@ -163,11 +163,11 @@
                 </div>
             </div>
 
-            <!-- Campos específicos para Profissionais (visíveis apenas no cadastro de profissional) -->
+            <!-- Campos específicos para Profissionais / Enfermeiros -->
             <div id="campos-profissional" class="hidden">
                 <div class="form-group">
                     <label for="nome-profissional">Nome Completo:</label>
-                    <input type="text" id="nome-profissional" class="form-control" placeholder="Ex: Dr. Carlos Eduardo">
+                    <input type="text" id="nome-profissional" class="form-control" placeholder="Ex: Enf. Maria Silva">
                 </div>
                 <div class="form-group">
                     <label for="coren-profissional">Nº do COREN:</label>
@@ -189,13 +189,13 @@
         </form>
 
         <div class="modo-toggle">
-            <span id="texto-alternancia">Não tem cadastro? <a href="#" id="link-alternar-modo">Cadastre-se como Paciente</a></span>
+            <span id="texto-alternancia">Não tem cadastro? <a href="#" id="link-alternar-modo" onclick="alternarModoManual(event)">Cadastre-se como Paciente</a></span>
         </div>
     </div>
 
     <script>
-        let perfilAtual = 'paciente'; // 'paciente' ou 'profissional'
-        let modoAtual = 'login'; // 'login' ou 'cadastro'
+        let perfilAtual = 'paciente';
+        let modoAtual = 'login';
 
         function alternarPerfil(perfil) {
             perfilAtual = perfil;
@@ -209,20 +209,6 @@
             atualizarVisibilidadeCampos();
             atualizarTextoAlternancia();
         }
-
-        const linkAlternar = document.getElementById('link-alternar-modo');
-        linkAlternar.addEventListener('click', (e) => {
-            e.preventDefault();
-            modoAtual = (modoAtual === 'login') ? 'cadastro' : 'login';
-            
-            if (modoAtual === 'cadastro') {
-                document.getElementById('btn-submit').textContent = 'Cadastrar';
-            } else {
-                document.getElementById('btn-submit').textContent = 'Entrar';
-            }
-            atualizarVisibilidadeCampos();
-            atualizarTextoAlternancia();
-        });
 
         function atualizarVisibilidadeCampos() {
             const divPaciente = document.getElementById('campos-paciente');
@@ -260,7 +246,7 @@
             atualizarTextoAlternancia();
         }
 
-        // Lógica Principal de Autenticação e Cadastro com o Supabase
+        // Lógica de Autenticação e Cadastro com Supabase
         document.getElementById("form-auth").addEventListener("submit", async (e) => {
             e.preventDefault();
 
@@ -281,7 +267,7 @@
             try {
                 if (modoAtual === "cadastro") {
                     if (perfilAtual === 'profissional' && (!nomeProfissional || !corenProfissional)) {
-                        alert("Por favor, preencha o Nome Completo e o COREN para o cadastro profissional.");
+                        alert("Por favor, preencha o Nome Completo e o COREN.");
                         return;
                     }
                     if (perfilAtual === 'paciente' && (!nomePaciente || !cartaoSus)) {
@@ -289,17 +275,10 @@
                         return;
                     }
 
-                    // 1. Cria a conta no Auth do Supabase
-                    const { data: authData, error: authError } = await window.supabase.auth.signUp({
-                        email,
-                        senha
-                    });
-
+                    const { data: authData, error: authError } = await window.supabase.auth.signUp({ email, senha });
                     if (authError) throw authError;
 
                     const userId = authData.user?.id;
-
-                    // 2. Salva o perfil na tabela perfis_usuarios
                     if (userId) {
                         const isProfissional = (perfilAtual === 'profissional');
                         const { error: dbError } = await window.supabase.from('perfis_usuarios').insert([
@@ -310,17 +289,16 @@
                                 nome_completo: isProfissional ? nomeProfissional : nomePaciente,
                                 coren: isProfissional ? corenProfissional : null,
                                 cartao_sus: !isProfissional ? cartaoSus : null,
-                                aprovado: !isProfissional // Pacientes aprovados direto; profissionais nascem com false
+                                aprovado: !isProfissional // Profissionais aguardam aprovação inicial
                             }
                         ]);
-
                         if (dbError) throw dbError;
                     }
 
                     if (perfilAtual === 'profissional') {
-                        alert("Cadastro realizado com sucesso! Sua conta de profissional está pendente de aprovação pela moderação da SESAPI/HGV.");
+                        alert("Cadastro realizado! Sua conta de profissional está pendente de moderação.");
                     } else {
-                        alert("Cadastro de paciente realizado com sucesso!");
+                        alert("Cadastro realizado com sucesso!");
                         window.location.href = "dashboard.html";
                     }
 
@@ -331,17 +309,10 @@
                     document.getElementById('form-auth').reset();
 
                 } else {
-                    // 1. Efetua o login
-                    const { data: authData, error: authError } = await window.supabase.auth.signInWithPassword({
-                        email,
-                        senha
-                    });
-
+                    const { data: authData, error: authError } = await window.supabase.auth.signInWithPassword({ email, senha });
                     if (authError) throw authError;
 
                     const userId = authData.user?.id;
-
-                    // 2. Consulta o perfil e o status de aprovação no banco
                     const { data: perfilData, error: perfilError } = await window.supabase
                         .from('perfis_usuarios')
                         .select('tipo, aprovado')
@@ -349,25 +320,22 @@
                         .single();
 
                     if (perfilError || !perfilData) {
-                        throw new Error("Perfil de usuário não encontrado no banco de dados.");
+                        throw new Error("Perfil de usuário não encontrado.");
                     }
 
                     if (perfilData.tipo === 'profissional') {
                         if (!perfilData.aprovado) {
-                            alert("Acesso restrito: Sua conta profissional ainda não foi aprovada pela moderação.");
+                            alert("Acesso restrito: Sua conta profissional ainda aguarda aprovação.");
                             await window.supabase.auth.signOut();
                             return;
                         }
-                        alert("Login de profissional efetuado com sucesso!");
                         window.location.href = "profissional.html";
                     } else {
-                        alert("Login efetuado com sucesso!");
                         window.location.href = "dashboard.html";
                     }
                 }
             } catch (err) {
                 alert("Erro na autenticação: " + err.message);
-                console.error("Erro:", err);
             }
         });
     </script>
