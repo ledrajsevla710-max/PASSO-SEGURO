@@ -1,5 +1,5 @@
 // js/app.js
-// Lógica do Painel (Dashboard) e Proteção de Sessão com Supabase
+// Lógica do Painel (Dashboard) e Salvamento de Dados com Supabase
 
 document.addEventListener("DOMContentLoaded", async () => {
     // 1. Verificar se o usuário está autenticado de forma segura pelo Supabase
@@ -7,13 +7,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         const { data: { session }, error } = await supabaseClient.auth.getSession();
         
         if (error || !session) {
-            // Se não houver sessão ativa, redireciona para o login
             alert("Sessão expirada ou acesso não autorizado. Faça login novamente.");
             window.location.href = "login.html";
             return;
         }
 
-        // Se houver sessão, podemos buscar os dados do perfil na tabela 'profiles'
         const user = session.user;
         carregarPerfilUsuario(user.id);
     } else {
@@ -21,19 +19,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // 2. Configurar o botão de Sair (Logout) seguro
-    const btnSair = document.getElementById("btn-sair") || document.getElementById("logout-btn");
+    const btnSair = document.getElementById("btn-sair");
     if (btnSair) {
         btnSair.addEventListener("click", async (e) => {
             e.preventDefault();
             if (typeof supabaseClient !== 'undefined') {
                 await supabaseClient.auth.signOut();
             }
-            // Limpa apenas o necessário e redireciona
             window.location.href = "login.html";
         });
     }
 
-    // 3. Configurar formulário de Inspeção dos Pés (se presente na página)
+    // 3. Configurar o envio do Histórico de Remissão
+    const formHistorico = document.getElementById("form-historico-remissao");
+    if (formHistorico) {
+        formHistorico.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            await salvarHistoricoRemissao();
+        });
+    }
+
+    // 4. Configurar o formulário de Inspeção dos Pés
     const formInspecao = document.getElementById("form-inspecao");
     if (formInspecao) {
         formInspecao.addEventListener("submit", async (e) => {
@@ -43,7 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// Função para carregar o nome e dados do perfil com segurança
+// Função para carregar o nome do perfil com segurança
 async function carregarPerfilUsuario(userId) {
     try {
         const { data, error } = await supabaseClient
@@ -57,12 +63,42 @@ async function carregarPerfilUsuario(userId) {
         if (data) {
             const elementoNome = document.getElementById("nome-usuario-display");
             if (elementoNome) {
-                // Uso de textContent para evitar vulnerabilidades de XSS
                 elementoNome.textContent = data.nome_completo;
             }
         }
     } catch (error) {
         console.error("Erro ao carregar perfil:", error.message);
+    }
+}
+
+// Função para salvar o Histórico da Úlcera Cicatrizada
+async function salvarHistoricoRemissao() {
+    try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) return;
+
+        const dataLesao = document.getElementById("data-ultima-lesao").value;
+        const localLesao = document.getElementById("local-ultima-lesao").value;
+        const amputacaoRadio = document.querySelector('input[name="amputacao"]:checked');
+        const antecedenteAmputacao = amputacaoRadio ? amputacaoRadio.value === 'sim' : false;
+
+        const { error } = await supabaseClient
+            .from('historico_pacientes')
+            .insert([
+                {
+                    paciente_id: session.user.id,
+                    data_ultima_lesao: dataLesao || null,
+                    localizacao_ultima_lesao: localLesao,
+                    antecedente_amputacao: antecedenteAmputacao
+                }
+            ]);
+
+        if (error) throw error;
+
+        alert("Histórico de remissão salvo com sucesso!");
+    } catch (error) {
+        alert("Erro ao salvar histórico: " + error.message);
+        console.error("Erro histórico:", error);
     }
 }
 
@@ -72,18 +108,26 @@ async function salvarInspecaoPes() {
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (!session) return;
 
-        const peObservado = document.getElementById("pe-observado") ? document.getElementById("pe-observado").value : "direito";
-        const regiao = document.getElementById("regiao-observada") ? document.getElementById("regiao-observada").value : "planta";
-        const procurouAtendimento = document.getElementById("procurou-atendimento") ? document.getElementById("procurou-atendimento").checked : false;
+        const realizadoPor = document.getElementById("realizado-por").value;
+        const peObservado = document.getElementById("pe-observado").value;
+        const regiao = document.getElementById("regiao-observada").value;
+        const procurouAtendimento = document.getElementById("procurou-atendimento").checked;
+
+        // Capturar alterações marcadas nas caixas de seleção
+        const alteracoesSelecionadas = [];
+        document.querySelectorAll('.chk-alteracao:checked').forEach(checkbox => {
+            alteracoesSelecionadas.push(checkbox.value);
+        });
 
         const { error } = await supabaseClient
             .from('inspecoes_pes')
             .insert([
                 {
                     paciente_id: session.user.id,
-                    realizado_por: 'proprio_paciente',
+                    realizado_por: realizadoPor,
                     pe_observado: peObservado,
                     regiao: regiao,
+                    alteracoes_percebidas: alteracoesSelecionadas,
                     procurou_atendimento: procurouAtendimento
                 }
             ]);
