@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Passo Seguro - Painel de Autocuidado</title>
+    <title>Passo Seguro - Painel do Paciente</title>
     <link rel="stylesheet" href="css/style.css">
     
     <!-- Biblioteca Oficial do Supabase -->
@@ -15,118 +15,112 @@
     <header class="header-app">
         <div class="logo-container">
             <h1>Passo Seguro</h1>
-            <p>Acompanhamento na fase de remissão</p>
+            <p>Secretaria de Estado da Saúde - Piauí | Autocuidado no Pé Diabético</p>
         </div>
         <div class="user-info">
-            <span>Olá, <strong id="nome-usuario-display">Usuário</strong></span>
+            <span>Olá, <strong id="nome-paciente-display">Paciente</strong></span>
             <button id="btn-sair" class="btn-secundario">Sair</button>
         </div>
     </header>
 
     <main class="dashboard-container">
-        <!-- ALERTA CLÍNICO DE SEGURANÇA -->
-        <section class="alerta-urgencia" style="background-color: #fff3cd; border-left: 6px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
-            <h3 style="margin-top:0; color: #856404;">⚠️ Atenção aos Sinais de Alerta</h3>
-            <p style="margin-bottom:0; color: #856404;">
-                Se você notar o <strong>pé muito quente, vermelho, inchado, com bolhas ou saída de líquido</strong>, procure a sua unidade de saúde ou serviço de estomaterapia imediatamente. O aplicativo é para acompanhamento e não substitui a avaliação presencial por um profissional.
+        <!-- AVISO DE SEGURANÇA CLÍNICA -->
+        <section class="alerta-urgencia">
+            <h3>⚠️ Sinais de Alerta e Atenção</h3>
+            <p>
+                Se você perceber <strong>pé muito quente, vermelho, inchado, bolhas, feridas abertas ou secreção</strong>, procure a sua unidade de saúde ou o serviço de estomaterapia imediatamente. O Passo Seguro é uma ferramenta complementar e não substitui avaliações presenciais.
             </p>
         </section>
 
-        <!-- MÓDULO 1: HISTÓRICO DE REMISSÃO E ANTECEDENTES -->
+        <!-- REGISTRO DE HISTÓRICO CLÍNICO (PREVENÇÃO / TRATAMENTO / REMISSÃO) -->
         <section class="card-modulo">
-            <h2> Histórico da Úlcera Cicatrizada</h2>
-            <form id="form-historico-remissao">
+            <h2> Histórico e Situação Clínica dos Pés</h2>
+            <form id="form-historico">
                 <div class="form-group">
-                    <label for="data-ultima-lesao">Data aproximada em que a última ferida cicatrizou:</label>
-                    <input type="date" id="data-ultima-lesao" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="local-ultima-lesao">Localização da última lesão:</label>
-                    <select id="local-ultima-lesao" class="form-control">
-                        <option value="">Selecione a região...</option>
-                        <option value="halux-dir">Hálux (dedão) - Pé Direito</option>
-                        <option value="planta-dir">Planta do Pé - Direito</option>
-                        <option value="calcanhar-dir">Calcanhar - Pé Direito</option>
-                        <option value="halux-esq">Hálux (dedão) - Pé Esquerdo</option>
-                        <option value="planta-esq">Planta do Pé - Esquerdo</option>
-                        <option value="calcanhar-esq">Calcanhar - Pé Esquerdo</option>
-                        <option value="outra">Outra região</option>
+                    <label for="status-clinico">Situação Atual dos Pés:</label>
+                    <select id="status-clinico" class="form-control" required>
+                        <option value="prevencao">Sem histórico de feridas (Prevenção e Autocuidado)</option>
+                        <option value="em_tratamento">Em tratamento ativo de ferida / uso de curativos</option>
+                        <option value="remissao">Ferida cicatrizada (Fase de Remissão)</option>
                     </select>
                 </div>
+
                 <div class="form-group">
-                    <label>Possui histórico de amputação prévia?</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="amputacao" value="sim"> Sim</label>
-                        <label><input type="radio" name="amputacao" value="nao" checked> Não</label>
-                    </div>
+                    <label for="data-lesao">Data da Última Úlcera / Ferida (se houver):</label>
+                    <input type="date" id="data-lesao" class="form-control">
                 </div>
-                <button type="submit" class="btn-primario">Salvar Histórico</button>
+
+                <div class="form-group">
+                    <label for="localizacao-lesao">Localização Predominante da Ferida / Região de Risco:</label>
+                    <input type="text" id="localizacao-lesao" class="form-control" placeholder="Ex: Planta do pé direito, calcanhar esquerdo, entre os dedos...">
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="historico-amputacao"> Possui histórico de amputação em membros inferiores?
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-primario">Salvar Situação Clínica</button>
             </form>
         </section>
 
-        <!-- MÓDULO 2: INSPEÇÃO GUIADA DOS PÉS -->
-        <section class="card-modulo" style="margin-top: 20px;">
-            <h2> Inspeção Diária dos Pés</h2>
+        <!-- INSPEÇÃO DIÁRIA DOS PÉS -->
+        <section class="card-modulo">
+            <h2> Inspeção Diária Guiada dos Pés</h2>
             <form id="form-inspecao">
                 <div class="form-group">
-                    <label for="realizado-por">Quem está realizando a verificação?</label>
-                    <select id="realizado-por" class="form-control">
-                        <option value="proprio_paciente">Próprio paciente</option>
-                        <option value="cuidador">Cuidador autorizado</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="pe-observado">Qual pé está sendo observado?</label>
+                    <label for="pe-observado">Pé Observado:</label>
                     <select id="pe-observado" class="form-control" required>
-                        <option value="direito">Pé Direito</option>
-                        <option value="esquerdo">Pé Esquerdo</option>
-                        <option value="ambos">Ambos os pés</option>
+                        <option value="Direito">Pé Direito</option>
+                        <option value="Esquerdo">Pé Esquerdo</option>
+                        <option value="Ambos">Ambos os Pés</option>
                     </select>
                 </div>
+
                 <div class="form-group">
-                    <label for="regiao-observada">Região observada:</label>
-                    <select id="regiao-observada" class="form-control" required>
-                        <option value="planta">Planta do pé (sola)</option>
-                        <option value="calcanhar">Calcanhar</option>
-                        <option value="entre_dedos">Entre os dedos</option>
-                        <option value="peito_pe">Peito do pé / Parte superior</option>
+                    <label for="regiao-pe">Região do Pé Inspeccionada:</label>
+                    <select id="regiao-pe" class="form-control" required>
+                        <option value="Planta do pé (solado)">Planta do pé (solado)</option>
+                        <option value="Calcanhar">Calcanhar</option>
+                        <option value="Entre os dedos (interdigital)">Entre os dedos</option>
+                        <option value="Dorso do pé (peito do pé)">Dorso do pé (peito do pé)</option>
+                        <option value="Pé inteiro">Pé inteiro</option>
                     </select>
                 </div>
+
                 <div class="form-group">
-                    <label>Notou alguma alteração hoje?</label>
-                    <div class="checkbox-group">
-                        <label><input type="checkbox" class="chk-alteracao" value="vermelhidao"> Vermelhidão</label>
-                        <label><input type="checkbox" class="chk-alteracao" value="calosidade"> Calosidade nova</label>
-                        <label><input type="checkbox" class="chk-alteracao" value="bolha"> Bolha / Lesão nova</label>
-                        <label><input type="checkbox" class="chk-alteracao" value="pe_quente"> Pé mais quente que o habitual</label>
-                        <label><input type="checkbox" class="chk-alteracao" value="nenhuma"> Nenhuma alteração</label>
+                    <label>Alterações Identificadas Hoje:</label>
+                    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 5px;">
+                        <label><input type="checkbox" name="alteracao" value="Vermelhidão"> Vermelhidão ou manchas</label>
+                        <label><input type="checkbox" name="alteracao" value="Pé quente ou inchado"> Pé quente ou inchado</label>
+                        <label><input type="checkbox" name="alteracao" value="Calosidade ou pele seca"> Calosidade ou pele seca/rachada</label>
+                        <label><input type="checkbox" name="alteracao" value="Bolha ou machucado"> Bolha ou pequeno machucado</label>
+                        <label><input type="checkbox" name="alteracao" value="Ferida ativa em tratamento"> Ferida ativa em acompanhamento</label>
                     </div>
                 </div>
+
                 <div class="form-group">
-                    <label><input type="checkbox" id="procurou-atendimento"> Procurei ou vou procurar atendimento de saúde por conta dessa observação</label>
+                    <label>
+                        <input type="checkbox" id="procurou-atendimento"> Buscou atendimento na unidade de saúde ou estomaterapia hoje?
+                    </label>
                 </div>
-                <button type="submit" class="btn-primario">Registrar Inspeção</button>
+
+                <button type="submit" class="btn-primario">Registrar Inspeção Diária</button>
             </form>
         </section>
 
-        <!-- MÓDULO 3: EDUCAÇÃO E ORIENTAÇÕES -->
-        <section class="card-modulo" style="margin-top: 20px;">
-            <h2> Orientações de Autocuidado</h2>
-            <div id="container-flashcards" class="flashcards-grid">
-                <div class="card-educativo">
-                    <h4> Calçados Adequados</h4>
-                    <p>Verifique o interior dos sapatos com as mãos antes de calçar para garantir que não existem pedras, costuras sobressalentes ou objetos rígidos.</p>
-                </div>
-                <div class="card-educativo">
-                    <h4> Secagem Cuidadosa</h4>
-                    <p>Após o banho, enxugue bem a pele entre os dedos usando uma toalha macia, sem esfregar com força.</p>
-                </div>
+        <!-- HISTÓRICO LONGITUDINAL -->
+        <section class="card-modulo">
+            <h2> Histórico de Inspeções Realizadas</h2>
+            <div id="container-historico-inspecoes">
+                <p>Carregando histórico de inspeções...</p>
             </div>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2026 Passo Seguro - Projeto de Pesquisa Aplicado à Saúde. Todos os direitos reservados.</p>
+        <p>&copy; 2026 Passo Seguro - Secretaria de Estado da Saúde do Piauí. Todos os direitos reservados.</p>
     </footer>
 </body>
 </html>
