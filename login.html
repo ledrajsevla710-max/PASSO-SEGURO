@@ -3,106 +3,278 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Passo Seguro - Autenticação</title>
-    <link rel="stylesheet" href="css/style.css">
-    
-    <!-- 1º: Biblioteca Oficial do Supabase -->
+    <title>Passo Seguro - Acesso ao Sistema</title>
+    <!-- Supabase e Config -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <!-- 2º: Configurações de Conexão -->
     <script src="js/config.js"></script>
+    <style>
+        :root {
+            --azul-governo: #004080;
+            --azul-escuro: #002244;
+            --azul-claro: #e8f0fe;
+            --verde-sucesso: #137333;
+            --verde-hover: #0d5223;
+            --cinza-fundo: #f0f4f8;
+            --cinza-borda: #cbd5e1;
+            --texto-principal: #1e293b;
+        }
 
-    <!-- 3º: Lógica do Formulário -->
-    <script src="js/login.js" defer></script>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--cinza-fundo);
+            color: var(--texto-principal);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-card {
+            background-color: #ffffff;
+            border: 1px solid var(--cinza-borda);
+            border-radius: 12px;
+            padding: 35px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .login-header h1 {
+            color: var(--azul-governo);
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .login-header p {
+            color: #64748b;
+            font-size: 13px;
+            margin: 5px 0 0 0;
+        }
+
+        /* Seletor de Perfil (Paciente vs Profissional) */
+        .perfil-selector {
+            display: flex;
+            background-color: #e2e8f0;
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+
+        .perfil-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 10px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            border-radius: 6px;
+            color: #475569;
+            transition: all 0.2s;
+        }
+
+        .perfil-btn.ativo {
+            background-color: #ffffff;
+            color: var(--azul-governo);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #334155;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 11px 12px;
+            box-sizing: border-box;
+            border: 1.5px solid var(--cinza-borda);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            border-color: var(--azul-governo);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 64, 128, 0.15);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: var(--azul-governo);
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--azul-escuro);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .form-footer a {
+            color: var(--azul-governo);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
-<body style="background-color: #f4f6f9; font-family: Arial, sans-serif;">
-    <header class="header-app" style="background-color: #003366; color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;">
-        <div class="logo-container">
-            <h1 style="margin: 0; font-size: 20px;">Passo Seguro</h1>
-            <p style="margin: 0; font-size: 12px; opacity: 0.8;">Secretaria de Estado da Saúde - Piauí</p>
-        </div>
-        <nav class="nav-links">
-            <a href="index.html" class="btn-secundario" style="background: #fff; color: #003366; padding: 6px 12px; text-decoration: none; border-radius: 4px; font-size: 13px; font-weight: bold;">Voltar ao Início</a>
-        </nav>
-    </header>
+<body>
 
-    <main class="dashboard-container" style="max-width: 450px; margin: 40px auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <section class="card-modulo">
-            <!-- ABAS DE NAVEGAÇÃO ENTRE LOGIN E CADASTRO -->
-            <div style="display: flex; border-bottom: 2px solid #ddd; margin-bottom: 20px;">
-                <button id="tab-login" type="button" style="flex: 1; padding: 12px; border: none; background: none; font-weight: bold; border-bottom: 3px solid #003366; color: #003366; cursor: pointer; font-size: 14px;">Entrar</button>
-                <button id="tab-cadastro" type="button" style="flex: 1; padding: 12px; border: none; background: none; font-weight: bold; color: #666; cursor: pointer; font-size: 14px;">Cadastrar</button>
+    <div class="login-card">
+        <div class="login-header">
+            <h1>Passo Seguro</h1>
+            <p>Secretaria de Estado da Saúde - Piauí</p>
+        </div>
+
+        <!-- ABAS DE SELEÇÃO DE PERFIL -->
+        <div class="perfil-selector">
+            <button type="button" id="btn-tab-paciente" class="perfil-btn ativo" onclick="alternarPerfil('paciente')">👤 Paciente</button>
+            <button type="button" id="btn-tab-profissional" class="perfil-btn" onclick="alternarPerfil('profissional')">🩺 Profissional</button>
+        </div>
+
+        <!-- FORMULÁRIO DE ACESSO -->
+        <form id="form-login">
+            <div id="campos-profissional-extra" style="display: none;">
+                <div class="form-group">
+                    <label for="nome-profissional">Nome Completo do Profissional:</label>
+                    <input type="text" id="nome-profissional" class="form-control" placeholder="Ex: Dr(a). Nome Sobrenome">
+                </div>
+                <div class="form-group">
+                    <label for="coren-profissional">Nº do COREN-PI / Conselho:</label>
+                    <input type="text" id="coren-profissional" class="form-control" placeholder="Ex: COREN-PI 000.000">
+                </div>
             </div>
 
-            <!-- FORMULÁRIO DE LOGIN -->
-            <form id="form-login">
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label for="email-login" style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 13px;">E-mail:</label>
-                    <input type="email" id="email-login" class="form-control" placeholder="seu@email.com" required style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
-                </div>
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label for="senha-login" style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 13px;">Senha:</label>
-                    <input type="password" id="senha-login" class="form-control" placeholder="********" required style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
-                </div>
-                <button type="submit" class="btn-primario" style="width: 100%; background-color: #003366; color: #fff; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer;">Entrar no Sistema</button>
-            </form>
+            <div class="form-group">
+                <label for="email-input">E-mail Institucional ou Pessoal:</label>
+                <input type="email" id="email-input" class="form-control" placeholder="seu.email@exemplo.com" required>
+            </div>
 
-            <!-- FORMULÁRIO DE CADASTRO -->
-            <form id="form-cadastro" style="display: none;">
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label for="nome-cadastro" style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 13px;">Nome Completo:</label>
-                    <input type="text" id="nome-cadastro" class="form-control" placeholder="Digite seu nome completo" required style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
-                </div>
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label for="email-cadastro" style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 13px;">E-mail:</label>
-                    <input type="email" id="email-cadastro" class="form-control" placeholder="seu@email.com" required style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
-                </div>
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label for="senha-cadastro" style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 13px;">Senha:</label>
-                    <input type="password" id="senha-cadastro" class="form-control" placeholder="Crie uma senha" required style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
-                </div>
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label for="tipo-usuario" style="display: block; margin-bottom: 5px; font-weight: bold; font-size: 13px;">Tipo de Perfil:</label>
-                    <select id="tipo-usuario" class="form-control" required style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
-                        <option value="paciente">Pessoa com úlcera cicatrizada (Paciente)</option>
-                        <option value="profissional">Profissional de Saúde (Enfermagem / Estomaterapia)</option>
-                        <option value="cuidador">Cuidador Autorizado</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn-primario" style="width: 100%; background-color: #003366; color: #fff; border: none; padding: 10px; border-radius: 4px; font-weight: bold; cursor: pointer;">Criar Conta Segura</button>
-            </form>
-        </section>
-    </main>
+            <div class="form-group">
+                <label for="senha-input">Senha de Acesso:</label>
+                <input type="password" id="senha-input" class="form-control" placeholder="••••••••" required>
+            </div>
 
-    <footer style="text-align: center; margin-top: 30px; font-size: 12px; color: #666;">
-        <p>&copy; 2026 Passo Seguro - Governo do Estado do Piauí / Saúde. Todos os direitos reservados.</p>
-    </footer>
+            <button type="submit" id="btn-acao-submit" class="btn-submit">Entrar como Paciente</button>
+        </form>
+
+        <div class="form-footer">
+            <p id="texto-alternancia">Não tem uma conta? <a href="#" id="link-modo-cadastro" onclick="toggleModo(event)">Cadastre-se aqui</a></p>
+        </div>
+    </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const tabLogin = document.getElementById("tab-login");
-            const tabCadastro = document.getElementById("tab-cadastro");
-            const formLogin = document.getElementById("form-login");
-            const formCadastro = document.getElementById("form-cadastro");
+        let modoAtual = "login"; // 'login' ou 'cadastro'
+        let perfilAtual = "paciente"; // 'paciente' ou 'profissional'
 
-            if (tabLogin && tabCadastro && formLogin && formCadastro) {
-                tabLogin.addEventListener("click", () => {
-                    formLogin.style.display = "block";
-                    formCadastro.style.display = "none";
-                    tabLogin.style.borderBottom = "3px solid #003366";
-                    tabLogin.style.color = "#003366";
-                    tabCadastro.style.borderBottom = "none";
-                    tabCadastro.style.color = "#666";
-                });
+        function alternarPerfil(perfil) {
+            perfilAtual = perfil;
+            const btnPaciente = document.getElementById("btn-tab-paciente");
+            const btnProfissional = document.getElementById("btn-tab-profissional");
+            const camposExtra = document.getElementById("campos-profissional-extra");
+            const btnSubmit = document.getElementById("btn-acao-submit");
 
-                tabCadastro.addEventListener("click", () => {
-                    formLogin.style.display = "none";
-                    formCadastro.style.display = "block";
-                    tabCadastro.style.borderBottom = "3px solid #003366";
-                    tabCadastro.style.color = "#003366";
-                    tabLogin.style.borderBottom = "none";
-                    tabLogin.style.color = "#666";
-                });
+            if (perfil === "paciente") {
+                btnPaciente.classList.add("ativo");
+                btnProfissional.classList.remove("ativo");
+                camposExtra.style.display = "none";
+                btnSubmit.textContent = modoAtual === 'login' ? "Entrar como Paciente" : "Criar Conta de Paciente";
+            } else {
+                btnProfissional.classList.add("ativo");
+                btnPaciente.classList.remove("ativo");
+                camposExtra.style.display = "block";
+                btnSubmit.textContent = modoAtual === 'login' ? "Entrar como Profissional" : "Cadastrar Profissional (Estomaterapeuta)";
+            }
+        }
+
+        function toggleModo(e) {
+            e.preventDefault();
+            const linkModo = document.getElementById("link-modo-cadastro");
+            const btnSubmit = document.getElementById("btn-acao-submit");
+
+            if (modoAtual === "login") {
+                modoAtual = "cadastro";
+                btnSubmit.textContent = perfilAtual === 'paciente' ? "Criar Conta de Paciente" : "Cadastrar Profissional (Estomaterapeuta)";
+                linkModo.innerHTML = "Já tem uma conta? Faça login";
+            } else {
+                modoAtual = "login";
+                btnSubmit.textContent = perfilAtual === 'paciente' ? "Entrar como Paciente" : "Entrar como Profissional";
+                linkModo.innerHTML = "Cadastre-se aqui";
+            }
+        }
+
+        // Lógica de autenticação com Supabase
+        document.getElementById("form-login").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("email-input").value;
+            const senha = document.getElementById("senha-input").value;
+
+            if (typeof supabase === 'undefined') {
+                alert("Erro: Cliente Supabase não carregado.");
+                return;
+            }
+
+            try {
+                if (modoAtual === "cadastro") {
+                    // Cadastro no Supabase Auth
+                    const { data, error } = await supabase.auth.signUp({ email, senha });
+                    if (error) throw error;
+
+                    alert("Cadastro realizado com sucesso! Redirecionando...");
+                    
+                    // Direciona conforme o perfil selecionado
+                    if (perfilAtual === 'profissional') {
+                        window.location.href = "profissional.html";
+                    } else {
+                        window.location.href = "dashboard.html";
+                    }
+                } else {
+                    // Login no Supabase Auth
+                    const { data, error } = await supabase.auth.signInWithPassword({ email, senha });
+                    if (error) throw error;
+
+                    alert("Login efetuado com sucesso!");
+
+                    // Direciona conforme o perfil selecionado
+                    if (perfilAtual === 'profissional') {
+                        window.location.href = "profissional.html";
+                    } else {
+                        window.location.href = "dashboard.html";
+                    }
+                }
+            } catch (err) {
+                alert("Erro na autenticação: " + err.message);
             }
         });
     </script>
