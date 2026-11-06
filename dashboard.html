@@ -4,13 +4,235 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Passo Seguro - Painel do Paciente</title>
-    <link rel="stylesheet" href="css/style.css">
-    <!-- CDN para geração de PDF a partir do HTML (STEP 1) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <!-- Biblioteca Oficial do Supabase -->
+    <!-- CDN da Biblioteca de Geração de PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- Supabase e Config -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
     <script src="js/app.js" defer></script>
+    <style>
+        /* Estilos Globais Revitalizados - Passo Seguro */
+        :root {
+            --azul-governo: #004080;
+            --azul-escuro: #002244;
+            --azul-claro: #e8f0fe;
+            --verde-sucesso: #137333;
+            --verde-hover: #0d5223;
+            --cinza-fundo: #f0f4f8;
+            --cinza-borda: #cbd5e1;
+            --texto-principal: #1e293b;
+            --alerta-amarelo: #fef9c3;
+            --alerta-borda: #ca8a04;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--cinza-fundo);
+            color: var(--texto-principal);
+            margin: 0;
+            padding: 0;
+        }
+
+        .header-app {
+            background: linear-gradient(135deg, var(--azul-escuro), var(--azul-governo));
+            color: #ffffff;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .logo-container h1 {
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-container p {
+            margin: 4px 0 0 0;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+        }
+
+        .dashboard-container {
+            max-width: 950px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .card-modulo {
+            background-color: #ffffff;
+            border: 1px solid var(--cinza-borda);
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease;
+        }
+
+        .card-modulo:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-modulo h2 {
+            color: var(--azul-governo);
+            margin-top: 0;
+            border-bottom: 3px solid var(--azul-claro);
+            padding-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #334155;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1.5px solid var(--cinza-borda);
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #fff;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--azul-governo);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 64, 128, 0.15);
+        }
+
+        .btn-primario {
+            background-color: var(--verde-sucesso);
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-primario:hover {
+            background-color: var(--verde-hover);
+        }
+
+        .btn-secundario {
+            background-color: #475569;
+            color: #ffffff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.2s;
+        }
+
+        .btn-secundario:hover {
+            background-color: #334155;
+        }
+
+        .alerta-urgencia {
+            background-color: var(--alerta-amarelo);
+            border-left: 6px solid var(--alerta-borda);
+            padding: 18px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            color: #713f12;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .alerta-urgencia h3 {
+            margin-top: 0;
+            color: #854d0e;
+            font-size: 17px;
+        }
+
+        /* Estilo da Sandrinha - Avatar 2D Acolhedor */
+        .sandrinha-container {
+            border-left: 6px solid var(--azul-governo);
+            background: linear-gradient(to right, #f8fbff, #ffffff);
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .sandrinha-avatar-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .sandrinha-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #004080, #0066cc);
+            border: 3px solid #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 64, 128, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Ícone ilustrado SVG de Enfermeira 2D */
+        .sandrinha-avatar svg {
+            width: 50px;
+            height: 50px;
+            fill: #ffffff;
+        }
+
+        .status-online {
+            width: 14px;
+            height: 14px;
+            background-color: #22c55e;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+        }
+
+        .sandrinha-chat-content {
+            flex: 1;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 25px;
+            font-size: 13px;
+            color: #64748b;
+            background-color: #e2e8f0;
+            border-top: 1px solid var(--cinza-borda);
+        }
+    </style>
 </head>
 <body>
     <header class="header-app">
@@ -27,46 +249,54 @@
     <main class="dashboard-container">
         <!-- AVISO DE SEGURANÇA CLÍNICA -->
         <section class="alerta-urgencia">
-            <h3>⚠️ Sinais de Alerta e Atenção</h3>
+            <h3>⚠️ Sinais de Alerta e Atenção Imediata</h3>
             <p>
-                Se você perceber <strong>pé muito quente, vermelho, inchado, bolhas, feridas abertas ou secreção</strong>, procure a sua unidade de saúde ou o serviço de estomaterapia imediatamente. O Passo Seguro é uma ferramenta complementar e não substitui avaliações presenciais.
+                Se você perceber <strong>pé muito quente, vermelho, inchado, bolhas, feridas abertas ou secreção</strong>, procure a sua unidade de saúde ou o serviço de estomaterapia imediatamente. O Passo Seguro é uma ferramenta complementar de apoio ao seu cuidado.
             </p>
         </section>
 
-        <!-- MÓDULO DA SANDRINHA (ASSISTENTE VIRTUAL DE SAÚDE) -->
-        <section class="card-modulo" style="border-left: 5px solid #003366; background: #f8fbff;">
-            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px; border-bottom: 2px solid #e1ecf7; padding-bottom: 10px;">
-                <div style="background-color: #003366; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: font-weight: bold; font-size: 20px;">S</div>
-                <div>
-                    <h2 style="margin: 0; color: #003366; border: none; padding: 0;">Sandrinha - Orientadora de Saúde</h2>
-                    <p style="margin: 0; font-size: 12px; color: #555;">Sua companheira diária para orientações sobre o cuidado com os pés.</p>
+        <!-- MÓDULO DA SANDRINHA - ENFERMEIRA VIRTUAL 2D -->
+        <section class="card-modulo sandrinha-container">
+            <div class="sandrinha-avatar-box">
+                <div class="sandrinha-avatar">
+                    <!-- SVG de Enfermeira 2D Minimalista e Moderna -->
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2C9.24 2 7 4.24 7 7c0 2.22 1.48 4.1 3.5 4.74V13h-1c-2.76 0-5 2.24-5 5v1h13v-1c0-2.76-2.24-5-5-5h-1v-1.26C15.52 11.1 17 9.22 17 7c0-2.76-2.24-5-5-5zm0 2c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 7h-2.1c.36.61.6 1.28.7 2H20v-2zm-12 0H4v2h2.4c.1-.72.34-1.39.7-2zm12 5h-2.03c-.56 1.32-1.61 2.37-2.93 2.93V19h5v-1zm-13 0v1h5v-1.07c-1.32-.56-2.37-1.61-2.93-2.93H5z"/>
+                    </svg>
+                    <div class="status-online" title="Sandrinha está online para orientar"></div>
                 </div>
+                <span style="font-size: 12px; font-weight: bold; color: var(--azul-governo); margin-top: 6px;">Enfermeira Virtual</span>
             </div>
 
-            <!-- Caixa de Diálogo da Sandrinha -->
-            <div id="sandrinha-chatbox" style="background: white; border: 1px solid #cce0ff; border-radius: 6px; padding: 15px; height: 160px; overflow-y: auto; margin-bottom: 15px; font-size: 14px; line-height: 1.5; color: #333;">
-                <p><strong>Sandrinha diz:</strong> Olá! Sou a Sandrinha, sua assistente virtual no <em>Passo Seguro</em>. Estou aqui para ajudar você a cuidar bem dos seus pés todos os dias. Como posso ajudar você agora?</p>
-            </div>
+            <div class="sandrinha-chat-content">
+                <h2 style="border: none; padding: 0; margin-bottom: 5px;">Sandrinha - Sua Orientadora de Saúde</h2>
+                <p style="font-size: 13px; color: #475569; margin-top: 0; margin-bottom: 15px;">Estou aqui para acompanhar seus cuidados diários, tirar dúvidas sobre o pé diabético e orientar sobre a prevenção.</p>
 
-            <!-- Botões de Perguntas Rápidas -->
-            <p style="font-size: 12px; font-weight: bold; color: #495057; margin-bottom: 8px;">Dúvidas frequentes (clique para perguntar):</p>
-            <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">
-                <button type="button" class="btn-secundario btn-pergunta" data-topico="sinais">Quais sinais devo me preocupar?</button>
-                <button type="button" class="btn-secundario btn-pergunta" data-topico="banho">Como devo lavar e secar os pés?</button>
-                <button type="button" class="btn-secundario btn-pergunta" data-topico="calcados">Qual o sapato ideal para mim?</button>
-                <button type="button" class="btn-secundario btn-pergunta" data-topico="hidratacao">Posso passar creme entre os dedos?</button>
-            </div>
+                <!-- Caixa de Diálogo -->
+                <div id="sandrinha-chatbox" style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 15px; height: 140px; overflow-y: auto; margin-bottom: 15px; font-size: 14px; line-height: 1.5;">
+                    <p style="margin: 0;"><strong>Sandrinha diz:</strong> Olá! Que alegria ver você cuidando da sua saúde hoje. Como posso ajudar com os seus pés?</p>
+                </div>
 
-            <!-- Entrada de Texto Personalizada -->
-            <div style="display: flex; gap: 10px;">
-                <input type="text" id="input-duvida-sandrinha" class="form-control" placeholder="Digite sua dúvida sobre o cuidado com os pés..." style="flex: 1;">
-                <button type="button" id="btn-enviar-sandrinha" class="btn-primario" style="padding: 10px 20px;">Perguntar</button>
+                <!-- Botões de Perguntas Rápidas -->
+                <p style="font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 8px;">Dúvidas Frequentes:</p>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px;">
+                    <button type="button" class="btn-secundario btn-pergunta" data-topico="sinais">⚠️ Sinais de Alerta</button>
+                    <button type="button" class="btn-secundario btn-pergunta" data-topico="banho">🚿 Como Lavar e Secar</button>
+                    <button type="button" class="btn-secundario btn-pergunta" data-topico="calcados">👟 Escolha de Sapatos</button>
+                    <button type="button" class="btn-secundario btn-pergunta" data-topico="hidratacao">🧴 Dicas de Hidratação</button>
+                </div>
+
+                <!-- Campo de digitação -->
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="input-duvida-sandrinha" class="form-control" placeholder="Digite sua dúvida para a Sandrinha...">
+                    <button type="button" id="btn-enviar-sandrinha" class="btn-primario" style="padding: 10px 20px;">Perguntar</button>
+                </div>
             </div>
         </section>
 
         <!-- REGISTRO DE HISTÓRICO CLÍNICO -->
         <section class="card-modulo">
-            <h2> Histórico e Situação Clínica dos Pés</h2>
+            <h2>📋 Histórico e Situação Clínica dos Pés</h2>
             <form id="form-historico">
                 <div class="form-group">
                     <label for="status-clinico">Situação Atual dos Pés:</label>
@@ -84,12 +314,12 @@
 
                 <div class="form-group">
                     <label for="localizacao-lesao">Localização Predominante da Ferida / Região de Risco:</label>
-                    <input type="text" id="localizacao-lesao" class="form-control" placeholder="Ex: Planta do pé direito, calcanhar esquerdo, entre os dedos...">
+                    <input type="text" id="localizacao-lesao" class="form-control" placeholder="Ex: Planta do pé direito, calcanhar esquerdo...">
                 </div>
 
                 <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="historico-amputacao"> Possui histórico de amputação em membros inferiores?
+                    <label style="font-weight: normal; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="historico-amputacao" style="width: 18px; height: 18px;"> Possui histórico de amputação em membros inferiores?
                     </label>
                 </div>
 
@@ -99,7 +329,7 @@
 
         <!-- INSPEÇÃO DIÁRIA DOS PÉS -->
         <section class="card-modulo">
-            <h2> Inspeção Diária Guiada dos Pés</h2>
+            <h2>🔍 Inspeção Diária Guiada dos Pés</h2>
             <form id="form-inspecao">
                 <div class="form-group">
                     <label for="pe-observado">Pé Observado:</label>
@@ -111,7 +341,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="regiao-pe">Região do Pé Inspeccionada:</label>
+                    <label for="regiao-pe">Região do Pé Inspecionada:</label>
                     <select id="regiao-pe" class="form-control" required>
                         <option value="Planta do pé (solado)">Planta do pé (solado)</option>
                         <option value="Calcanhar">Calcanhar</option>
@@ -123,18 +353,18 @@
 
                 <div class="form-group">
                     <label>Alterações Identificadas Hoje:</label>
-                    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 5px;">
-                        <label><input type="checkbox" name="alteracao" value="Vermelhidão"> Vermelhidão ou manchas</label>
-                        <label><input type="checkbox" name="alteracao" value="Pé quente ou inchado"> Pé quente ou inchado</label>
-                        <label><input type="checkbox" name="alteracao" value="Calosidade ou pele seca"> Calosidade ou pele seca/rachada</label>
-                        <label><input type="checkbox" name="alteracao" value="Bolha ou machucado"> Bolha ou pequeno machucado</label>
-                        <label><input type="checkbox" name="alteracao" value="Ferida ativa em tratamento"> Ferida ativa em acompanhamento</label>
+                    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+                        <label style="font-weight: normal; display: flex; align-items: center; gap: 8px;"><input type="checkbox" name="alteracao" value="Vermelhidão" style="width: 16px; height: 16px;"> Vermelhidão ou manchas</label>
+                        <label style="font-weight: normal; display: flex; align-items: center; gap: 8px;"><input type="checkbox" name="alteracao" value="Pé quente ou inchado" style="width: 16px; height: 16px;"> Pé quente ou inchado</label>
+                        <label style="font-weight: normal; display: flex; align-items: center; gap: 8px;"><input type="checkbox" name="alteracao" value="Calosidade ou pele seca" style="width: 16px; height: 16px;"> Calosidade ou pele seca/rachada</label>
+                        <label style="font-weight: normal; display: flex; align-items: center; gap: 8px;"><input type="checkbox" name="alteracao" value="Bolha ou machucado" style="width: 16px; height: 16px;"> Bolha ou pequeno machucado</label>
+                        <label style="font-weight: normal; display: flex; align-items: center; gap: 8px;"><input type="checkbox" name="alteracao" value="Ferida ativa em tratamento" style="width: 16px; height: 16px;"> Ferida ativa em acompanhamento</label>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="procurou-atendimento"> Buscou atendimento na unidade de saúde ou estomaterapia hoje?
+                    <label style="font-weight: normal; display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="procurou-atendimento" style="width: 18px; height: 18px;"> Buscou atendimento na unidade de saúde ou estomaterapia hoje?
                     </label>
                 </div>
 
@@ -142,20 +372,64 @@
             </form>
         </section>
 
+        <!-- BOTÃO DE EXPORTAR FICHA CLÍNICA EM PDF -->
+        <section class="card-modulo" style="text-align: center; background: linear-gradient(to bottom, #ffffff, #f8fafc);">
+            <h2 style="border: none; margin-bottom: 10px;">📄 Documentação e Prontuário</h2>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 20px;">Gere o relatório completo das suas inspeções e dados clínicos no padrão oficial para apresentação na unidade de saúde.</p>
+            <button type="button" id="btn-exportar-pdf" class="btn-primario" style="background-color: var(--azul-governo); font-size: 16px; padding: 14px 28px;">
+                📥 Baixar / Imprimir Ficha Clínica em PDF
+            </button>
+        </section>
+
         <!-- HISTÓRICO LONGITUDINAL -->
         <section class="card-modulo">
-            <h2> Histórico de Inspeções Realizadas</h2>
+            <h2>📈 Histórico de Inspeções Realizadas</h2>
             <div id="container-historico-inspecoes">
-                <p>Carregando histórico de inspeções...</p>
+                <p style="color: #64748b;">Carregando histórico de inspeções...</p>
             </div>
         </section>
     </main>
+
+    <!-- MODELO OCULTO PARA GERAÇÃO DO PDF -->
+    <div id="modelo-ficha-pdf" style="display: none; padding: 25px; font-family: Arial, sans-serif; color: #1e293b;">
+        <div style="text-align: center; border-bottom: 3px solid #004080; padding-bottom: 12px; margin-bottom: 25px;">
+            <h2 style="color: #004080; margin: 0; font-size: 18px;">GOVERNO DO ESTADO DO PIAUÍ</h2>
+            <h3 style="color: #475569; margin: 5px 0; font-size: 14px;">SECRETARIA DE ESTADO DA SAÚDE - SESAPI</h3>
+            <h4 style="color: #004080; margin: 5px 0; font-size: 16px;">SISTEMA PASSO SEGURO - FICHA DE AVALIAÇÃO DO PÉ DIABÉTICO</h4>
+        </div>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px;">
+            <tr style="background-color: #f1f5f9;">
+                <td style="padding: 8px; border: 1px solid #cbd5e1;"><strong>Nome do Paciente:</strong> <span id="pdf-nome-paciente">-</span></td>
+                <td style="padding: 8px; border: 1px solid #cbd5e1;"><strong>Data da Emissão:</strong> <span id="pdf-data">-</span></td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; border: 1px solid #cbd5e1;"><strong>Situação Clínica:</strong> <span id="pdf-status">-</span></td>
+                <td style="padding: 8px; border: 1px solid #cbd5e1;"><strong>Histórico de Amputação:</strong> <span id="pdf-amputacao">-</span></td>
+            </tr>
+        </table>
+        <h4 style="color: #004080; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; font-size: 14px;">Últimos Registros de Inspeção</h4>
+        <div id="pdf-conteudo-inspecoes" style="font-size: 12px; margin-bottom: 30px;">
+            <p>Nenhum dado registrado.</p>
+        </div>
+        <div style="background-color: #f8fbff; border-left: 4px solid #004080; padding: 12px; margin-bottom: 40px; font-size: 11px;">
+            <strong>Recomendações da Sandrinha (Passo Seguro):</strong>
+            <p style="margin: 5px 0 0 0;">Inspecionar os pés diariamente, lavar com água morna, secar bem entre os dedos e nunca andar descalço. Procurar a UBS em caso de sinais de alerta.</p>
+        </div>
+        <div style="display: flex; justify-content: space-around; margin-top: 60px; font-size: 12px; text-align: center;">
+            <div style="border-top: 1px solid #333; width: 40%; padding-top: 6px;">
+                Assinatura do Paciente / Cuidador
+            </div>
+            <div style="border-top: 1px solid #333; width: 40%; padding-top: 6px;">
+                Enfermeiro(a) / Estomaterapeuta<br>COREN-PI
+            </div>
+        </div>
+    </div>
 
     <footer>
         <p>&copy; 2026 Passo Seguro - Secretaria de Estado da Saúde do Piauí. Todos os direitos reservados.</p>
     </footer>
 
-    <!-- SCRIPT DE INTELIGÊNCIA DA SANDRINHA -->
+    <!-- SCRIPT DE INTERATIVIDADE DA SANDRINHA E PDF -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const chatbox = document.getElementById("sandrinha-chatbox");
@@ -164,10 +438,10 @@
             const botoesPergunta = document.querySelectorAll(".btn-pergunta");
 
             const respostasBase = {
-                "sinais": "⚠️ Fique atento a: vermelhidão intensa, inchaço, áreas quentes ao toque, bolhas, dor súbita ou feridas que não cicatrizam. Se notar isso, procure sua unidade de saúde!",
-                "banho": "🚿 Lave os pés com água morna (sempre teste a temperatura com a mão antes!) e sabão neutro. O mais importante: **seque muito bem**, especialmente entre os dedos para evitar frieiras e umidade.",
-                "calcados": "👟 Use sapatos macios, fechados, com solado grosso e sem costuras internas que possam machucar. Evite sandálias de dedo ou andar descalço, mesmo dentro de casa!",
-                "hidratacao": "🧴 Você pode hidratar o dorso e a sola dos pés para evitar rachaduras, **mas NUNCA passe creme entre os dedos**, pois o excesso de umidade ali pode abrir feridas."
+                "sinais": "⚠️ Fique atento a: vermelhidão intensa, inchaço, áreas quentes ao toque, bolhas, dor súbita ou feridas. Se notar qualquer um desses sinais, procure sua unidade de saúde!",
+                "banho": "🚿 Lave os pés com água morna (teste sempre com a mão antes!) e sabão neutro. O mais importante: **seque muito bem**, especialmente entre os dedos para evitar umidade e feridas.",
+                "calcados": "👟 Use sapatos macios, fechados, com solado grosso e sem costuras internas. Evite sandálias de dedo ou andar descalço, mesmo dentro de casa!",
+                "hidratacao": "🧴 Você pode hidratar o dorso e a sola dos pés para evitar rachaduras, **mas NUNCA passe creme entre os dedos**, pois a umidade retida ali pode abrir feridas."
             };
 
             function adicionarMensagem(autor, texto) {
@@ -181,11 +455,10 @@
             function responderSandrinha(perguntaTexto) {
                 adicionarMensagem("Você", perguntaTexto);
                 
-                // Simulação inteligente baseada em palavras-chave ou tópicos
-                let resposta = "Entendi sua dúvida. Lembre-se de que a inspeção diária e o acompanhamento na rede de saúde são essenciais. Se tiver feridas ativas, siga sempre as orientações do seu enfermeiro estomaterapeuta!";
-                
+                let resposta = "Entendi sua dúvida. Lembre-se de que a inspeção diária e o acompanhamento na rede de saúde são essenciais. Siga sempre as orientações da sua equipe de estomaterapia!";
                 const textoLower = perguntaTexto.toLowerCase();
-                if (textoLower.includes("sinal") || textoLower.includes("preocupar") || textoLower.includes("vermelho") || textoLower.includes("inchado")) {
+
+                if (textoLower.includes("sinal") || textoLower.includes("alerta") || textoLower.includes("vermelho") || textoLower.includes("inchado")) {
                     resposta = respostasBase["sinais"];
                 } else if (textoLower.includes("banho") || textoLower.includes("lavar") || textoLower.includes("secar")) {
                     resposta = respostasBase["banho"];
@@ -197,18 +470,15 @@
 
                 setTimeout(() => {
                     adicionarMensagem("Sandrinha", resposta);
-                }, 500);
+                }, 400);
             }
 
-            // Clique nos botões rápidos
             botoesPergunta.forEach(btn => {
                 btn.addEventListener("click", () => {
-                    const topico = btn.getAttribute("data-topico");
                     responderSandrinha(btn.textContent);
                 });
             });
 
-            // Enviar pelo botão de texto
             btnEnviar.addEventListener("click", () => {
                 const texto = inputDuvida.value.trim();
                 if (texto) {
@@ -217,56 +487,38 @@
                 }
             });
 
-            // Enviar com a tecla Enter
             inputDuvida.addEventListener("keypress", (e) => {
                 if (e.key === "Enter") {
                     btnEnviar.click();
                 }
             });
+
+            // Geração de PDF
+            const btnPdf = document.getElementById("btn-exportar-pdf");
+            if (btnPdf) {
+                btnPdf.addEventListener("click", () => {
+                    document.getElementById("pdf-nome-paciente").textContent = document.getElementById("nome-paciente-display")?.textContent || "Paciente";
+                    document.getElementById("pdf-data").textContent = new Date().toLocaleDateString("pt-BR");
+                    document.getElementById("pdf-status").textContent = document.getElementById("status-clinico")?.selectedOptions[0]?.text || "Em Acompanhamento";
+                    document.getElementById("pdf-amputacao").textContent = document.getElementById("historico-amputacao")?.checked ? "Sim" : "Não";
+
+                    const elemento = document.getElementById("modelo-ficha-pdf");
+                    elemento.style.display = "block";
+
+                    const opcoes = {
+                        margin: 10,
+                        filename: 'Ficha_Clinica_Passo_Seguro.pdf',
+                        image: { type: 'jpeg', quality: 0.98 },
+                        html2canvas: { scale: 2 },
+                        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                    };
+
+                    html2pdf().set(opcoes).from(elemento).save().then(() => {
+                        elemento.style.display = "none";
+                    });
+                });
+            }
         });
     </script>
 </body>
 </html>
-<!-- MODELO DE FICHA CLÍNICA PARA IMPRESSÃO (STEP 2 - Fica invisível com display: none) -->
-<div id="modelo-ficha-pdf" style="display: none; padding: 20px; font-family: Arial, sans-serif; color: #333;">
-    <!-- CABEÇALHO INSTITUCIONAL -->
-    <div style="text-align: center; border-bottom: 2px solid #003366; padding-bottom: 10px; margin-bottom: 20px;">
-        <h2 style="color: #003366; margin: 0; font-size: 18px;">GOVERNO DO ESTADO DO PIAUÍ</h2>
-        <h3 style="color: #555; margin: 5px 0; font-size: 14px;">SECRETARIA DE ESTADO DA SAÚDE - SESAPI</h3>
-        <h4 style="color: #003366; margin: 5px 0; font-size: 16px;">SISTEMA PASSO SEGURO - FICHA DE AVALIAÇÃO DO PÉ DIABÉTICO</h4>
-    </div>
-
-    <!-- DADOS DO PACIENTE -->
-    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 12px;">
-        <tr style="background-color: #f2f2f2;">
-            <td style="padding: 8px; border: 1px solid #ccc;"><strong>Nome do Paciente:</strong> <span id="pdf-nome-paciente">-</span></td>
-            <td style="padding: 8px; border: 1px solid #ccc;"><strong>Data da Avaliação:</strong> <span id="pdf-data">-</span></td>
-        </tr>
-        <tr>
-            <td style="padding: 8px; border: 1px solid #ccc;"><strong>Situação Clínica:</strong> <span id="pdf-status">-</span></td>
-            <td style="padding: 8px; border: 1px solid #ccc;"><strong>Histórico de Amputação:</strong> <span id="pdf-amputacao">-</span></td>
-        </tr>
-    </table>
-
-    <!-- REGISTROS DE INSPEÇÃO -->
-    <h4 style="color: #003366; border-bottom: 1px solid #003366; padding-bottom: 4px; font-size: 14px;">Últimas Alterações e Achados Clínicos</h4>
-    <div id="pdf-conteudo-inspecoes" style="font-size: 12px; margin-bottom: 30px;">
-        <p>Aguardando registros...</p>
-    </div>
-
-    <!-- RECOMENDAÇÕES DA SANDRINHA / ESTOMATERAPIA -->
-    <div style="background-color: #f8fbff; border-left: 4px solid #003366; padding: 10px; margin-bottom: 40px; font-size: 11px;">
-        <strong>Orientações de Autocuidado (Passo Seguro):</strong>
-        <p style="margin: 5px 0 0 0;">Inspecionar os pés diariamente, lavar com água morna, secar bem entre os dedos e nunca andar descalço. Procurar a unidade de saúde se houver sinais de calor, rubor ou feridas.</p>
-    </div>
-
-    <!-- CAMPO PARA ASSINATURAS -->
-    <div style="display: flex; justify-content: space-around; margin-top: 50px; font-size: 12px; text-align: center;">
-        <div style="border-top: 1px solid #333; width: 40%; padding-top: 5px;">
-            Assinatura do Paciente / Cuidador
-        </div>
-        <div style="border-top: 1px solid #333; width: 40%; padding-top: 5px;">
-            Enfermeiro(a) / Estomaterapeuta<br>COREN-PI
-        </div>
-    </div>
-</div>
