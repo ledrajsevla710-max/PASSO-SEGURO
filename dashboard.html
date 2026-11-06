@@ -8,10 +8,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/config.js"></script>
-    <script src="js/app.js" defer></script>
     
     <style>
-        /* ESTILOS EMBUTIDOS - GARANTE FUNCIONAMENTO NO GITHUB PAGES */
         :root {
             --azul-governo: #004080;
             --azul-escuro: #002244;
@@ -143,7 +141,7 @@
     <header class="header-app">
         <div class="logo-container">
             <h1>Passo Seguro</h1>
-            <p>Secretaria de Estado da Saúde - Piauí | Autocuidado no Pé Diabético</p>
+            <p>Sistema de Monitoramento Clínico | Autocuidado no Pé Diabético</p>
         </div>
         <div class="user-info">
             <span>Olá, <strong id="nome-paciente-display">Paciente</strong></span>
@@ -155,7 +153,7 @@
         <!-- ALERTA CLÍNICO -->
         <section class="alerta-urgencia">
             <h3 style="margin:0 0 6px 0;">⚠️ Sinais de Alerta e Atenção</h3>
-            <p style="margin:0;">Se você perceber <strong>pé muito quente, vermelho, inchado, bolhas ou feridas abertas</strong>, procure sua unidade de saúde ou o serviço de estomaterapia imediatamente.</p>
+            <p style="margin:0;">Se você perceber <strong>pé muito quente, vermelho, inchado, bolhas ou feridas abertas</strong>, procure sua unidade de saúde ou o serviço especializado imediatamente.</p>
         </section>
 
         <!-- ASSISTENTE SANDRINHA -->
@@ -194,7 +192,7 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div class="form-group">
                         <label for="num-sus">Nº do Cartão SUS:</label>
-                        <input type="text" id="num-sus" class="form-control" placeholder="706.2020.4214.7364" required>
+                        <input type="text" id="num-sus" class="form-control" placeholder="Ex: 706202042147364" required>
                     </div>
                     <div class="form-group">
                         <label for="status-clinico">Situação Atual dos Pés:</label>
@@ -213,7 +211,7 @@
                     </div>
                     <div class="form-group">
                         <label for="localizacao-lesao">Localização da Ferida / Região de Risco:</label>
-                        <input type="text" id="localizacao-lesao" class="form-control" placeholder="Ex: Pé Diabético - MJD / Planta do pé">
+                        <input type="text" id="localizacao-lesao" class="form-control" placeholder="Ex: Planta do pé direito">
                     </div>
                 </div>
 
@@ -235,8 +233,8 @@
                     <div class="form-group">
                         <label for="pe-observado">Pé Observado:</label>
                         <select id="pe-observado" class="form-control" required>
-                            <option value="Direito">Pé Direito (MJD)</option>
-                            <option value="Esquerdo">Pé Esquerdo (MJE)</option>
+                            <option value="Direito">Pé Direito</option>
+                            <option value="Esquerdo">Pé Esquerdo</option>
                             <option value="Ambos">Ambos os Pés</option>
                         </select>
                     </div>
@@ -265,12 +263,12 @@
             </form>
         </section>
 
-        <!-- GERAR PDF NO MODELO HGV -->
+        <!-- GERAR PDF -->
         <section class="card-modulo" style="text-align: center;">
-            <h2>📄 Documentação Hospitalar (Modelo HGV / SESAPI)</h2>
-            <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Gere a Ficha de Avaliação e Faturamento de Curativo oficial para apresentação no Hospital Getúlio Vargas ou na UBS.</p>
+            <h2>📄 Documentação Clínica</h2>
+            <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Gere a Ficha de Avaliação e Registro para apresentação na unidade de saúde.</p>
             <button type="button" id="btn-exportar-pdf" class="btn-primario" style="background-color: var(--azul-governo);">
-                📥 Baixar Ficha Clínica HGV / SESAPI (PDF)
+                📥 Baixar Ficha Clínica (PDF)
             </button>
         </section>
 
@@ -278,106 +276,227 @@
         <section class="card-modulo">
             <h2>📈 Histórico de Registros</h2>
             <div id="container-historico-inspecoes">
-                <p style="color: #64748b;">Nenhum registro carregado.</p>
+                <p style="color: #64748b;">Carregando histórico...</p>
             </div>
         </section>
     </main>
 
-    <!-- MODELO OFICIAL DO HGV / SESAPI PARA O PDF -->
+    <!-- MODELO PARA O PDF -->
     <div id="modelo-ficha-pdf" style="display: none; padding: 20px; font-family: Arial, sans-serif; color: #000; font-size: 11px;">
         <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 5px; margin-bottom: 10px;">
-            <h3 style="margin: 0;">GOVERNO DO ESTADO DO PIAUÍ</h3>
-            <h4 style="margin: 2px 0;">SECRETARIA DE ESTADO DA SAÚDE - SESAPI</h4>
-            <h3 style="margin: 2px 0;">HOSPITAL GETÚLIO VARGAS - HGV</h3>
-            <h4 style="margin: 5px 0 0 0; text-decoration: underline;">FICHA DE AVALIAÇÃO E FATURAMENTO DE CURATIVO</h4>
-            <p style="margin: 2px 0; font-size: 10px;">Serviço de Estomaterapia do Hospital Getúlio Vargas</p>
+            <h3 style="margin: 0;">SISTEMA DE MONITORAMENTO CLÍNICO</h3>
+            <h4 style="margin: 2px 0 0 0; text-decoration: underline;">FICHA DE AVALIAÇÃO E REGISTRO DE CURATIVO</h4>
         </div>
 
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px;">
             <tr>
-                <td style="border: 1px solid #000; padding: 4px;" colspan="2"><strong>Nome do Paciente:</strong> <span id="pdf-nome-paciente">Jardel Alves Vieira</span></td>
-                <td style="border: 1px solid #000; padding: 4px;"><strong>Nº SUS:</strong> <span id="pdf-sus">706.2020.4214.7364</span></td>
+                <td style="border: 1px solid #000; padding: 4px;" colspan="2"><strong>Nome do Paciente:</strong> <span id="pdf-nome-paciente">--</span></td>
+                <td style="border: 1px solid #000; padding: 4px;"><strong>Nº SUS:</strong> <span id="pdf-sus">--</span></td>
             </tr>
             <tr>
                 <td style="border: 1px solid #000; padding: 4px;"><strong>Data:</strong> <span id="pdf-data">--/--/----</span></td>
-                <td style="border: 1px solid #000; padding: 4px;"><strong>Tipo de Ferida:</strong> Pé Diabético</td>
-                <td style="border: 1px solid #000; padding: 4px;"><strong>Estágio / Situação:</strong> <span id="pdf-status">Em Tratamento</span></td>
+                <td style="border: 1px solid #000; padding: 4px;"><strong>Tipo de Acompanhamento:</strong> Pé Diabético</td>
+                <td style="border: 1px solid #000; padding: 4px;"><strong>Situação:</strong> <span id="pdf-status">Em Tratamento</span></td>
             </tr>
         </table>
 
-        <h4 style="margin: 10px 0 4px 0; border-bottom: 1px solid #000;">MATERIAIS E COBERTURAS UTILIZADAS (ESTOMATERAPIA)</h4>
+        <h4 style="margin: 10px 0 4px 0; border-bottom: 1px solid #000;">AVALIAÇÃO E INSUMOS UTILIZADOS</h4>
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px; text-align: left;">
             <thead>
                 <tr style="background-color: #eee;">
                     <th style="border: 1px solid #000; padding: 4px;">Material / Insumo</th>
                     <th style="border: 1px solid #000; padding: 4px;">Utilizado</th>
                     <th style="border: 1px solid #000; padding: 4px;">Cobertura Aplicada</th>
-                    <th style="border: 1px solid #000; padding: 4px;">Qtd.</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td style="border: 1px solid #000; padding: 4px;">Gaze Estéril / Atadura</td>
+                    <td style="border: 1px solid #000; padding: 4px;">Gaze Estéril / Soro 0.9%</td>
                     <td style="border: 1px solid #000; padding: 4px;">[ X ] Sim</td>
-                    <td style="border: 1px solid #000; padding: 4px;">Hidrogel c/ Alginato</td>
-                    <td style="border: 1px solid #000; padding: 4px;">1 Unid.</td>
-                </tr>
-                <tr>
-                    <td style="border: 1px solid #000; padding: 4px;">Degermante / PVPI Tópico</td>
-                    <td style="border: 1px solid #000; padding: 4px;">[ X ] Soro Fisiológico 0.9%</td>
-                    <td style="border: 1px solid #000; padding: 4px;">Espuma com Prata / PHMB</td>
-                    <td style="border: 1px solid #000; padding: 4px;">1 Unid.</td>
+                    <td style="border: 1px solid #000; padding: 4px;">Hidrogel / Cobertura Especial</td>
                 </tr>
             </tbody>
         </table>
 
-        <h4 style="margin: 10px 0 4px 0; border-bottom: 1px solid #000;">MENSURAÇÃO E AVALIAÇÃO DE ENFERMAGEM</h4>
+        <h4 style="margin: 10px 0 4px 0; border-bottom: 1px solid #000;">OBSERVAÇÕES CLÍNICAS</h4>
         <div id="pdf-detalhes-inspecao" style="border: 1px solid #000; padding: 8px; margin-bottom: 25px;">
-            <p style="margin: 2px 0;"><strong>Mensuração Ferida 01:</strong> Comprimento: ___ cm | Largura: ___ cm | Profundidade: ___ cm</p>
-            <p style="margin: 2px 0;"><strong>Achados:</strong> Ferida em acompanhamento de estomaterapia, sem sinais de infecção grave no momento.</p>
+            <p style="margin: 2px 0;">Paciente em monitoramento contínuo pelo sistema Passo Seguro.</p>
         </div>
 
         <div style="display: flex; justify-content: space-between; margin-top: 40px; text-align: center;">
             <div style="border-top: 1px solid #000; width: 45%; padding-top: 4px;">
-                Assinatura do Paciente / Cuidador
+                Assinatura do Paciente
             </div>
             <div style="border-top: 1px solid #000; width: 45%; padding-top: 4px;">
-                Assinatura do Enfermeiro e Carimbo<br>
-                <strong>Jardel Alves Vieira</strong> - COREN-PI
+                Assinatura do Profissional Responsável
             </div>
         </div>
     </div>
 
     <footer>
-        <p>&copy; 2026 Passo Seguro - Secretaria de Estado da Saúde do Piauí. Todos os direitos reservados.</p>
+        <p style="text-align: center; font-size: 12px; color: #64748b; padding: 20px;">&copy; 2026 Passo Seguro - Sistema de Monitoramento Clínico.</p>
     </footer>
 
-    <!-- INTERATIVIDADE DA SANDRINHA E PDF -->
+    <!-- SCRIPT DE INTEGRAÇÃO E FUNCIONALIDADES -->
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", async () => {
+            if (typeof window.supabase === 'undefined') {
+                alert("Erro: Supabase não foi carregado.");
+                return;
+            }
+
+            // 1. Validar Sessão e Carregar Dados do Paciente
+            const { data: { user }, error: authError } = await window.supabase.auth.getUser();
+            if (authError || !user) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            const userId = user.id;
+
+            // Buscar Perfil
+            const { data: perfil } = await window.supabase
+                .from('perfis_usuarios')
+                .select('*')
+                .eq('id', userId)
+                .single();
+
+            if (perfil) {
+                document.getElementById("nome-paciente-display").textContent = perfil.nome_completo || "Paciente";
+                if (perfil.cartao_sus) {
+                    document.getElementById("num-sus").value = perfil.cartao_sus;
+                }
+                if (perfil.status_clinico) {
+                    document.getElementById("status-clinico").value = perfil.status_clinico;
+                }
+            }
+
+            // Botão Sair
+            document.getElementById("btn-sair").addEventListener("click", async () => {
+                await window.supabase.auth.signOut();
+                window.location.href = "login.html";
+            });
+
+            // 2. Salvar Situação Clínica / Cartão SUS
+            document.getElementById("form-historico").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const cartaoSus = document.getElementById("num-sus").value.trim();
+                const statusClinico = document.getElementById("status-clinico").value;
+                const dataLesao = document.getElementById("data-lesao").value || null;
+                const localizacao = document.getElementById("localizacao-lesao").value.trim();
+                const amputacao = document.getElementById("historico-amputacao").checked;
+
+                try {
+                    // Atualiza perfil (cartão sus e status)
+                    const { error: errPerfil } = await window.supabase
+                        .from('perfis_usuarios')
+                        .update({ cartao_sus: cartaoSus, status_clinico: statusClinico })
+                        .eq('id', userId);
+
+                    if (errPerfil) throw errPerfil;
+
+                    // Insere histórico clínico
+                    const { error: errHist } = await window.supabase
+                        .from('historico_pacientes')
+                        .insert([{
+                            paciente_id: userId,
+                            data_ultima_lesao: dataLesao,
+                            localizacao_ultima_lesao: localizacao,
+                            antecedente_amputacao: amputacao
+                        }]);
+
+                    if (errHist) throw errHist;
+
+                    alert("Dados clínicos e Cartão SUS salvos com sucesso!");
+                } catch (err) {
+                    alert("Erro ao salvar: " + err.message);
+                }
+            });
+
+            // 3. Registrar Inspeção Diária
+            document.getElementById("form-inspecao").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const pe = document.getElementById("pe-observado").value;
+                const regiao = document.getElementById("regiao-pe").value;
+                
+                const checkboxes = document.querySelectorAll('input[name="alteracao"]:checked');
+                const alteracoes = Array.from(checkboxes).map(cb => cb.value);
+
+                try {
+                    const { error } = await window.supabase
+                        .from('inspecoes_pes')
+                        .insert([{
+                            paciente_id: userId,
+                            pe_observado: pe,
+                            regiao: regiao,
+                            alteracoes_percebidas: alteracoes
+                        }]);
+
+                    if (error) throw error;
+
+                    alert("Inspeção diária registrada com sucesso!");
+                    carregarHistorico();
+                    e.target.reset();
+                } catch (err) {
+                    alert("Erro ao registrar inspeção: " + err.message);
+                }
+            });
+
+            // 4. Carregar Histórico de Inspeções
+            async function carregarHistorico() {
+                const container = document.getElementById("container-historico-inspecoes");
+                const { data: inspecoes, error } = await window.supabase
+                    .from('inspecoes_pes')
+                    .select('*')
+                    .eq('paciente_id', userId)
+                    .order('data_inspecao', { ascending: false })
+                    .limit(5);
+
+                if (error) {
+                    container.innerHTML = `<p style="color: red;">Erro ao carregar histórico.</p>`;
+                    return;
+                }
+
+                if (!inspecoes || inspecoes.length === 0) {
+                    container.innerHTML = `<p style="color: #64748b;">Nenhum registro de inspeção encontrado.</p>`;
+                    return;
+                }
+
+                let html = '<ul style="padding-left: 20px; line-height: 1.6;">';
+                inspecoes.forEach(item => {
+                    const dataFmt = new Date(item.data_inspecao).toLocaleDateString("pt-BR");
+                    const altStr = item.alteracoes_percebidas && item.alteracoes_percebidas.length > 0 ? item.alteracoes_percebidas.join(", ") : "Nenhuma alteração";
+                    html += `<li><strong>${dataFmt}</strong> - Pé ${item.pe_observado} (${item.regiao}): ${altStr}</li>`;
+                });
+                html += '</ul>';
+                container.innerHTML = html;
+            }
+
+            carregarHistorico();
+
+            // 5. Chat da Sandrinha
             const chatbox = document.getElementById("sandrinha-chatbox");
             const inputDuvida = document.getElementById("input-duvida-sandrinha");
             const btnEnviar = document.getElementById("btn-enviar-sandrinha");
-            const botoesPergunta = document.querySelectorAll(".btn-pergunta");
 
             const respostasBase = {
-                "sinais": "⚠️ Atenção para: vermelhidão, pé muito quente, inchaço, bolhas ou feridas ativas. Procure a estomaterapia!",
+                "sinais": "⚠️ Atenção para: vermelhidão, pé muito quente, inchaço, bolhas ou feridas ativas. Procure atendimento!",
                 "banho": "🚿 Lave os pés com água morna e sabão neutro. Seque muito bem **entre os dedos**!",
                 "calcados": "👟 Use sapatos macios, fechados e com sola grossa. Nunca ande descalço!",
                 "hidratacao": "🧴 Hidrate a sola e o peito do pé, mas **nunca passe creme entre os dedos**."
             };
 
-            function responderSandrinha(perguntaTexto) {
+            function responderSandrinha(texto) {
                 const pUser = document.createElement("p");
-                pUser.innerHTML = `<strong>Você:</strong> ${perguntaTexto}`;
+                pUser.innerHTML = `<strong>Você:</strong> ${texto}`;
                 chatbox.appendChild(pUser);
-                
-                let resp = "Siga sempre as recomendações de higiene e inspeção diária. Em caso de dúvidas graves, consulte seu enfermeiro!";
-                const text = perguntaTexto.toLowerCase();
-                if(text.includes("sinal") || text.includes("alerta")) resp = respostasBase["sinais"];
-                else if(text.includes("banho") || text.includes("lavar")) resp = respostasBase["banho"];
-                else if(text.includes("sapato") || text.includes("calcado")) resp = respostasBase["calcados"];
-                else if(text.includes("creme") || text.includes("hidratar")) resp = respostasBase["hidratacao"];
+
+                let resp = "Siga sempre as recomendações de higiene e inspeção diária. Em caso de dúvidas, consulte seu profissional de saúde!";
+                const t = texto.toLowerCase();
+                if(t.includes("sinal") || t.includes("alerta")) resp = respostasBase["sinais"];
+                else if(t.includes("banho") || t.includes("lavar")) resp = respostasBase["banho"];
+                else if(t.includes("sapato") || t.includes("calcado")) resp = respostasBase["calcados"];
+                else if(t.includes("creme") || t.includes("hidratar")) resp = respostasBase["hidratacao"];
 
                 setTimeout(() => {
                     const pSand = document.createElement("p");
@@ -387,7 +506,10 @@
                 }, 300);
             }
 
-            botoesPergunta.forEach(b => b.addEventListener("click", () => responderSandrinha(b.textContent)));
+            document.querySelectorAll(".btn-pergunta").forEach(b => {
+                b.addEventListener("click", () => responderSandrinha(b.textContent));
+            });
+
             btnEnviar.addEventListener("click", () => {
                 if(inputDuvida.value.trim()){
                     responderSandrinha(inputDuvida.value.trim());
@@ -395,10 +517,15 @@
                 }
             });
 
-            // GERAÇÃO DE PDF
+            // 6. Geração de PDF
             document.getElementById("btn-exportar-pdf").addEventListener("click", () => {
-                const susVal = document.getElementById("num-sus").value || "706.2020.4214.7364";
+                const susVal = document.getElementById("num-sus").value || "Não informado";
+                const nomeVal = document.getElementById("nome-paciente-display").textContent;
+                const statusVal = document.getElementById("status-clinico").selectedOptions[0].text;
+
+                document.getElementById("pdf-nome-paciente").textContent = nomeVal;
                 document.getElementById("pdf-sus").textContent = susVal;
+                document.getElementById("pdf-status").textContent = statusVal;
                 document.getElementById("pdf-data").textContent = new Date().toLocaleDateString("pt-BR");
 
                 const el = document.getElementById("modelo-ficha-pdf");
@@ -406,7 +533,7 @@
 
                 html2pdf().set({
                     margin: 8,
-                    filename: `Ficha_HGV_SESAPI_${susVal}.pdf`,
+                    filename: `Ficha_Clinica_${susVal}.pdf`,
                     image: { type: 'jpeg', quality: 0.98 },
                     html2canvas: { scale: 2 },
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
