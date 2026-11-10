@@ -1,1 +1,906 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+        content="Passo Seguro - Painel de acompanhamento profissional de pessoas com diabetes.">
+
+    <meta name="theme-color" content="#087F70">
+
+    <title>Passo Seguro | Painel Profissional</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/profissional.css">
+</head>
+
+<body class="pagina-profissional">
+
+    <!-- =====================================
+         VERIFICAÇÃO DE ACESSO
+    ====================================== -->
+
+    <div id="verificacao-acesso" class="verificacao-acesso">
+
+        <div class="verificacao-card">
+
+            <div class="logo-icone">👣</div>
+
+            <h1>Passo Seguro</h1>
+
+            <p id="mensagem-acesso" role="status" aria-live="polite">
+                Verificando autorização de acesso...
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================
+         PAINEL PROFISSIONAL
+    ====================================== -->
+
+    <div id="area-profissional" class="layout-profissional" hidden>
+
+
+        <!-- MENU LATERAL -->
+
+        <aside class="sidebar-profissional" id="sidebar-profissional">
+
+            <div class="marca-profissional">
+
+                <a href="index.html" class="logo">
+
+                    <span class="logo-icone">👣</span>
+
+                    <span class="logo-texto">
+                        Passo<span>Seguro</span>
+                    </span>
+
+                </a>
+
+                <p>Área profissional</p>
+
+            </div>
+
+
+            <div class="menu-titulo">
+                PAINEL DE CONTROLE
+            </div>
+
+
+            <nav class="menu-profissional"
+                aria-label="Menu profissional">
+
+                <button type="button"
+                    class="item-menu-profissional ativo"
+                    data-secao="inicio">
+
+                    <span>🏠</span>
+                    Visão geral
+
+                </button>
+
+
+                <button type="button"
+                    class="item-menu-profissional"
+                    data-secao="pacientes">
+
+                    <span>👥</span>
+                    Pacientes
+
+                </button>
+
+
+                <button type="button"
+                    class="item-menu-profissional"
+                    data-secao="registros">
+
+                    <span>📋</span>
+                    Registros de inspeção
+
+                </button>
+
+
+                <button type="button"
+                    class="item-menu-profissional"
+                    data-secao="alertas">
+
+                    <span>🔔</span>
+                    Alterações relatadas
+
+                </button>
+
+
+                <button type="button"
+                    class="item-menu-profissional"
+                    data-secao="acompanhamento">
+
+                    <span>🩺</span>
+                    Acompanhamento
+
+                </button>
+
+
+                <button type="button"
+                    class="item-menu-profissional"
+                    data-secao="perfil">
+
+                    <span>👤</span>
+                    Meu perfil
+
+                </button>
+
+            </nav>
+
+
+            <div class="sidebar-profissional-final">
+
+                <a href="index.html" class="link-inicio">
+                    ← Voltar ao início
+                </a>
+
+                <button type="button"
+                    id="btn-sair-profissional"
+                    class="botao-sair-profissional">
+
+                    ↪ Sair da conta
+
+                </button>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =====================================
+             CONTEÚDO PRINCIPAL
+        ====================================== -->
+
+        <main class="conteudo-profissional">
+
+
+            <!-- CABEÇALHO -->
+
+            <header class="topbar-profissional">
+
+                <div class="topbar-esquerda">
+
+                    <button type="button"
+                        id="abrir-menu-profissional"
+                        class="botao-menu-mobile"
+                        aria-label="Abrir menu">
+
+                        ☰
+
+                    </button>
+
+                    <div>
+                        <span class="texto-superior">
+                            PASSO SEGURO
+                        </span>
+
+                        <h2 id="titulo-secao-profissional">
+                            Visão geral
+                        </h2>
+                    </div>
+
+                </div>
+
+
+                <div class="identificacao-profissional">
+
+                    <div class="avatar-profissional">
+                        🩺
+                    </div>
+
+                    <div>
+                        <strong id="nome-profissional">
+                            Profissional
+                        </strong>
+
+                        <small id="tipo-profissional">
+                            Área profissional
+                        </small>
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <div class="conteudo-paginas">
+
+
+                <!-- =================================
+                     SEÇÃO: INÍCIO
+                ================================== -->
+
+                <section class="secao-profissional ativa"
+                    id="secao-inicio">
+
+                    <div class="boas-vindas-profissional">
+
+                        <div>
+
+                            <span class="etiqueta-profissional">
+                                AMBIENTE PROFISSIONAL
+                            </span>
+
+                            <h1>
+                                Bem-vindo ao Passo Seguro.
+                            </h1>
+
+                            <p>
+                                Espaço destinado ao acompanhamento
+                                autorizado de pessoas com diabetes
+                                que tiveram úlcera nos pés e estão
+                                na fase após a cicatrização.
+                            </p>
+
+                        </div>
+
+                        <div class="icone-boas-vindas">
+                            🩺
+                        </div>
+
+                    </div>
+
+
+                    <!-- INDICADORES -->
+
+                    <div class="indicadores-profissional">
+
+                        <article class="indicador-card">
+
+                            <span class="indicador-icone">
+                                👥
+                            </span>
+
+                            <div>
+                                <span>Pacientes vinculados</span>
+
+                                <strong id="total-pacientes">
+                                    —
+                                </strong>
+                            </div>
+
+                        </article>
+
+
+                        <article class="indicador-card">
+
+                            <span class="indicador-icone">
+                                📋
+                            </span>
+
+                            <div>
+                                <span>Registros realizados</span>
+
+                                <strong id="total-registros">
+                                    —
+                                </strong>
+                            </div>
+
+                        </article>
+
+
+                        <article class="indicador-card">
+
+                            <span class="indicador-icone">
+                                🔔
+                            </span>
+
+                            <div>
+                                <span>Alterações relatadas</span>
+
+                                <strong id="total-alertas">
+                                    —
+                                </strong>
+                            </div>
+
+                        </article>
+
+                    </div>
+
+
+                    <!-- ACESSOS RÁPIDOS -->
+
+                    <div class="titulo-conteudo-profissional">
+
+                        <h2>Acesso rápido</h2>
+
+                        <p>
+                            Consulte as funcionalidades do painel.
+                        </p>
+
+                    </div>
+
+
+                    <div class="atalhos-profissional">
+
+                        <button type="button"
+                            data-secao="pacientes"
+                            class="atalho-card">
+
+                            <span>👥</span>
+
+                            <strong>Pacientes</strong>
+
+                            <small>
+                                Consultar pacientes autorizados.
+                            </small>
+
+                        </button>
+
+
+                        <button type="button"
+                            data-secao="registros"
+                            class="atalho-card">
+
+                            <span>📋</span>
+
+                            <strong>Inspeções</strong>
+
+                            <small>
+                                Consultar registros realizados.
+                            </small>
+
+                        </button>
+
+
+                        <button type="button"
+                            data-secao="alertas"
+                            class="atalho-card">
+
+                            <span>🔔</span>
+
+                            <strong>Alterações</strong>
+
+                            <small>
+                                Consultar alterações informadas.
+                            </small>
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="aviso-profissional">
+
+                        <strong>ℹ️ Atenção</strong>
+
+                        <p>
+                            Os indicadores e registros somente serão
+                            apresentados após a configuração das
+                            permissões, vínculos entre pacientes e
+                            profissionais e integração com o Supabase.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================
+                     SEÇÃO: PACIENTES
+                ================================== -->
+
+                <section class="secao-profissional"
+                    id="secao-pacientes">
+
+                    <div class="cabecalho-secao">
+
+                        <div>
+
+                            <h1>👥 Pacientes</h1>
+
+                            <p>
+                                Consulte os pacientes vinculados
+                                ao seu acompanhamento autorizado.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="card-profissional">
+
+                        <h2>Buscar paciente</h2>
+
+                        <form id="form-buscar-paciente">
+
+                            <div class="campo-busca">
+
+                                <input type="search"
+                                    id="busca-paciente"
+                                    placeholder="Buscar pelo nome ou identificador..."
+                                    aria-label="Buscar paciente">
+
+                                <button type="submit"
+                                    class="botao-profissional"
+                                    id="btn-buscar-paciente">
+
+                                    Buscar
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+
+                    <div class="card-profissional">
+
+                        <h2>Pacientes vinculados</h2>
+
+                        <div id="lista-pacientes"
+                            class="lista-pacientes">
+
+                            <div class="estado-vazio">
+
+                                <span>👥</span>
+
+                                <p>
+                                    Nenhum paciente carregado.
+                                </p>
+
+                                <small>
+                                    Os pacientes serão exibidos após
+                                    a configuração dos vínculos e
+                                    das permissões de acesso.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================
+                     SEÇÃO: REGISTROS
+                ================================== -->
+
+                <section class="secao-profissional"
+                    id="secao-registros">
+
+                    <div class="cabecalho-secao">
+
+                        <div>
+
+                            <h1>📋 Registros de inspeção</h1>
+
+                            <p>
+                                Consulte as observações registradas
+                                pelos pacientes autorizados.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="card-profissional">
+
+                        <h2>Consultar registros</h2>
+
+                        <div class="formulario-filtros">
+
+                            <div class="campo-profissional">
+
+                                <label for="filtro-paciente">
+                                    Paciente
+                                </label>
+
+                                <select id="filtro-paciente">
+
+                                    <option value="">
+                                        Todos os pacientes autorizados
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="campo-profissional">
+
+                                <label for="filtro-periodo">
+                                    Período
+                                </label>
+
+                                <select id="filtro-periodo">
+
+                                    <option value="todos">
+                                        Todo o período
+                                    </option>
+
+                                    <option value="7">
+                                        Últimos 7 dias
+                                    </option>
+
+                                    <option value="30">
+                                        Últimos 30 dias
+                                    </option>
+
+                                    <option value="90">
+                                        Últimos 90 dias
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+
+                            <button type="button"
+                                id="btn-filtrar-registros"
+                                class="botao-profissional">
+
+                                Aplicar filtros
+
+                            </button>
+
+                        </div>
+
+
+                        <div id="lista-registros"
+                            class="lista-registros">
+
+                            <div class="estado-vazio">
+
+                                <span>📋</span>
+
+                                <p>
+                                    Nenhum registro disponível.
+                                </p>
+
+                                <small>
+                                    Os registros serão apresentados
+                                    conforme as permissões de acesso.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================
+                     SEÇÃO: ALTERAÇÕES RELATADAS
+                ================================== -->
+
+                <section class="secao-profissional"
+                    id="secao-alertas">
+
+                    <div class="cabecalho-secao">
+
+                        <div>
+
+                            <h1>🔔 Alterações relatadas</h1>
+
+                            <p>
+                                Consulte alterações informadas pelos
+                                pacientes durante a inspeção dos pés.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="aviso-profissional aviso-atencao">
+
+                        <strong>⚠️ Importante</strong>
+
+                        <p>
+                            Este painel não representa um serviço
+                            de atendimento de urgência e não garante
+                            monitoramento em tempo real.
+                        </p>
+
+                        <p>
+                            O paciente deve receber orientações claras
+                            para procurar avaliação profissional
+                            prontamente diante de alterações preocupantes.
+                        </p>
+
+                    </div>
+
+
+                    <div class="card-profissional">
+
+                        <h2>Alterações registradas</h2>
+
+                        <div id="lista-alertas">
+
+                            <div class="estado-vazio">
+
+                                <span>🔔</span>
+
+                                <p>
+                                    Nenhuma alteração carregada.
+                                </p>
+
+                                <small>
+                                    A consulta dependerá da integração
+                                    com os registros do Supabase e das
+                                    permissões do profissional.
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================
+                     SEÇÃO: ACOMPANHAMENTO
+                ================================== -->
+
+                <section class="secao-profissional"
+                    id="secao-acompanhamento">
+
+                    <div class="cabecalho-secao">
+
+                        <div>
+
+                            <h1>🩺 Acompanhamento</h1>
+
+                            <p>
+                                Organização do acompanhamento
+                                dos pacientes vinculados.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="card-profissional">
+
+                        <h2>Continuidade do cuidado</h2>
+
+                        <p>
+                            Esta área será utilizada para organizar
+                            informações de acompanhamento, contatos
+                            e encaminhamentos realizados.
+                        </p>
+
+                        <div class="lista-etapas">
+
+                            <div class="etapa-acompanhamento">
+
+                                <span>01</span>
+
+                                <div>
+                                    <strong>Identificação</strong>
+
+                                    <p>
+                                        Identificar o paciente e
+                                        consultar os dados autorizados.
+                                    </p>
+                                </div>
+
+                            </div>
+
+
+                            <div class="etapa-acompanhamento">
+
+                                <span>02</span>
+
+                                <div>
+                                    <strong>Consulta dos registros</strong>
+
+                                    <p>
+                                        Observar as informações
+                                        registradas durante o
+                                        acompanhamento.
+                                    </p>
+                                </div>
+
+                            </div>
+
+
+                            <div class="etapa-acompanhamento">
+
+                                <span>03</span>
+
+                                <div>
+                                    <strong>Orientação e encaminhamento</strong>
+
+                                    <p>
+                                        Registrar as orientações e
+                                        os encaminhamentos realizados,
+                                        conforme os protocolos do serviço.
+                                    </p>
+                                </div>
+
+                            </div>
+
+
+                            <div class="etapa-acompanhamento">
+
+                                <span>04</span>
+
+                                <div>
+                                    <strong>Continuidade</strong>
+
+                                    <p>
+                                        Registrar a continuidade do
+                                        acompanhamento quando houver
+                                        pactuação com o serviço de saúde.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="aviso-profissional">
+                        <strong>Integração futura</strong>
+
+                        <p>
+                            A comunicação entre pacientes e equipe
+                            dependerá de consentimento, definição
+                            de responsabilidades e disponibilidade
+                            dos profissionais.
+                        </p>
+                    </div>
+
+                </section>
+
+
+                <!-- =================================
+                     SEÇÃO: PERFIL PROFISSIONAL
+                ================================== -->
+
+                <section class="secao-profissional"
+                    id="secao-perfil">
+
+                    <div class="cabecalho-secao">
+
+                        <div>
+
+                            <h1>👤 Meu perfil profissional</h1>
+
+                            <p>
+                                Informações da conta profissional.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="card-profissional">
+
+                        <form id="form-perfil-profissional">
+
+                            <div class="campo-profissional">
+
+                                <label for="prof-nome">
+                                    Nome completo
+                                </label>
+
+                                <input type="text"
+                                    id="prof-nome"
+                                    disabled>
+
+                            </div>
+
+
+                            <div class="campo-profissional">
+
+                                <label for="prof-email">
+                                    E-mail
+                                </label>
+
+                                <input type="email"
+                                    id="prof-email"
+                                    disabled>
+
+                            </div>
+
+
+                            <div class="campo-profissional">
+
+                                <label for="prof-registro">
+                                    Registro profissional
+                                </label>
+
+                                <input type="text"
+                                    id="prof-registro"
+                                    disabled>
+
+                            </div>
+
+
+                            <div class="campo-profissional">
+
+                                <label for="prof-instituicao">
+                                    Instituição ou serviço de saúde
+                                </label>
+
+                                <input type="text"
+                                    id="prof-instituicao"
+                                    disabled>
+
+                            </div>
+
+
+                            <p class="texto-ajuda">
+                                Os dados serão carregados a partir
+                                do cadastro profissional autorizado.
+                            </p>
+
+                        </form>
+
+                    </div>
+
+                </section>
+
+
+            </div>
+
+
+            <!-- =====================================
+                 RODAPÉ
+            ====================================== -->
+
+            <footer class="rodape-profissional">
+
+                <p>
+                    Passo Seguro — Ambiente profissional.
+                </p>
+
+                <p>
+                    Ferramenta de apoio ao acompanhamento.
+                    Não substitui avaliação clínica.
+                </p>
+
+            </footer>
+
+        </main>
+
+    </div>
+
+
+    <!-- =====================================
+         BIBLIOTECA SUPABASE
+    ====================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+    <!-- CONFIGURAÇÃO DO PROJETO -->
+
+    <script src="js/config.js"></script>
+
+
+    <!-- LÓGICA DO PAINEL PROFISSIONAL -->
+
+    <script src="js/profissional.js"></script>
+
+</body>
+
+</html>
+
