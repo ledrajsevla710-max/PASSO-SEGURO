@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrar – Passo Seguro</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Biblioteca do Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+</head>
+<body>
+
+  <header class="header-app">
+    <div>
+      <h1>Passo Seguro</h1>
+      <p class="subtitulo">Acesso à conta</p>
+    </div>
+    <nav>
+      <a href="index.html" class="btn btn-secundario" style="background:#fff; color:#003366; border-color:#fff;">Início</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container" style="max-width: 480px;">
+
+      <section class="card">
+        <h2 class="card-titulo texto-centro">Entrar na sua conta</h2>
+
+        <!-- Mensagem de erro/sucesso -->
+        <div id="mensagem" class="escondido" role="alert"></div>
+
+        <form id="form-login" novalidate>
+          <div class="form-grupo">
+            <label for="email">E-mail</label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              required 
+              autocomplete="email"
+              placeholder="seu@email.com"
+            >
+          </div>
+
+          <div class="form-grupo">
+            <label for="senha">Senha</label>
+            <input 
+              type="password" 
+              id="senha" 
+              name="senha" 
+              required 
+              autocomplete="current-password"
+              placeholder="Sua senha"
+              minlength="6"
+            >
+          </div>
+
+          <button type="submit" class="btn btn-primario btn-bloco" id="btn-entrar">
+            Entrar
+          </button>
+        </form>
+
+        <p class="texto-centro mt-2" style="font-size:0.95rem;">
+          Ainda não tem conta? 
+          <a href="cadastro.html"><strong>Criar conta</strong></a>
+        </p>
+      </section>
+
+      <!-- Aviso clínico -->
+      <div class="aviso-clinico">
+        O Passo Seguro é uma ferramenta de apoio ao autocuidado. 
+        <strong>Não substitui</strong> avaliação profissional.
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Lógica de autenticação -->
+  <script src="js/auth.js"></script>
+</body>
+</html>
