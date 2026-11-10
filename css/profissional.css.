@@ -1,0 +1,1314 @@
+
+/* =====================================================
+   PASSO SEGURO
+   PAINEL PROFISSIONAL
+   Arquivo: css/profissional.css
+   Versão: 1.0.0
+===================================================== */
+
+
+/* =====================================================
+   1. VARIÁVEIS E CONFIGURAÇÕES
+===================================================== */
+
+:root {
+    --prof-primaria: #087F70;
+    --prof-primaria-escura: #056457;
+    --prof-primaria-clara: #E6F5F1;
+
+    --prof-fundo: #F5F8F8;
+    --prof-branco: #FFFFFF;
+
+    --prof-texto: #243B3A;
+    --prof-texto-secundario: #71817F;
+
+    --prof-borda: #E3ECEA;
+
+    --prof-alerta: #D97706;
+    --prof-alerta-fundo: #FFF7E8;
+
+    --prof-perigo: #C24141;
+    --prof-perigo-fundo: #FFF0F0;
+
+    --prof-sucesso: #16845B;
+    --prof-sucesso-fundo: #EAF7F0;
+
+    --prof-sidebar: 260px;
+
+    --prof-sombra:
+        0 4px 18px rgba(24, 66, 60, 0.06);
+
+    --prof-raio: 14px;
+}
+
+
+/* =====================================================
+   2. CONFIGURAÇÃO GERAL
+===================================================== */
+
+.pagina-profissional {
+    margin: 0;
+    min-height: 100vh;
+
+    background: var(--prof-fundo);
+
+    color: var(--prof-texto);
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+}
+
+.pagina-profissional * {
+    box-sizing: border-box;
+}
+
+.pagina-profissional button,
+.pagina-profissional input,
+.pagina-profissional select {
+    font: inherit;
+}
+
+.pagina-profissional button {
+    cursor: pointer;
+}
+
+.pagina-profissional a {
+    text-decoration: none;
+}
+
+.pagina-profissional [hidden] {
+    display: none !important;
+}
+
+
+/* =====================================================
+   3. VERIFICAÇÃO DE ACESSO
+===================================================== */
+
+.verificacao-acesso {
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 25px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #E6F5F1,
+            #F7FAF9
+        );
+}
+
+.verificacao-card {
+    width: 100%;
+    max-width: 420px;
+
+    padding: 45px 30px;
+
+    text-align: center;
+
+    background: var(--prof-branco);
+
+    border: 1px solid var(--prof-borda);
+
+    border-radius: 20px;
+
+    box-shadow: var(--prof-sombra);
+}
+
+.verificacao-card .logo-icone {
+    font-size: 45px;
+    margin-bottom: 15px;
+}
+
+.verificacao-card h1 {
+    margin: 0 0 12px;
+
+    color: var(--prof-primaria);
+
+    font-size: 26px;
+}
+
+.verificacao-card p {
+    color: var(--prof-texto-secundario);
+
+    line-height: 1.7;
+}
+
+
+/* =====================================================
+   4. ESTRUTURA PRINCIPAL
+===================================================== */
+
+.layout-profissional {
+    min-height: 100vh;
+}
+
+.conteudo-profissional {
+    min-height: 100vh;
+
+    margin-left: var(--prof-sidebar);
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* =====================================================
+   5. MENU LATERAL
+===================================================== */
+
+.sidebar-profissional {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    bottom: 0;
+
+    width: var(--prof-sidebar);
+
+    z-index: 1000;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 28px 18px;
+
+    background: var(--prof-branco);
+
+    border-right: 1px solid var(--prof-borda);
+
+    overflow-y: auto;
+}
+
+.marca-profissional {
+    padding: 0 8px 28px;
+
+    border-bottom: 1px solid var(--prof-borda);
+}
+
+.marca-profissional .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    color: var(--prof-texto);
+}
+
+.marca-profissional .logo-icone {
+    font-size: 30px;
+}
+
+.marca-profissional .logo-texto {
+    font-size: 21px;
+    font-weight: 750;
+}
+
+.marca-profissional .logo-texto span {
+    color: var(--prof-primaria);
+}
+
+.marca-profissional > p {
+    margin: 8px 0 0 39px;
+
+    font-size: 12px;
+
+    color: var(--prof-texto-secundario);
+}
+
+.menu-titulo {
+    margin: 30px 10px 14px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+
+    color: #98A8A4;
+}
+
+.menu-profissional {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+.item-menu-profissional {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 13px 14px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: var(--prof-texto-secundario);
+
+    text-align: left;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    transition: 0.2s ease;
+}
+
+.item-menu-profissional span {
+    width: 23px;
+
+    font-size: 18px;
+
+    text-align: center;
+}
+
+.item-menu-profissional:hover {
+    background: var(--prof-primaria-clara);
+
+    color: var(--prof-primaria);
+}
+
+.item-menu-profissional.ativo {
+    background: var(--prof-primaria-clara);
+
+    color: var(--prof-primaria);
+
+    font-weight: 750;
+}
+
+.sidebar-profissional-final {
+    margin-top: auto;
+
+    padding-top: 25px;
+
+    border-top: 1px solid var(--prof-borda);
+}
+
+.link-inicio {
+    display: block;
+
+    padding: 12px;
+
+    color: var(--prof-texto-secundario);
+
+    font-size: 13px;
+}
+
+.link-inicio:hover {
+    color: var(--prof-primaria);
+}
+
+.botao-sair-profissional {
+    width: 100%;
+
+    padding: 12px;
+
+    margin-top: 8px;
+
+    border: 1px solid #F2DCDC;
+
+    border-radius: 9px;
+
+    background: var(--prof-perigo-fundo);
+
+    color: var(--prof-perigo);
+
+    font-weight: 650;
+
+    transition: 0.2s;
+}
+
+.botao-sair-profissional:hover {
+    background: #FCE1E1;
+}
+
+
+/* =====================================================
+   6. CABEÇALHO SUPERIOR
+===================================================== */
+
+.topbar-profissional {
+    min-height: 85px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 15px 35px;
+
+    background: var(--prof-branco);
+
+    border-bottom: 1px solid var(--prof-borda);
+}
+
+.topbar-esquerda {
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+}
+
+.texto-superior {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+
+    color: var(--prof-primaria);
+}
+
+.topbar-profissional h2 {
+    margin: 0;
+
+    font-size: 20px;
+
+    font-weight: 750;
+}
+
+.identificacao-profissional {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+.avatar-profissional {
+    width: 43px;
+    height: 43px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: var(--prof-primaria-clara);
+
+    font-size: 21px;
+}
+
+.identificacao-profissional strong {
+    display: block;
+
+    font-size: 13px;
+}
+
+.identificacao-profissional small {
+    display: block;
+
+    margin-top: 4px;
+
+    font-size: 11px;
+
+    color: var(--prof-texto-secundario);
+}
+
+.botao-menu-mobile {
+    display: none;
+
+    border: none;
+
+    background: transparent;
+
+    color: var(--prof-texto);
+
+    font-size: 24px;
+}
+
+
+/* =====================================================
+   7. ÁREA DE CONTEÚDO
+===================================================== */
+
+.conteudo-paginas {
+    flex: 1;
+
+    width: 100%;
+
+    max-width: 1500px;
+
+    margin: 0 auto;
+
+    padding: 32px 35px;
+}
+
+.secao-profissional {
+    display: none;
+}
+
+.secao-profissional.ativa {
+    display: block;
+
+    animation: entradaSecao 0.25s ease;
+}
+
+@keyframes entradaSecao {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =====================================================
+   8. BOAS-VINDAS
+===================================================== */
+
+.boas-vindas-profissional {
+    position: relative;
+
+    min-height: 205px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 25px;
+
+    padding: 35px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            120deg,
+            #087F70,
+            #0C9B85
+        );
+
+    border-radius: var(--prof-raio);
+
+    color: white;
+}
+
+.etiqueta-profissional {
+    display: inline-block;
+
+    margin-bottom: 15px;
+
+    padding: 7px 11px;
+
+    border: 1px solid rgba(255,255,255,0.35);
+
+    border-radius: 20px;
+
+    background: rgba(255,255,255,0.12);
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+.boas-vindas-profissional h1 {
+    margin: 0 0 12px;
+
+    font-size: clamp(23px, 3vw, 32px);
+}
+
+.boas-vindas-profissional p {
+    max-width: 620px;
+
+    margin: 0;
+
+    color: rgba(255,255,255,0.88);
+
+    font-size: 14px;
+
+    line-height: 1.8;
+}
+
+.icone-boas-vindas {
+    flex-shrink: 0;
+
+    width: 110px;
+    height: 110px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 30px;
+
+    background: rgba(255,255,255,0.15);
+
+    font-size: 55px;
+}
+
+
+/* =====================================================
+   9. INDICADORES
+===================================================== */
+
+.indicadores-profissional {
+    display: grid;
+
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 18px;
+
+    margin-top: 25px;
+}
+
+.indicador-card {
+    min-height: 115px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 17px;
+
+    padding: 23px;
+
+    background: var(--prof-branco);
+
+    border: 1px solid var(--prof-borda);
+
+    border-radius: var(--prof-raio);
+
+    box-shadow: var(--prof-sombra);
+}
+
+.indicador-icone {
+    width: 48px;
+    height: 48px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background: var(--prof-primaria-clara);
+
+    font-size: 22px;
+}
+
+.indicador-card span:not(.indicador-icone) {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: var(--prof-texto-secundario);
+
+    font-size: 12px;
+}
+
+.indicador-card strong {
+    font-size: 25px;
+
+    color: var(--prof-texto);
+}
+
+
+/* =====================================================
+   10. TÍTULOS E SUBTÍTULOS
+===================================================== */
+
+.titulo-conteudo-profissional {
+    margin: 35px 0 18px;
+}
+
+.titulo-conteudo-profissional h2 {
+    margin: 0 0 7px;
+
+    font-size: 20px;
+}
+
+.titulo-conteudo-profissional p {
+    margin: 0;
+
+    color: var(--prof-texto-secundario);
+
+    font-size: 13px;
+}
+
+.cabecalho-secao {
+    margin-bottom: 25px;
+}
+
+.cabecalho-secao h1 {
+    margin: 0 0 10px;
+
+    font-size: 25px;
+}
+
+.cabecalho-secao p {
+    margin: 0;
+
+    color: var(--prof-texto-secundario);
+
+    font-size: 14px;
+
+    line-height: 1.7;
+}
+
+
+/* =====================================================
+   11. ATALHOS
+===================================================== */
+
+.atalhos-profissional {
+    display: grid;
+
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 17px;
+}
+
+.atalho-card {
+    min-height: 165px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    padding: 22px;
+
+    border: 1px solid var(--prof-borda);
+
+    border-radius: var(--prof-raio);
+
+    background: var(--prof-branco);
+
+    text-align: left;
+
+    box-shadow: var(--prof-sombra);
+
+    transition: 0.2s ease;
+}
+
+.atalho-card:hover {
+    border-color: var(--prof-primaria);
+
+    transform: translateY(-3px);
+}
+
+.atalho-card > span {
+    margin-bottom: 15px;
+
+    font-size: 27px;
+}
+
+.atalho-card strong {
+    margin-bottom: 8px;
+
+    color: var(--prof-texto);
+
+    font-size: 15px;
+}
+
+.atalho-card small {
+    color: var(--prof-texto-secundario);
+
+    font-size: 12px;
+
+    line-height: 1.6;
+}
+
+
+/* =====================================================
+   12. CARTÕES
+===================================================== */
+
+.card-profissional {
+    margin-bottom: 22px;
+
+    padding: 25px;
+
+    background: var(--prof-branco);
+
+    border: 1px solid var(--prof-borda);
+
+    border-radius: var(--prof-raio);
+
+    box-shadow: var(--prof-sombra);
+}
+
+.card-profissional h2 {
+    margin: 0 0 20px;
+
+    font-size: 17px;
+}
+
+.card-profissional > p {
+    color: var(--prof-texto-secundario);
+
+    font-size: 14px;
+
+    line-height: 1.8;
+}
+
+
+/* =====================================================
+   13. FORMULÁRIOS
+===================================================== */
+
+.formulario-filtros {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+
+    align-items: end;
+
+    gap: 15px;
+}
+
+.campo-profissional {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+
+    margin-bottom: 17px;
+}
+
+.campo-profissional label {
+    color: var(--prof-texto);
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+.campo-profissional input,
+.campo-profissional select,
+.campo-busca input {
+    width: 100%;
+
+    min-height: 45px;
+
+    padding: 11px 13px;
+
+    border: 1px solid var(--prof-borda);
+
+    border-radius: 9px;
+
+    outline: none;
+
+    background: white;
+
+    color: var(--prof-texto);
+
+    font-size: 13px;
+
+    transition: 0.2s;
+}
+
+.campo-profissional input:focus,
+.campo-profissional select:focus,
+.campo-busca input:focus {
+    border-color: var(--prof-primaria);
+
+    box-shadow: 0 0 0 3px rgba(8,127,112,0.10);
+}
+
+.campo-profissional input:disabled {
+    background: #F2F5F4;
+
+    color: var(--prof-texto-secundario);
+
+    cursor: not-allowed;
+}
+
+.texto-ajuda {
+    color: var(--prof-texto-secundario);
+
+    font-size: 12px;
+
+    line-height: 1.6;
+}
+
+
+/* =====================================================
+   14. CAMPO DE BUSCA
+===================================================== */
+
+.campo-busca {
+    display: flex;
+
+    gap: 12px;
+}
+
+.campo-busca input {
+    flex: 1;
+}
+
+
+/* =====================================================
+   15. BOTÕES
+===================================================== */
+
+.botao-profissional {
+    min-height: 45px;
+
+    padding: 11px 20px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    background: var(--prof-primaria);
+
+    color: white;
+
+    font-size: 13px;
+
+    font-weight: 750;
+
+    transition: 0.2s;
+}
+
+.botao-profissional:hover {
+    background: var(--prof-primaria-escura);
+}
+
+.botao-profissional:focus-visible,
+.item-menu-profissional:focus-visible,
+.atalho-card:focus-visible {
+    outline: 3px solid rgba(8,127,112,0.3);
+
+    outline-offset: 3px;
+}
+
+
+/* =====================================================
+   16. ESTADO VAZIO
+===================================================== */
+
+.estado-vazio {
+    min-height: 180px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 25px;
+
+    text-align: center;
+
+    background: #FAFCFB;
+
+    border: 1px dashed #D5E4E0;
+
+    border-radius: 12px;
+}
+
+.estado-vazio > span {
+    margin-bottom: 12px;
+
+    font-size: 35px;
+}
+
+.estado-vazio p {
+    margin: 0 0 8px;
+
+    color: var(--prof-texto);
+
+    font-size: 14px;
+
+    font-weight: 700;
+}
+
+.estado-vazio small {
+    max-width: 400px;
+
+    color: var(--prof-texto-secundario);
+
+    font-size: 12px;
+
+    line-height: 1.7;
+}
+
+
+/* =====================================================
+   17. LISTAS
+===================================================== */
+
+.lista-pacientes,
+.lista-registros {
+    display: flex;
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+
+/* =====================================================
+   18. AVISOS
+===================================================== */
+
+.aviso-profissional {
+    margin-top: 25px;
+
+    padding: 19px 21px;
+
+    border: 1px solid #D7EAE5;
+
+    border-radius: 11px;
+
+    background: #F0F8F5;
+}
+
+.aviso-profissional strong {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: var(--prof-primaria-escura);
+
+    font-size: 14px;
+}
+
+.aviso-profissional p {
+    margin: 0;
+
+    color: #526C65;
+
+    font-size: 12px;
+
+    line-height: 1.8;
+}
+
+.aviso-profissional p + p {
+    margin-top: 10px;
+}
+
+.aviso-atencao {
+    background: var(--prof-alerta-fundo);
+
+    border-color: #F3DEB6;
+}
+
+.aviso-atencao strong {
+    color: #925B0A;
+}
+
+.aviso-atencao p {
+    color: #795B2B;
+}
+
+
+/* =====================================================
+   19. ETAPAS DE ACOMPANHAMENTO
+===================================================== */
+
+.lista-etapas {
+    display: flex;
+    flex-direction: column;
+
+    gap: 20px;
+
+    margin-top: 25px;
+}
+
+.etapa-acompanhamento {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 15px;
+}
+
+.etapa-acompanhamento > span {
+    width: 38px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: var(--prof-primaria-clara);
+
+    color: var(--prof-primaria);
+
+    font-size: 13px;
+
+    font-weight: 800;
+}
+
+.etapa-acompanhamento strong {
+    display: block;
+
+    margin-bottom: 6px;
+
+    font-size: 14px;
+}
+
+.etapa-acompanhamento p {
+    margin: 0;
+
+    color: var(--prof-texto-secundario);
+
+    font-size: 12px;
+
+    line-height: 1.7;
+}
+
+
+/* =====================================================
+   20. RODAPÉ
+===================================================== */
+
+.rodape-profissional {
+    padding: 22px 35px;
+
+    background: var(--prof-branco);
+
+    border-top: 1px solid var(--prof-borda);
+
+    text-align: center;
+}
+
+.rodape-profissional p {
+    margin: 4px 0;
+
+    color: var(--prof-texto-secundario);
+
+    font-size: 11px;
+
+    line-height: 1.6;
+}
+
+
+/* =====================================================
+   21. RESPONSIVIDADE - TABLETS
+===================================================== */
+
+@media (max-width: 1100px) {
+
+    :root {
+        --prof-sidebar: 225px;
+    }
+
+    .conteudo-paginas {
+        padding: 25px;
+    }
+
+    .topbar-profissional {
+        padding: 15px 25px;
+    }
+
+    .indicadores-profissional {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .atalhos-profissional {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+/* =====================================================
+   22. RESPONSIVIDADE - CELULARES
+===================================================== */
+
+@media (max-width: 768px) {
+
+    .sidebar-profissional {
+        width: 260px;
+
+        transform: translateX(-100%);
+
+        transition: transform 0.25s ease;
+
+        box-shadow: none;
+    }
+
+    .sidebar-profissional.aberto {
+        transform: translateX(0);
+
+        box-shadow: 10px 0 35px rgba(0,0,0,0.12);
+    }
+
+    .conteudo-profissional {
+        margin-left: 0;
+    }
+
+    .botao-menu-mobile {
+        display: block;
+    }
+
+    .topbar-profissional {
+        min-height: 75px;
+
+        padding: 12px 17px;
+    }
+
+    .topbar-profissional h2 {
+        font-size: 17px;
+    }
+
+    .identificacao-profissional {
+        gap: 7px;
+    }
+
+    .avatar-profissional {
+        width: 37px;
+        height: 37px;
+
+        font-size: 17px;
+    }
+
+    .identificacao-profissional strong {
+        font-size: 11px;
+    }
+
+    .identificacao-profissional small {
+        font-size: 10px;
+    }
+
+    .conteudo-paginas {
+        padding: 20px 15px;
+    }
+
+    .boas-vindas-profissional {
+        min-height: auto;
+
+        padding: 25px 20px;
+    }
+
+    .icone-boas-vindas {
+        width: 65px;
+        height: 65px;
+
+        border-radius: 18px;
+
+        font-size: 34px;
+    }
+
+    .boas-vindas-profissional h1 {
+        font-size: 23px;
+    }
+
+    .boas-vindas-profissional p {
+        font-size: 12px;
+    }
+
+    .indicadores-profissional {
+        grid-template-columns: 1fr;
+    }
+
+    .indicador-card {
+        min-height: 95px;
+
+        padding: 17px;
+    }
+
+    .atalhos-profissional {
+        grid-template-columns: 1fr;
+    }
+
+    .atalho-card {
+        min-height: 135px;
+    }
+
+    .formulario-filtros {
+        grid-template-columns: 1fr;
+    }
+
+    .campo-busca {
+        flex-direction: column;
+    }
+
+    .campo-busca .botao-profissional {
+        width: 100%;
+    }
+
+    .card-profissional {
+        padding: 18px;
+    }
+
+    .cabecalho-secao h1 {
+        font-size: 22px;
+    }
+
+    .rodape-profissional {
+        padding: 18px;
+    }
+
+}
+
+
+/* =====================================================
+   23. RESPONSIVIDADE - TELAS PEQUENAS
+===================================================== */
+
+@media (max-width: 400px) {
+
+    .topbar-profissional {
+        gap: 8px;
+    }
+
+    .identificacao-profissional small {
+        display: none;
+    }
+
+    .boas-vindas-profissional {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .icone-boas-vindas {
+        display: none;
+    }
+
+    .indicador-card strong {
+        font-size: 22px;
+    }
+
+}
+
+
+/* =====================================================
+   24. ACESSIBILIDADE
+===================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .pagina-profissional *,
+    .pagina-profissional *::before,
+    .pagina-profissional *::after {
+        animation-duration: 0.01ms !important;
+
+        animation-iteration-count: 1 !important;
+
+        scroll-behavior: auto !important;
+
+        transition-duration: 0.01ms !important;
+    }
+
+}
