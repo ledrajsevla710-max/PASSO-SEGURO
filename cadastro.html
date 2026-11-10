@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criar conta – Passo Seguro</title>
+  <link rel="stylesheet" href="css/style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+</head>
+<body>
+
+  <header class="header-app">
+    <div>
+      <h1>Passo Seguro</h1>
+      <p class="subtitulo">Criar conta</p>
+    </div>
+    <nav>
+      <a href="login.html" class="btn btn-secundario" style="background:#fff; color:#003366; border-color:#fff;">Já tenho conta</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container" style="max-width: 560px;">
+
+      <section class="card">
+        <h2 class="card-titulo texto-centro">Criar sua conta</h2>
+        <p class="texto-centro" style="color:#555; margin-bottom:20px;">
+          Para pessoas em fase de remissão de úlcera nos pés, em acompanhamento de estomaterapia.
+        </p>
+
+        <div id="mensagem" class="escondido" role="alert"></div>
+
+        <form id="form-cadastro" novalidate>
+
+          <!-- Dados de acesso -->
+          <h3 style="margin: 20px 0 12px; font-size:1.05rem;">Dados de acesso</h3>
+
+          <div class="form-grupo">
+            <label for="nome">Nome completo</label>
+            <input type="text" id="nome" name="nome" required autocomplete="name" placeholder="Seu nome">
+          </div>
+
+          <div class="form-grupo">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" required autocomplete="email" placeholder="seu@email.com">
+          </div>
+
+          <div class="form-grupo">
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" name="senha" required minlength="6" autocomplete="new-password" placeholder="Mínimo 6 caracteres">
+            <p class="ajuda">Mínimo de 6 caracteres</p>
+          </div>
+
+          <div class="form-grupo">
+            <label for="confirmar-senha">Confirmar senha</label>
+            <input type="password" id="confirmar-senha" name="confirmar-senha" required minlength="6" autocomplete="new-password">
+          </div>
+
+          <!-- Perfil clínico básico (versão 1.0) -->
+          <h3 style="margin: 28px 0 12px; font-size:1.05rem;">Informações para o acompanhamento</h3>
+
+          <div class="form-grupo">
+            <label for="data-nascimento">Data de nascimento</label>
+            <input type="date" id="data-nascimento" name="data-nascimento">
+          </div>
+
+          <div class="form-grupo">
+            <label for="cartao-sus">Cartão SUS (opcional)</label>
+            <input type="text" id="cartao-sus" name="cartao-sus" placeholder="Número do Cartão Nacional de Saúde">
+          </div>
+
+          <div class="form-grupo">
+            <label>Já teve úlcera nos pés?</label>
+            <div class="form-check">
+              <input type="radio" id="ulcera-sim" name="historico_ulcera" value="sim" checked>
+              <label for="ulcera-sim">Sim</label>
+            </div>
+            <div class="form-check">
+              <input type="radio" id="ulcera-nao" name="historico_ulcera" value="nao">
+              <label for="ulcera-nao">Não</label>
+            </div>
+          </div>
+
+          <div class="form-grupo">
+            <label for="data-cicatrizacao">Data aproximada da última cicatrização (se souber)</label>
+            <input type="date" id="data-cicatrizacao" name="data-cicatrizacao">
+          </div>
+
+          <div class="form-grupo">
+            <label>Possui amputação em algum dos pés?</label>
+            <div class="form-check">
+              <input type="radio" id="amputacao-nao" name="amputacao" value="nao" checked>
+              <label for="amputacao-nao">Não</label>
+            </div>
+            <div class="form-check">
+              <input type="radio" id="amputacao-sim" name="amputacao" value="sim">
+              <label for="amputacao-sim">Sim</label>
+            </div>
+          </div>
+
+          <div class="form-grupo">
+            <label>Tem alguém que pode ajudar na inspeção dos pés? (cuidador)</label>
+            <div class="form-check">
+              <input type="radio" id="cuidador-sim" name="tem_cuidador" value="sim">
+              <label for="cuidador-sim">Sim</label>
+            </div>
+            <div class="form-check">
+              <input type="radio" id="cuidador-nao" name="tem_cuidador" value="nao" checked>
+              <label for="cuidador-nao">Não</label>
+            </div>
+          </div>
+
+          <!-- Termo simples -->
+          <div class="form-check" style="margin: 20px 0;">
+            <input type="checkbox" id="aceite" name="aceite" required>
+            <label for="aceite">
+              Entendo que o Passo Seguro é uma ferramenta de apoio ao autocuidado e 
+              <strong>não substitui</strong> a avaliação de um profissional de saúde.
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primario btn-bloco" id="btn-cadastrar">
+            Criar conta
+          </button>
+        </form>
+
+        <p class="texto-centro mt-2" style="font-size:0.95rem;">
+          Já tem conta? <a href="login.html"><strong>Entrar</strong></a>
+        </p>
+      </section>
+
+      <div class="aviso-clinico">
+        Os dados informados serão usados apenas para o acompanhamento no contexto desta pesquisa/protótipo.
+      </div>
+
+    </div>
+  </main>
+
+  <script src="js/auth.js"></script>
+  <script src="js/perfil.js"></script>
+</body>
+</html>
