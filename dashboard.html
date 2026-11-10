@@ -1,11 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <meta name="description"
         content="Passo Seguro - Plataforma de apoio ao autocuidado e acompanhamento da saúde dos pés de pessoas com diabetes.">
 
@@ -15,9 +13,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
@@ -44,7 +41,7 @@
             font-family: 'Inter', sans-serif;
         }
 
-        button, input, select {
+        button, input, select, textarea {
             font: inherit;
         }
 
@@ -58,7 +55,6 @@
         }
 
         /* MENU LATERAL */
-
         .sidebar {
             width: 255px;
             background: var(--white);
@@ -115,6 +111,9 @@
             font-size: 13px;
             font-weight: 600;
             transition: .2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .menu button:hover,
@@ -135,10 +134,17 @@
             padding: 13px;
             border-radius: 9px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        /* CONTEÚDO */
+        .btn-sair:hover {
+            background: #ffe3e0;
+        }
 
+        /* CONTEÚDO PRINCIPAL */
         .main-content {
             margin-left: 255px;
             width: calc(100% - 255px);
@@ -209,8 +215,7 @@
             margin: 0;
         }
 
-        /* CARDS */
-
+        /* CARDS E GRIDS */
         .grid-cards {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -270,7 +275,6 @@
         }
 
         /* FORMULÁRIOS */
-
         .form-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -356,13 +360,17 @@
             margin-bottom: 20px;
         }
 
-        .message {
+        .message, .notificacao {
             margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
             font-size: 13px;
         }
 
-        /* ORIENTAÇÕES */
+        .notificacao-sucesso { background: #e6f4ea; color: #137333; }
+        .notificacao-erro { background: #fce8e6; color: #c5221f; }
 
+        /* ORIENTAÇÕES */
         .orientation-list {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -378,16 +386,66 @@
 
         .orientation-item h3 {
             font-size: 14px;
+            margin: 0 0 10px;
         }
 
         .orientation-item p {
             font-size: 12px;
             line-height: 1.7;
             color: var(--muted);
+            margin: 0;
+        }
+
+        /* MODAL */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-conteudo {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .btn-fechar {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            color: var(--muted);
+        }
+
+        .galeria-fotos-detalhe {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .item-foto img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
         }
 
         /* RESPONSIVIDADE */
-
         .mobile-toggle {
             display: none;
             border: none;
@@ -456,7 +514,6 @@
 <div class="app-layout">
 
     <!-- MENU LATERAL -->
-
     <aside class="sidebar" id="sidebar">
 
         <div class="brand">
@@ -469,61 +526,57 @@
         <nav class="menu">
 
             <button class="active" data-page="inicio">
-                🏠 Início
+                <i class="fas fa-home"></i> Início
             </button>
 
             <button data-page="perfil">
-                👤 Meu perfil
+                <i class="fas fa-user"></i> Meu perfil
             </button>
 
             <button data-page="inspecao">
-                🔍 Inspeção dos pés
+                <i class="fas fa-search-plus"></i> Inspeção dos pés
             </button>
 
             <button data-page="historico">
-                📊 Histórico
+                <i class="fas fa-chart-line"></i> Histórico
             </button>
 
             <button data-page="orientacoes">
-                📚 Orientações
+                <i class="fas fa-book-medical"></i> Orientações
             </button>
 
             <button data-page="fotos">
-                📷 Fotografias
+                <i class="fas fa-camera"></i> Fotografias
             </button>
 
             <button data-page="profissional">
-                🩺 Acompanhamento profissional
+                <i class="fas fa-user-md"></i> Acompanhamento profissional
             </button>
 
         </nav>
 
         <div class="sidebar-bottom">
             <button class="btn-sair" id="btn-sair">
-                ↪ Sair da conta
+                <i class="fas fa-sign-out-alt"></i> Sair da conta
             </button>
         </div>
 
     </aside>
 
     <!-- CONTEÚDO PRINCIPAL -->
-
     <main class="main-content">
 
         <header class="topbar">
 
             <div style="display:flex;align-items:center;gap:15px;">
-
                 <button class="mobile-toggle" id="mobile-toggle">
                     ☰
                 </button>
-
                 <h2 id="titulo-pagina">Início</h2>
-
             </div>
 
             <div class="user-info">
-                <div class="avatar">👤</div>
+                <div class="avatar" id="avatar-user">👤</div>
                 <span id="nome-paciente-display">Carregando...</span>
             </div>
 
@@ -534,28 +587,20 @@
             <!-- =================================
                  PÁGINA INICIAL
             ================================== -->
-
             <section class="page active" id="page-inicio">
 
                 <div class="welcome-card">
-
                     <h1>Bem-vindo ao Passo Seguro!</h1>
-
                     <p>
-                        Este espaço foi desenvolvido para apoiar
-                        seu autocuidado e acompanhar a saúde dos
-                        seus pés após a cicatrização de uma úlcera
-                        relacionada ao diabetes.
+                        Este espaço foi desenvolvido para apoiar seu autocuidado e acompanhar a saúde dos
+                        seus pés após a cicatrização de uma úlcera relacionada ao diabetes.
                     </p>
-
                 </div>
 
                 <div class="page-heading">
                     <h1>Seu acompanhamento</h1>
                     <p>
-                        Acesse os recursos disponíveis para
-                        registrar suas observações e acompanhar
-                        seus cuidados.
+                        Acesse os recursos disponíveis para registrar suas observações e acompanhar seus cuidados.
                     </p>
                 </div>
 
@@ -592,23 +637,17 @@
 
                 <div class="card">
                     <h3>💡 Cuidados importantes</h3>
-
                     <p>
-                        Examine seus pés diariamente, observe
-                        alterações na pele e procure orientação
+                        Examine seus pés diariamente, observe alterações na pele e procure orientação
                         profissional quando identificar algo diferente.
                     </p>
-
                     <button class="btn-primary" data-page="orientacoes">
                         Consultar orientações
                     </button>
                 </div>
 
                 <div class="warning-box">
-                    <strong>Importante:</strong>
-                    o Passo Seguro é uma ferramenta de apoio ao
-                    autocuidado. Não substitui consultas, exames,
-                    diagnóstico ou avaliação profissional.
+                    <strong>Importante:</strong> O Passo Seguro é uma ferramenta de apoio ao autocuidado. Não substitui consultas, exames, diagnóstico ou avaliação profissional.
                 </div>
 
             </section>
@@ -616,7 +655,6 @@
             <!-- =================================
                  PERFIL DO PACIENTE
             ================================== -->
-
             <section class="page" id="page-perfil">
 
                 <div class="page-heading">
@@ -625,69 +663,36 @@
                 </div>
 
                 <div class="card">
-
                     <form id="form-perfil">
-
                         <div class="form-grid">
-
                             <div class="form-group">
-                                <label>Nome completo</label>
-                                <input type="text"
-                                    id="perfil-nome"
-                                    class="form-control"
-                                    required>
+                                <label for="perfil-nome">Nome completo</label>
+                                <input type="text" id="perfil-nome" class="form-control" required>
                             </div>
 
                             <div class="form-group">
-                                <label>E-mail cadastrado</label>
-                                <input type="email"
-                                    id="perfil-email"
-                                    class="form-control"
-                                    disabled>
+                                <label for="perfil-email">E-mail cadastrado</label>
+                                <input type="email" id="perfil-email" class="form-control" disabled>
                             </div>
 
                             <div class="form-group">
-                                <label>Cartão Nacional de Saúde (opcional)</label>
-                                <input type="text"
-                                    id="perfil-cartao-sus"
-                                    class="form-control">
+                                <label for="perfil-cartao-sus">Cartão Nacional de Saúde (opcional)</label>
+                                <input type="text" id="perfil-cartao-sus" class="form-control">
                             </div>
 
                             <div class="form-group">
-                                <label>Situação clínica</label>
-                                <select id="perfil-status-clinico"
-                                    class="form-control"
-                                    required>
-
-                                    <option value="remissao">
-                                        Úlcera cicatrizada
-                                    </option>
-
-                                    <option value="prevencao">
-                                        Prevenção
-                                    </option>
-
-                                    <option value="em_tratamento">
-                                        Em tratamento ativo
-                                    </option>
-
+                                <label for="perfil-status-clinico">Situação clínica</label>
+                                <select id="perfil-status-clinico" class="form-control" required>
+                                    <option value="remissao">Úlcera cicatrizada</option>
+                                    <option value="prevencao">Prevenção</option>
+                                    <option value="em_tratamento">Em tratamento ativo</option>
                                 </select>
                             </div>
-
                         </div>
 
-                        <button type="submit" class="btn-primary">
-                            Salvar alterações
-                        </button>
-
-                        <div id="mensagem-perfil"
-                            class="message"
-                            role="status"
-                            aria-live="polite">
-                        </div>
-
+                        <button type="submit" class="btn-primary">Salvar alterações</button>
+                        <div id="mensagem-perfil" class="message" role="status" aria-live="polite"></div>
                     </form>
-
                 </div>
 
             </section>
@@ -695,145 +700,75 @@
             <!-- =================================
                  INSPEÇÃO DOS PÉS
             ================================== -->
-
             <section class="page" id="page-inspecao">
 
                 <div class="page-heading">
                     <h1>🔍 Inspeção dos pés</h1>
-                    <p>
-                        Registre suas observações para acompanhar
-                        mudanças ao longo do tempo.
-                    </p>
+                    <p>Registre suas observações para acompanhar mudanças ao longo do tempo.</p>
                 </div>
 
                 <div class="info-box">
-                    A inspeção é um recurso de observação e registro.
-                    Ela não determina sozinha se existe uma complicação.
-                    Caso não consiga observar alguma região, peça ajuda
-                    a alguém de confiança ou à equipe de saúde.
+                    A inspeção é um recurso de observação e registro. Ela não determina sozinha se existe uma complicação. Caso não consiga observar alguma região, peça ajuda a alguém de confiança ou à equipe de saúde.
                 </div>
 
                 <div class="card">
-
                     <form id="form-inspecao">
 
                         <h3>1. Região observada</h3>
-
                         <div class="form-grid">
-
                             <div class="form-group">
-                                <label for="pe-observado">
-                                    Pé observado
-                                </label>
-
-                                <select id="pe-observado"
-                                    class="form-control"
-                                    required>
-
-                                    <option value="Direito">
-                                        Pé direito
-                                    </option>
-
-                                    <option value="Esquerdo">
-                                        Pé esquerdo
-                                    </option>
-
-                                    <option value="Ambos">
-                                        Ambos os pés
-                                    </option>
-
+                                <label for="pe-observado">Pé observado</label>
+                                <select id="pe-observado" class="form-control" required>
+                                    <option value="direito">Pé direito</option>
+                                    <option value="esquerdo">Pé esquerdo</option>
+                                    <option value="ambos">Ambos os pés</option>
                                 </select>
                             </div>
 
                             <div class="form-group">
-                                <label for="regiao-pe">
-                                    Região observada
-                                </label>
-
-                                <select id="regiao-pe"
-                                    class="form-control"
-                                    required>
-
-                                    <option value="Planta do pé">
-                                        Planta do pé
-                                    </option>
-
-                                    <option value="Calcanhar">
-                                        Calcanhar
-                                    </option>
-
-                                    <option value="Entre os dedos">
-                                        Entre os dedos
-                                    </option>
-
-                                    <option value="Dorso do pé">
-                                        Dorso do pé
-                                    </option>
-
+                                <label for="regiao-pe">Região observada</label>
+                                <select id="regiao-pe" class="form-control" required>
+                                    <option value="planta">Planta do pé</option>
+                                    <option value="calcanhar">Calcanhar</option>
+                                    <option value="entre_dedos">Entre os dedos</option>
+                                    <option value="dorso">Dorso do pé</option>
                                 </select>
                             </div>
-
                         </div>
 
                         <hr style="border:0;border-top:1px solid #e4eaf0;margin:20px 0;">
 
                         <h3>2. O que você observou?</h3>
-
-                        <p>
-                            Marque todas as situações percebidas.
-                        </p>
+                        <p>Marque todas as situações percebidas.</p>
 
                         <div class="checkbox-list">
-
                             <label>
-                                <input type="checkbox"
-                                    name="alteracao"
-                                    value="Vermelhidão">
-                                Vermelhidão ou manchas
+                                <input type="checkbox" name="alteracao" value="Vermelhidão"> Vermelhidão ou manchas
                             </label>
-
                             <label>
-                                <input type="checkbox"
-                                    name="alteracao"
-                                    value="Pé quente ou inchado">
-                                Pé mais quente ou inchado
+                                <input type="checkbox" name="alteracao" value="Pé quente ou inchado"> Pé mais quente ou inchado
                             </label>
-
                             <label>
-                                <input type="checkbox"
-                                    name="alteracao"
-                                    value="Calosidade/Pele seca">
-                                Calosidade ou pele seca
+                                <input type="checkbox" name="alteracao" value="Calosidade/Pele seca"> Calosidade ou pele seca
                             </label>
-
                             <label>
-                                <input type="checkbox"
-                                    name="alteracao"
-                                    value="Ferida/Curativo ativo">
-                                Ferida ou curativo ativo
+                                <input type="checkbox" name="alteracao" value="Ferida/Curativo ativo"> Ferida ou curativo ativo
                             </label>
+                        </div>
 
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label for="observacoes-inspecao">Observações adicionais</label>
+                            <textarea id="observacoes-inspecao" class="form-control" rows="3"></textarea>
                         </div>
 
                         <div class="warning-box" style="margin-top:22px;">
-                            Se houver ferida, alteração nova importante,
-                            pé quente, vermelho ou inchado, procure
-                            avaliação profissional prontamente.
-                            Não espere a próxima inspeção.
+                            Se houver ferida, alteração nova importante, pé quente, vermelho ou inchado, procure avaliação profissional prontamente. Não espere a próxima inspeção.
                         </div>
 
-                        <button type="submit" class="btn-primary">
-                            Registrar inspeção
-                        </button>
-
-                        <div id="mensagem-inspecao"
-                            class="message"
-                            role="status"
-                            aria-live="polite">
-                        </div>
+                        <button type="submit" class="btn-primary">Registrar inspeção</button>
+                        <div id="mensagem-inspecao" class="message" role="status" aria-live="polite"></div>
 
                     </form>
-
                 </div>
 
             </section>
@@ -841,25 +776,21 @@
             <!-- =================================
                  HISTÓRICO
             ================================== -->
-
             <section class="page" id="page-historico">
 
                 <div class="page-heading">
                     <h1>📊 Histórico de inspeções</h1>
-                    <p>
-                        Consulte os registros realizados
-                        durante seu acompanhamento.
-                    </p>
+                    <p>Consulte os registros realizados durante seu acompanhamento.</p>
                 </div>
 
                 <div class="card">
-
                     <h3>Registros anteriores</h3>
-
-                    <div id="container-historico-inspecoes">
-                        <p>Carregando histórico...</p>
+                    <div id="notificacao-historico" class="notificacao" style="display: none;"></div>
+                    <div id="historico-loader" style="display: none;">Carregando histórico...</div>
+                    <div id="historico-vazio" style="display: none;">
+                        <p class="text-muted">Nenhuma inspeção foi registrada ainda.</p>
                     </div>
-
+                    <div id="lista-historico" class="grid-historico"></div>
                 </div>
 
             </section>
@@ -867,72 +798,43 @@
             <!-- =================================
                  ORIENTAÇÕES
             ================================== -->
-
             <section class="page" id="page-orientacoes">
 
                 <div class="page-heading">
                     <h1>📚 Orientações educativas</h1>
-                    <p>
-                        Informações para apoiar o cuidado diário
-                        dos pés.
-                    </p>
+                    <p>Informações para apoiar o cuidado diário dos pés.</p>
                 </div>
 
-                <div class="orientation-list">
-
+                <div class="orientation-list" id="container-orientacoes">
                     <div class="orientation-item">
                         <h3>🔍 Inspeção diária</h3>
-                        <p>
-                            Observe diariamente a planta, o calcanhar,
-                            o dorso e os espaços entre os dedos.
-                            Utilize um espelho ou peça ajuda se necessário.
-                        </p>
+                        <p>Observe diariamente a planta, o calcanhar, o dorso e os espaços entre os dedos. Utilize um espelho ou peça ajuda se necessário.</p>
                     </div>
 
                     <div class="orientation-item">
                         <h3>🧼 Higiene dos pés</h3>
-                        <p>
-                            Higienize os pés cuidadosamente e seque
-                            principalmente os espaços entre os dedos.
-                        </p>
+                        <p>Higienize os pés cuidadosamente e seque principalmente os espaços entre os dedos.</p>
                     </div>
 
                     <div class="orientation-item">
                         <h3>🧴 Hidratação</h3>
-                        <p>
-                            Utilize hidratante adequado para a pele,
-                            evitando aplicar o produto entre os dedos.
-                        </p>
+                        <p>Utilize hidratante adequado para a pele, evitando aplicar o produto entre os dedos.</p>
                     </div>
 
                     <div class="orientation-item">
                         <h3>👟 Calçados</h3>
-                        <p>
-                            Utilize calçados confortáveis e adequados.
-                            Observe se existem pontos de atrito
-                            ou objetos dentro deles.
-                        </p>
+                        <p>Utilize calçados confortáveis e adequados. Observe se existem pontos de atrito ou objetos dentro deles.</p>
                     </div>
 
                     <div class="orientation-item">
                         <h3>⚠️ Alterações nos pés</h3>
-                        <p>
-                            Feridas, bolhas, vermelhidão, inchaço
-                            e mudanças de temperatura precisam
-                            de atenção profissional.
-                        </p>
+                        <p>Feridas, bolhas, vermelhidão, inchaço e mudanças de temperatura precisam de atenção profissional.</p>
                     </div>
 
                     <div class="orientation-item">
                         <h3>🩺 Acompanhamento</h3>
-                        <p>
-                            Mantenha suas consultas e siga as
-                            orientações da equipe de saúde.
-                            Não interrompa o acompanhamento
-                            após a cicatrização.
-                        </p>
+                        <p>Mantenha suas consultas e siga as orientações da equipe de saúde. Não interrompa o acompanhamento após a cicatrização.</p>
                     </div>
-
                 </div>
 
             </section>
@@ -940,38 +842,42 @@
             <!-- =================================
                  FOTOGRAFIAS
             ================================== -->
-
             <section class="page" id="page-fotos">
 
                 <div class="page-heading">
                     <h1>📷 Registro fotográfico</h1>
-                    <p>
-                        Espaço reservado para fotografias
-                        de acompanhamento dos pés.
-                    </p>
+                    <p>Espaço reservado para fotografias de acompanhamento dos pés.</p>
                 </div>
 
                 <div class="card">
-
-                    <h3>Registro de fotografias</h3>
+                    <h3>Envio e visualização de fotos</h3>
 
                     <div class="info-box">
-                        As fotografias são opcionais e servem
-                        apenas como documentação visual.
-                        Não permitem diagnóstico automático.
+                        As fotografias são opcionais e servem como documentação visual para acompanhamento. Arquivos aceitos: JPEG, PNG ou WebP (máx. 5MB).
                     </div>
 
-                    <p>
-                        A funcionalidade de armazenamento seguro
-                        será integrada ao módulo js/foto.js.
-                    </p>
+                    <form id="form-envio-foto">
+                        <div class="form-group">
+                            <label for="select-inspecao-foto">Vincular a uma Inspeção (Opcional)</label>
+                            <select id="select-inspecao-foto" class="form-control">
+                                <option value="">Sem vínculo direto</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="input-foto-arquivo">Selecione a Imagem</label>
+                            <input type="file" id="input-foto-arquivo" class="form-control" accept="image/jpeg,image/png,image/webp" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Enviar Fotografia</button>
+                    </form>
 
-                    <p>
-                        Antes de enviar imagens, será necessário
-                        configurar permissões de acesso e proteção
-                        dos arquivos.
-                    </p>
+                    <div id="mensagem-foto" class="message"></div>
 
+                    <hr style="margin: 25px 0; border: 0; border-top: 1px solid var(--border);">
+
+                    <h3>Minhas Fotos Salvas</h3>
+                    <div id="galeria-fotos-paciente" class="galeria-fotos-detalhe">
+                        <p class="text-muted">Nenhuma foto enviada até o momento.</p>
+                    </div>
                 </div>
 
             </section>
@@ -979,40 +885,24 @@
             <!-- =================================
                  ACOMPANHAMENTO PROFISSIONAL
             ================================== -->
-
             <section class="page" id="page-profissional">
 
                 <div class="page-heading">
                     <h1>🩺 Acompanhamento profissional</h1>
-                    <p>
-                        Informações sobre o acompanhamento
-                        realizado pela equipe de saúde.
-                    </p>
+                    <p>Informações sobre o acompanhamento realizado pela equipe de saúde.</p>
                 </div>
 
                 <div class="card">
-
                     <h3>Contato com o serviço de saúde</h3>
-
-                    <p>
-                        Este espaço poderá apresentar informações
-                        da unidade de saúde responsável pelo
-                        acompanhamento do paciente.
-                    </p>
+                    <p>Este espaço apresenta informações sobre os profissionais vinculados ao seu acompanhamento.</p>
 
                     <div class="warning-box">
-                        A comunicação direta com profissionais,
-                        envio automático de alertas e recebimento
-                        de respostas dependem de pactuação com
-                        o serviço de saúde.
+                        A comunicação direta com profissionais e a permissão de visualização do seu histórico requer autorização prévia por meio do vínculo profissional.
                     </div>
 
-                    <p>
-                        Até que essa integração esteja disponível,
-                        utilize os canais de atendimento indicados
-                        pela sua unidade de saúde.
-                    </p>
-
+                    <div id="painel-profissional-paciente">
+                        <p>Carregando informações do vínculo profissional...</p>
+                    </div>
                 </div>
 
             </section>
@@ -1020,40 +910,40 @@
         </div>
 
         <footer>
-            © 2026 Passo Seguro — Tecnologia de apoio ao autocuidado.
-            Não substitui avaliação profissional.
+            © 2026 Passo Seguro — Tecnologia de apoio ao autocuidado. Não substitui avaliação profissional.
         </footer>
 
     </main>
 
 </div>
 
-<!-- =================================
-     BIBLIOTECA SUPABASE
-================================== -->
+<!-- MODAL DE DETALHES DA INSPEÇÃO -->
+<div id="modal-detalhes-inspecao" class="modal" style="display: none;">
+    <div class="modal-conteudo">
+        <button id="btn-fechar-modal-detalhes" class="btn-fechar">&times;</button>
+        <div id="detalhes-inspecao-conteudo"></div>
+    </div>
+</div>
 
+<!-- DEPENDÊNCIAS SUPABASE E SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<!-- CONFIGURAÇÃO E MÓDULOS -->
-
 <script src="js/config.js"></script>
+<script src="js/auth.js"></script>
 <script src="js/perfil.js"></script>
 <script src="js/inspecao.js"></script>
+<script src="js/historico.js"></script>
+<script src="js/orientacoes.js"></script>
+<script src="js/foto.js"></script>
+<script src="js/profissional.js"></script>
 
-<!-- NAVEGAÇÃO E AUTENTICAÇÃO -->
-
+<!-- CONTROLE DE NAVEGAÇÃO E REQUISIÇÕES DA TELA -->
 <script>
-
 document.addEventListener("DOMContentLoaded", function() {
 
-    // Navegação entre páginas
-
+    // 1. Navegação de abas do Dashboard
     const botoes = document.querySelectorAll("[data-page]");
-
     const paginas = document.querySelectorAll(".page");
-
     const titulo = document.getElementById("titulo-pagina");
-
     const sidebar = document.getElementById("sidebar");
 
     const nomes = {
@@ -1067,18 +957,14 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 
     botoes.forEach(botao => {
-
         botao.addEventListener("click", function() {
-
             const destino = this.dataset.page;
 
             paginas.forEach(pagina => {
                 pagina.classList.remove("active");
             });
 
-            const paginaSelecionada =
-                document.getElementById("page-" + destino);
-
+            const paginaSelecionada = document.getElementById("page-" + destino);
             if (!paginaSelecionada) return;
 
             paginaSelecionada.classList.add("active");
@@ -1087,124 +973,46 @@ document.addEventListener("DOMContentLoaded", function() {
                 item.classList.remove("active");
             });
 
-            document.querySelector(
-                '.menu button[data-page="' + destino + '"]'
-            )?.classList.add("active");
+            document.querySelector('.menu button[data-page="' + destino + '"]')?.classList.add("active");
 
-            titulo.textContent = nomes[destino];
+            if (titulo && nomes[destino]) {
+                titulo.textContent = nomes[destino];
+            }
 
             sidebar.classList.remove("open");
 
-            if (destino === "historico" &&
-                typeof window.carregarHistoricoInspecao === "function") {
-                window.carregarHistoricoInspecao();
+            // Execuções específicas por aba
+            if (destino === "historico" && typeof carregarHistorico === "function") {
+                carregarHistorico();
             }
-
+            if (destino === "perfil" && typeof carregarPerfil === "function") {
+                carregarPerfil();
+            }
         });
-
     });
 
-    // Menu para celular
-
-    document.getElementById("mobile-toggle")
-        .addEventListener("click", function() {
+    // 2. Menu hamburguer no Mobile
+    const btnMobile = document.getElementById("mobile-toggle");
+    if (btnMobile) {
+        btnMobile.addEventListener("click", function() {
             sidebar.classList.toggle("open");
         });
-
-    // Encerrar sessão
-
-    document.getElementById("btn-sair")
-        .addEventListener("click", async function() {
-
-            const confirmar = confirm(
-                "Deseja realmente sair do Passo Seguro?"
-            );
-
-            if (!confirmar) return;
-
-            try {
-
-                const { error } =
-                    await window.supabase.auth.signOut();
-
-                if (error) throw error;
-
-                window.location.href = "login.html";
-
-            } catch (erro) {
-
-                console.error("Erro ao sair:", erro);
-
-                alert("Não foi possível encerrar a sessão.");
-
-            }
-
-        });
-
-    // Verificar sessão e carregar identificação
-
-    verificarUsuarioDashboard();
-
-});
-
-
-// =================================
-// IDENTIFICAÇÃO DO PACIENTE
-// =================================
-
-async function verificarUsuarioDashboard() {
-
-    try {
-
-        if (!window.supabase) {
-            throw new Error("Supabase não inicializado.");
-        }
-
-        const { data, error } =
-            await window.supabase.auth.getUser();
-
-        if (error || !data.user) {
-            window.location.href = "login.html";
-            return;
-        }
-
-        const user = data.user;
-
-        const { data: perfil, error: erroPerfil } =
-            await window.supabase
-                .from("perfis_usuarios")
-                .select("nome, nome_completo, tipo")
-                .eq("id", user.id)
-                .single();
-
-        if (erroPerfil || !perfil) {
-            throw new Error("Perfil não encontrado.");
-        }
-
-        if (perfil.tipo !== "paciente") {
-            window.location.href = "profissional.html";
-            return;
-        }
-
-        const nome =
-            perfil.nome_completo ||
-            perfil.nome ||
-            "Paciente";
-
-        document.getElementById(
-            "nome-paciente-display"
-        ).textContent = nome;
-
-    } catch (erro) {
-
-        console.error("Erro ao verificar usuário:", erro);
-
-        alert("Não foi possível carregar os dados do usuário.");
-
     }
 
-}
-
+    // 3. Ação do Botão Sair
+    const btnSair = document.getElementById("btn-sair");
+    if (btnSair) {
+        btnSair.addEventListener("click", function() {
+            if (typeof fazerLogout === "function") {
+                fazerLogout();
+            } else if (typeof supabase !== "undefined") {
+                supabase.auth.signOut().then(() => {
+                    window.location.href = "login.html";
+                });
+            }
+        });
+    }
+});
 </script>
 
 </body>
