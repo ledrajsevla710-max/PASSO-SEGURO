@@ -1,0 +1,1211 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+        content="Passo Seguro - Plataforma de apoio ao autocuidado e acompanhamento da saúde dos pés de pessoas com diabetes.">
+
+    <title>Passo Seguro | Painel do Paciente</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #087e78;
+            --primary-dark: #05645f;
+            --primary-light: #e6f5f3;
+            --background: #f4f7fa;
+            --white: #ffffff;
+            --text: #243447;
+            --muted: #718096;
+            --border: #e4eaf0;
+            --danger: #c0392b;
+            --radius: 14px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--background);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+        }
+
+        button, input, select {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .app-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* MENU LATERAL */
+
+        .sidebar {
+            width: 255px;
+            background: var(--white);
+            border-right: 1px solid var(--border);
+            padding: 25px 16px;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand {
+            padding: 5px 12px 28px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand h1 {
+            font-size: 22px;
+            color: var(--primary);
+            margin: 0;
+            font-weight: 800;
+        }
+
+        .brand p {
+            font-size: 11px;
+            color: var(--muted);
+            margin: 6px 0 0;
+        }
+
+        .menu-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #94a3b8;
+            letter-spacing: 1px;
+            padding: 25px 12px 10px;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .menu button {
+            border: none;
+            background: transparent;
+            color: #536477;
+            text-align: left;
+            padding: 13px 14px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+        .menu button:hover,
+        .menu button.active {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+        .btn-sair {
+            width: 100%;
+            border: none;
+            background: #fff0ef;
+            color: var(--danger);
+            padding: 13px;
+            border-radius: 9px;
+            font-weight: 600;
+        }
+
+        /* CONTEÚDO */
+
+        .main-content {
+            margin-left: 255px;
+            width: calc(100% - 255px);
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 76px;
+            padding: 0 35px;
+            background: var(--white);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar h2 {
+            font-size: 17px;
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: grid;
+            place-items: center;
+            font-weight: 800;
+        }
+
+        .content {
+            padding: 32px;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
+        }
+
+        .page-heading h1 {
+            font-size: 25px;
+            margin: 0 0 8px;
+        }
+
+        .page-heading p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* CARDS */
+
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 23px;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            font-size: 15px;
+            margin: 0 0 12px;
+        }
+
+        .card p {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .stat-value {
+            font-size: 23px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-top: 12px;
+        }
+
+        .welcome-card {
+            background: linear-gradient(120deg, #087e78, #0b9b91);
+            color: white;
+            padding: 30px;
+            border-radius: var(--radius);
+            margin-bottom: 24px;
+        }
+
+        .welcome-card h1 {
+            font-size: 23px;
+            margin: 0 0 10px;
+        }
+
+        .welcome-card p {
+            color: #e4f8f6;
+            font-size: 13px;
+            line-height: 1.7;
+            max-width: 650px;
+        }
+
+        /* FORMULÁRIOS */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            width: 100%;
+            border: 1px solid #dce4eb;
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px #087e7815;
+        }
+
+        .form-control:disabled {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .btn-primary {
+            border: none;
+            border-radius: 8px;
+            padding: 13px 20px;
+            background: var(--primary);
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .checkbox-list {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        .checkbox-list label {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 13px;
+            font-weight: 400;
+        }
+
+        .info-box {
+            background: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .warning-box {
+            background: #fff6e5;
+            border-left: 4px solid #d99a27;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 12px;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        /* ORIENTAÇÕES */
+
+        .orientation-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .orientation-item {
+            padding: 20px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .orientation-item h3 {
+            font-size: 14px;
+        }
+
+        .orientation-item p {
+            font-size: 12px;
+            line-height: 1.7;
+            color: var(--muted);
+        }
+
+        /* RESPONSIVIDADE */
+
+        .mobile-toggle {
+            display: none;
+            border: none;
+            background: transparent;
+            font-size: 23px;
+        }
+
+        footer {
+            padding: 25px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        @media(max-width: 900px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: .25s;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .grid-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width: 600px) {
+            .content {
+                padding: 20px 14px;
+            }
+
+            .topbar {
+                padding: 0 15px;
+            }
+
+            .form-grid,
+            .orientation-list {
+                grid-template-columns: 1fr;
+            }
+
+            .page-heading h1 {
+                font-size: 21px;
+            }
+
+            .user-info span {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- MENU LATERAL -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="brand">
+            <h1>👣 Passo Seguro</h1>
+            <p>Saúde e acompanhamento dos pés</p>
+        </div>
+
+        <div class="menu-label">MENU PRINCIPAL</div>
+
+        <nav class="menu">
+
+            <button class="active" data-page="inicio">
+                🏠 Início
+            </button>
+
+            <button data-page="perfil">
+                👤 Meu perfil
+            </button>
+
+            <button data-page="inspecao">
+                🔍 Inspeção dos pés
+            </button>
+
+            <button data-page="historico">
+                📊 Histórico
+            </button>
+
+            <button data-page="orientacoes">
+                📚 Orientações
+            </button>
+
+            <button data-page="fotos">
+                📷 Fotografias
+            </button>
+
+            <button data-page="profissional">
+                🩺 Acompanhamento profissional
+            </button>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <button class="btn-sair" id="btn-sair">
+                ↪ Sair da conta
+            </button>
+        </div>
+
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div style="display:flex;align-items:center;gap:15px;">
+
+                <button class="mobile-toggle" id="mobile-toggle">
+                    ☰
+                </button>
+
+                <h2 id="titulo-pagina">Início</h2>
+
+            </div>
+
+            <div class="user-info">
+                <div class="avatar">👤</div>
+                <span id="nome-paciente-display">Carregando...</span>
+            </div>
+
+        </header>
+
+        <div class="content">
+
+            <!-- =================================
+                 PÁGINA INICIAL
+            ================================== -->
+
+            <section class="page active" id="page-inicio">
+
+                <div class="welcome-card">
+
+                    <h1>Bem-vindo ao Passo Seguro!</h1>
+
+                    <p>
+                        Este espaço foi desenvolvido para apoiar
+                        seu autocuidado e acompanhar a saúde dos
+                        seus pés após a cicatrização de uma úlcera
+                        relacionada ao diabetes.
+                    </p>
+
+                </div>
+
+                <div class="page-heading">
+                    <h1>Seu acompanhamento</h1>
+                    <p>
+                        Acesse os recursos disponíveis para
+                        registrar suas observações e acompanhar
+                        seus cuidados.
+                    </p>
+                </div>
+
+                <div class="grid-cards">
+
+                    <div class="card">
+                        <div class="stat-label">Seu perfil</div>
+                        <div class="stat-value">👤</div>
+                        <p>Consulte e atualize seus dados pessoais.</p>
+                        <button class="btn-primary" data-page="perfil">
+                            Acessar perfil
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="stat-label">Inspeção dos pés</div>
+                        <div class="stat-value">🔍</div>
+                        <p>Registre suas observações durante a inspeção.</p>
+                        <button class="btn-primary" data-page="inspecao">
+                            Fazer inspeção
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="stat-label">Histórico</div>
+                        <div class="stat-value">📊</div>
+                        <p>Consulte os registros realizados anteriormente.</p>
+                        <button class="btn-primary" data-page="historico">
+                            Consultar histórico
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="card">
+                    <h3>💡 Cuidados importantes</h3>
+
+                    <p>
+                        Examine seus pés diariamente, observe
+                        alterações na pele e procure orientação
+                        profissional quando identificar algo diferente.
+                    </p>
+
+                    <button class="btn-primary" data-page="orientacoes">
+                        Consultar orientações
+                    </button>
+                </div>
+
+                <div class="warning-box">
+                    <strong>Importante:</strong>
+                    o Passo Seguro é uma ferramenta de apoio ao
+                    autocuidado. Não substitui consultas, exames,
+                    diagnóstico ou avaliação profissional.
+                </div>
+
+            </section>
+
+            <!-- =================================
+                 PERFIL DO PACIENTE
+            ================================== -->
+
+            <section class="page" id="page-perfil">
+
+                <div class="page-heading">
+                    <h1>👤 Meu perfil</h1>
+                    <p>Consulte e atualize suas informações cadastrais.</p>
+                </div>
+
+                <div class="card">
+
+                    <form id="form-perfil">
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+                                <label>Nome completo</label>
+                                <input type="text"
+                                    id="perfil-nome"
+                                    class="form-control"
+                                    required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>E-mail cadastrado</label>
+                                <input type="email"
+                                    id="perfil-email"
+                                    class="form-control"
+                                    disabled>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Cartão Nacional de Saúde (opcional)</label>
+                                <input type="text"
+                                    id="perfil-cartao-sus"
+                                    class="form-control">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Situação clínica</label>
+                                <select id="perfil-status-clinico"
+                                    class="form-control"
+                                    required>
+
+                                    <option value="remissao">
+                                        Úlcera cicatrizada
+                                    </option>
+
+                                    <option value="prevencao">
+                                        Prevenção
+                                    </option>
+
+                                    <option value="em_tratamento">
+                                        Em tratamento ativo
+                                    </option>
+
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <button type="submit" class="btn-primary">
+                            Salvar alterações
+                        </button>
+
+                        <div id="mensagem-perfil"
+                            class="message"
+                            role="status"
+                            aria-live="polite">
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+            <!-- =================================
+                 INSPEÇÃO DOS PÉS
+            ================================== -->
+
+            <section class="page" id="page-inspecao">
+
+                <div class="page-heading">
+                    <h1>🔍 Inspeção dos pés</h1>
+                    <p>
+                        Registre suas observações para acompanhar
+                        mudanças ao longo do tempo.
+                    </p>
+                </div>
+
+                <div class="info-box">
+                    A inspeção é um recurso de observação e registro.
+                    Ela não determina sozinha se existe uma complicação.
+                    Caso não consiga observar alguma região, peça ajuda
+                    a alguém de confiança ou à equipe de saúde.
+                </div>
+
+                <div class="card">
+
+                    <form id="form-inspecao">
+
+                        <h3>1. Região observada</h3>
+
+                        <div class="form-grid">
+
+                            <div class="form-group">
+                                <label for="pe-observado">
+                                    Pé observado
+                                </label>
+
+                                <select id="pe-observado"
+                                    class="form-control"
+                                    required>
+
+                                    <option value="Direito">
+                                        Pé direito
+                                    </option>
+
+                                    <option value="Esquerdo">
+                                        Pé esquerdo
+                                    </option>
+
+                                    <option value="Ambos">
+                                        Ambos os pés
+                                    </option>
+
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="regiao-pe">
+                                    Região observada
+                                </label>
+
+                                <select id="regiao-pe"
+                                    class="form-control"
+                                    required>
+
+                                    <option value="Planta do pé">
+                                        Planta do pé
+                                    </option>
+
+                                    <option value="Calcanhar">
+                                        Calcanhar
+                                    </option>
+
+                                    <option value="Entre os dedos">
+                                        Entre os dedos
+                                    </option>
+
+                                    <option value="Dorso do pé">
+                                        Dorso do pé
+                                    </option>
+
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <hr style="border:0;border-top:1px solid #e4eaf0;margin:20px 0;">
+
+                        <h3>2. O que você observou?</h3>
+
+                        <p>
+                            Marque todas as situações percebidas.
+                        </p>
+
+                        <div class="checkbox-list">
+
+                            <label>
+                                <input type="checkbox"
+                                    name="alteracao"
+                                    value="Vermelhidão">
+                                Vermelhidão ou manchas
+                            </label>
+
+                            <label>
+                                <input type="checkbox"
+                                    name="alteracao"
+                                    value="Pé quente ou inchado">
+                                Pé mais quente ou inchado
+                            </label>
+
+                            <label>
+                                <input type="checkbox"
+                                    name="alteracao"
+                                    value="Calosidade/Pele seca">
+                                Calosidade ou pele seca
+                            </label>
+
+                            <label>
+                                <input type="checkbox"
+                                    name="alteracao"
+                                    value="Ferida/Curativo ativo">
+                                Ferida ou curativo ativo
+                            </label>
+
+                        </div>
+
+                        <div class="warning-box" style="margin-top:22px;">
+                            Se houver ferida, alteração nova importante,
+                            pé quente, vermelho ou inchado, procure
+                            avaliação profissional prontamente.
+                            Não espere a próxima inspeção.
+                        </div>
+
+                        <button type="submit" class="btn-primary">
+                            Registrar inspeção
+                        </button>
+
+                        <div id="mensagem-inspecao"
+                            class="message"
+                            role="status"
+                            aria-live="polite">
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </section>
+
+            <!-- =================================
+                 HISTÓRICO
+            ================================== -->
+
+            <section class="page" id="page-historico">
+
+                <div class="page-heading">
+                    <h1>📊 Histórico de inspeções</h1>
+                    <p>
+                        Consulte os registros realizados
+                        durante seu acompanhamento.
+                    </p>
+                </div>
+
+                <div class="card">
+
+                    <h3>Registros anteriores</h3>
+
+                    <div id="container-historico-inspecoes">
+                        <p>Carregando histórico...</p>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- =================================
+                 ORIENTAÇÕES
+            ================================== -->
+
+            <section class="page" id="page-orientacoes">
+
+                <div class="page-heading">
+                    <h1>📚 Orientações educativas</h1>
+                    <p>
+                        Informações para apoiar o cuidado diário
+                        dos pés.
+                    </p>
+                </div>
+
+                <div class="orientation-list">
+
+                    <div class="orientation-item">
+                        <h3>🔍 Inspeção diária</h3>
+                        <p>
+                            Observe diariamente a planta, o calcanhar,
+                            o dorso e os espaços entre os dedos.
+                            Utilize um espelho ou peça ajuda se necessário.
+                        </p>
+                    </div>
+
+                    <div class="orientation-item">
+                        <h3>🧼 Higiene dos pés</h3>
+                        <p>
+                            Higienize os pés cuidadosamente e seque
+                            principalmente os espaços entre os dedos.
+                        </p>
+                    </div>
+
+                    <div class="orientation-item">
+                        <h3>🧴 Hidratação</h3>
+                        <p>
+                            Utilize hidratante adequado para a pele,
+                            evitando aplicar o produto entre os dedos.
+                        </p>
+                    </div>
+
+                    <div class="orientation-item">
+                        <h3>👟 Calçados</h3>
+                        <p>
+                            Utilize calçados confortáveis e adequados.
+                            Observe se existem pontos de atrito
+                            ou objetos dentro deles.
+                        </p>
+                    </div>
+
+                    <div class="orientation-item">
+                        <h3>⚠️ Alterações nos pés</h3>
+                        <p>
+                            Feridas, bolhas, vermelhidão, inchaço
+                            e mudanças de temperatura precisam
+                            de atenção profissional.
+                        </p>
+                    </div>
+
+                    <div class="orientation-item">
+                        <h3>🩺 Acompanhamento</h3>
+                        <p>
+                            Mantenha suas consultas e siga as
+                            orientações da equipe de saúde.
+                            Não interrompa o acompanhamento
+                            após a cicatrização.
+                        </p>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- =================================
+                 FOTOGRAFIAS
+            ================================== -->
+
+            <section class="page" id="page-fotos">
+
+                <div class="page-heading">
+                    <h1>📷 Registro fotográfico</h1>
+                    <p>
+                        Espaço reservado para fotografias
+                        de acompanhamento dos pés.
+                    </p>
+                </div>
+
+                <div class="card">
+
+                    <h3>Registro de fotografias</h3>
+
+                    <div class="info-box">
+                        As fotografias são opcionais e servem
+                        apenas como documentação visual.
+                        Não permitem diagnóstico automático.
+                    </div>
+
+                    <p>
+                        A funcionalidade de armazenamento seguro
+                        será integrada ao módulo js/foto.js.
+                    </p>
+
+                    <p>
+                        Antes de enviar imagens, será necessário
+                        configurar permissões de acesso e proteção
+                        dos arquivos.
+                    </p>
+
+                </div>
+
+            </section>
+
+            <!-- =================================
+                 ACOMPANHAMENTO PROFISSIONAL
+            ================================== -->
+
+            <section class="page" id="page-profissional">
+
+                <div class="page-heading">
+                    <h1>🩺 Acompanhamento profissional</h1>
+                    <p>
+                        Informações sobre o acompanhamento
+                        realizado pela equipe de saúde.
+                    </p>
+                </div>
+
+                <div class="card">
+
+                    <h3>Contato com o serviço de saúde</h3>
+
+                    <p>
+                        Este espaço poderá apresentar informações
+                        da unidade de saúde responsável pelo
+                        acompanhamento do paciente.
+                    </p>
+
+                    <div class="warning-box">
+                        A comunicação direta com profissionais,
+                        envio automático de alertas e recebimento
+                        de respostas dependem de pactuação com
+                        o serviço de saúde.
+                    </div>
+
+                    <p>
+                        Até que essa integração esteja disponível,
+                        utilize os canais de atendimento indicados
+                        pela sua unidade de saúde.
+                    </p>
+
+                </div>
+
+            </section>
+
+        </div>
+
+        <footer>
+            © 2026 Passo Seguro — Tecnologia de apoio ao autocuidado.
+            Não substitui avaliação profissional.
+        </footer>
+
+    </main>
+
+</div>
+
+<!-- =================================
+     BIBLIOTECA SUPABASE
+================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- CONFIGURAÇÃO E MÓDULOS -->
+
+<script src="js/config.js"></script>
+<script src="js/perfil.js"></script>
+<script src="js/inspecao.js"></script>
+
+<!-- NAVEGAÇÃO E AUTENTICAÇÃO -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    // Navegação entre páginas
+
+    const botoes = document.querySelectorAll("[data-page]");
+
+    const paginas = document.querySelectorAll(".page");
+
+    const titulo = document.getElementById("titulo-pagina");
+
+    const sidebar = document.getElementById("sidebar");
+
+    const nomes = {
+        inicio: "Início",
+        perfil: "Meu perfil",
+        inspecao: "Inspeção dos pés",
+        historico: "Histórico",
+        orientacoes: "Orientações",
+        fotos: "Fotografias",
+        profissional: "Acompanhamento profissional"
+    };
+
+    botoes.forEach(botao => {
+
+        botao.addEventListener("click", function() {
+
+            const destino = this.dataset.page;
+
+            paginas.forEach(pagina => {
+                pagina.classList.remove("active");
+            });
+
+            const paginaSelecionada =
+                document.getElementById("page-" + destino);
+
+            if (!paginaSelecionada) return;
+
+            paginaSelecionada.classList.add("active");
+
+            document.querySelectorAll(".menu button").forEach(item => {
+                item.classList.remove("active");
+            });
+
+            document.querySelector(
+                '.menu button[data-page="' + destino + '"]'
+            )?.classList.add("active");
+
+            titulo.textContent = nomes[destino];
+
+            sidebar.classList.remove("open");
+
+            if (destino === "historico" &&
+                typeof window.carregarHistoricoInspecao === "function") {
+                window.carregarHistoricoInspecao();
+            }
+
+        });
+
+    });
+
+    // Menu para celular
+
+    document.getElementById("mobile-toggle")
+        .addEventListener("click", function() {
+            sidebar.classList.toggle("open");
+        });
+
+    // Encerrar sessão
+
+    document.getElementById("btn-sair")
+        .addEventListener("click", async function() {
+
+            const confirmar = confirm(
+                "Deseja realmente sair do Passo Seguro?"
+            );
+
+            if (!confirmar) return;
+
+            try {
+
+                const { error } =
+                    await window.supabase.auth.signOut();
+
+                if (error) throw error;
+
+                window.location.href = "login.html";
+
+            } catch (erro) {
+
+                console.error("Erro ao sair:", erro);
+
+                alert("Não foi possível encerrar a sessão.");
+
+            }
+
+        });
+
+    // Verificar sessão e carregar identificação
+
+    verificarUsuarioDashboard();
+
+});
+
+
+// =================================
+// IDENTIFICAÇÃO DO PACIENTE
+// =================================
+
+async function verificarUsuarioDashboard() {
+
+    try {
+
+        if (!window.supabase) {
+            throw new Error("Supabase não inicializado.");
+        }
+
+        const { data, error } =
+            await window.supabase.auth.getUser();
+
+        if (error || !data.user) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        const user = data.user;
+
+        const { data: perfil, error: erroPerfil } =
+            await window.supabase
+                .from("perfis_usuarios")
+                .select("nome, nome_completo, tipo")
+                .eq("id", user.id)
+                .single();
+
+        if (erroPerfil || !perfil) {
+            throw new Error("Perfil não encontrado.");
+        }
+
+        if (perfil.tipo !== "paciente") {
+            window.location.href = "profissional.html";
+            return;
+        }
+
+        const nome =
+            perfil.nome_completo ||
+            perfil.nome ||
+            "Paciente";
+
+        document.getElementById(
+            "nome-paciente-display"
+        ).textContent = nome;
+
+    } catch (erro) {
+
+        console.error("Erro ao verificar usuário:", erro);
+
+        alert("Não foi possível carregar os dados do usuário.");
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
