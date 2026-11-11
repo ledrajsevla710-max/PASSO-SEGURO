@@ -107,10 +107,6 @@ function preencherFormulario(perfil) {
         perfil.cartao_sus || ""
     );
 
-    preencherCampo("perfil-status-clinico",
-        perfil.status_clinico || "remissao"
-    );
-
 }
 
 // -----------------------------------------------------
@@ -139,7 +135,6 @@ async function salvarPerfil(event) {
 
         const nome = obterValor("perfil-nome");
         const cartaoSus = obterValor("perfil-cartao-sus");
-        const statusClinico = obterValor("perfil-status-clinico");
 
         // Validação dos campos
         if (!nome) {
@@ -147,15 +142,9 @@ async function salvarPerfil(event) {
             return;
         }
 
-        if (!statusClinico) {
-            mostrarMensagem("Selecione sua situação clínica.", "erro");
-            return;
-        }
-
         const dadosAtualizados = {
             nome_completo: nome,
-            cartao_sus: cartaoSus || null,
-            status_clinico: statusClinico
+            cartao_sus: cartaoSus || null
         };
 
         const supabase = getSupabase();
