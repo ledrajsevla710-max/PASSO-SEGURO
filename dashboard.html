@@ -1014,6 +1014,25 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 </script>
+</body>
+</html>
+// Execuções específicas por aba
+            if (destino === "historico" && typeof carregarHistoricoInspecao === "function") {
+                carregarHistoricoInspecao();
+            }
+        });
+    });
+
+    // 2. Toggle do Menu Mobile
+    const mobileToggle = document.getElementById("mobile-toggle");
+    if (mobileToggle) {
+        mobileToggle.addEventListener("click", function() {
+            sidebar.classList.toggle("open");
+        });
+    }
+
+});
+</script>
 
 </body>
 </html>
