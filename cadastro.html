@@ -5,9 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Criar conta – Passo Seguro</title>
   <link rel="stylesheet" href="css/style.css">
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js"></script>
 </head>
 <body>
 
@@ -58,7 +55,7 @@
             <input type="password" id="confirmar-senha" name="confirmar-senha" required minlength="6" autocomplete="new-password">
           </div>
 
-          <!-- Perfil clínico básico (versão 1.0) -->
+          <!-- Perfil clínico básico -->
           <h3 style="margin: 28px 0 12px; font-size:1.05rem;">Informações para o acompanhamento</h3>
 
           <div class="form-grupo">
@@ -112,7 +109,7 @@
             </div>
           </div>
 
-          <!-- Termo simples -->
+          <!-- Termo -->
           <div class="form-check" style="margin: 20px 0;">
             <input type="checkbox" id="aceite" name="aceite" required>
             <label for="aceite">
@@ -138,17 +135,9 @@
     </div>
   </main>
 
- <div class="aviso-clinico">
-        Os dados informados serão usados apenas para o acompanhamento no contexto desta pesquisa/protótipo.
-      </div>
-
-    </div>
-  </main>
-
-  <!-- ORDEM CORRETA E OBRIGATÓRIA DOS SCRIPTS -->
+  <!-- ORDEM CORRETA DOS SCRIPTS (sem perfil.js) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=2"></script>
+  <script src="js/config.js"></script>
   <script src="js/auth.js"></script>
-  <script src="js/perfil.js"></script>
 </body>
 </html>
