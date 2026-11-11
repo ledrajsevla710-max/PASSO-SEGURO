@@ -92,6 +92,83 @@ async function carregarPerfil() {
 function getSupabase() {
     return window.supabaseClient || window.PASSO_SEGURO?.supabaseClient || window.supabase;
 }
+// Helper para obter o cliente Supabase padronizado no projeto
+function getSupabase() {
+    return window.supabaseClient || window.PASSO_SEGURO?.supabaseClient || window.supabase;
+}
+
+async function inicializarPerfil() {
+    try {
+        const supabase = getSupabase();
+        if (!supabase) {
+            throw new Error("Conexão com o Supabase não encontrada. Verifique se o config.js foi carregado.");
+        }
+
+        const { data: sessaoData, error: sessaoError } =
+            await supabase.auth.getSession();
+
+        if (sessaoError) throw sessaoError;
+
+        const sessao = sessaoData.session;
+
+        if (!sessao) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        usuarioPerfil = sessao.user;
+
+        await carregarPerfil();
+
+        const formulario = document.getElementById("form-perfil");
+
+        if (formulario) {
+            formulario.addEventListener("submit", salvarPerfil);
+        }
+
+    } catch (error) {
+        console.error("Erro ao inicializar perfil:", error);
+        mostrarMensagem("Não foi possível carregar seu perfil.", "erro");
+    }
+}
+async function inicializarPerfil() {
+    try {
+        const supabase = getSupabase();
+        if (!supabase) {
+            throw new Error("Conexão com o Supabase não encontrada. Verifique se o config.js foi carregado.");
+        }
+
+        const { data: sessaoData, error: sessaoError } =
+            await supabase.auth.getSession();
+
+        if (sessaoError) throw sessaoError;
+
+        const sessao = sessaoData.session;
+
+        if (!sessao) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        usuarioPerfil = sessao.user;
+
+        await carregarPerfil();
+
+        const formulario = document.getElementById("form-perfil");
+
+        if (formulario) {
+            formulario.addEventListener("submit", salvarPerfil);
+        }
+
+    } catch (error) {
+        console.error("Erro ao inicializar perfil:", error);
+        mostrarMensagem("Não foi possível carregar seu perfil.", "erro");
+    }
+}
+// Helper para obter o cliente Supabase padronizado no projeto
+function getSupabase() {
+    return window.supabaseClient || window.PASSO_SEGURO?.supabaseClient || window.supabase;
+}
 
 async function inicializarPerfil() {
     try {
@@ -222,7 +299,45 @@ async function salvarPerfil(event) {
         );
     }
 }
+// Helper para obter o cliente Supabase padronizado no projeto
+function getSupabase() {
+    return window.supabaseClient || window.PASSO_SEGURO?.supabaseClient || window.supabase;
+}
 
+async function inicializarPerfil() {
+    try {
+        const supabase = getSupabase();
+        if (!supabase) {
+            throw new Error("Conexão com o Supabase não encontrada. Verifique se o config.js foi carregado.");
+        }
+
+        const { data: sessaoData, error: sessaoError } =
+            await supabase.auth.getSession();
+
+        if (sessaoError) throw sessaoError;
+
+        const sessao = sessaoData.session;
+
+        if (!sessao) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        usuarioPerfil = sessao.user;
+
+        await carregarPerfil();
+
+        const formulario = document.getElementById("form-perfil");
+
+        if (formulario) {
+            formulario.addEventListener("submit", salvarPerfil);
+        }
+
+    } catch (error) {
+        console.error("Erro ao inicializar perfil:", error);
+        mostrarMensagem("Não foi possível carregar seu perfil.", "erro");
+    }
+}
 // -----------------------------------------------------
 // 6. OBTER VALOR DOS CAMPOS
 // -----------------------------------------------------
