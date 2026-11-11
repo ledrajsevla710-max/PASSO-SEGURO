@@ -985,54 +985,29 @@ document.addEventListener("DOMContentLoaded", function() {
             if (destino === "historico" && typeof carregarHistorico === "function") {
                 carregarHistorico();
             }
-            if (destino === "perfil" && typeof carregarPerfil === "function") {
-                carregarPerfil();
-            }
         });
     });
 
-    // 2. Menu hamburguer no Mobile
-    const btnMobile = document.getElementById("mobile-toggle");
-    if (btnMobile) {
-        btnMobile.addEventListener("click", function() {
-            sidebar.classList.toggle("open");
-        });
-    }
-
-    // 3. Ação do Botão Sair
-    const btnSair = document.getElementById("btn-sair");
-    if (btnSair) {
-        btnSair.addEventListener("click", function() {
-            if (typeof fazerLogout === "function") {
-                fazerLogout();
-            } else if (typeof supabase !== "undefined") {
-                supabase.auth.signOut().then(() => {
-                    window.location.href = "login.html";
-                });
-            }
-        });
-    }
-});
-</script>
-</body>
-</html>
-// Execuções específicas por aba
-            if (destino === "historico" && typeof carregarHistoricoInspecao === "function") {
-                carregarHistoricoInspecao();
-            }
-        });
-    });
-
-    // 2. Toggle do Menu Mobile
+    // 2. Botão de menu mobile
     const mobileToggle = document.getElementById("mobile-toggle");
     if (mobileToggle) {
-        mobileToggle.addEventListener("click", function() {
+        mobileToggle.addEventListener("click", () => {
             sidebar.classList.toggle("open");
         });
     }
 
+    // 3. Botão Sair / Logout
+    const btnSair = document.getElementById("btn-sair");
+    if (btnSair) {
+        btnSair.addEventListener("click", async () => {
+            const supabase = window.supabaseClient || window.PASSO_SEGURO?.supabaseClient;
+            if (supabase) {
+                await supabase.auth.signOut();
+            }
+            window.location.href = "login.html";
+        });
+    }
 });
 </script>
-
 </body>
 </html>
