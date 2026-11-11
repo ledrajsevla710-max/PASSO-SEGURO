@@ -926,9 +926,9 @@
 </div>
 
 <!-- DEPENDÊNCIAS SUPABASE E SCRIPTS -->
+<!-- DEPENDÊNCIAS SUPABASE E SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/config.js?v=2"></script>
-<script src="js/auth.js"></script>
+<script src="js/config.js"></script>
 <script src="js/perfil.js"></script>
 <script src="js/inspecao.js"></script>
 <script src="js/historico.js"></script>
@@ -938,9 +938,21 @@
 
 <!-- CONTROLE DE NAVEGAÇÃO E REQUISIÇÕES DA TELA -->
 <script>
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
 
-    // 1. Navegação de abas do Dashboard
+    // 1. Atualiza o nome do paciente na interface
+    const nomeDisplay = document.getElementById("nome-paciente-display");
+    const nomeSalvo = localStorage.getItem("usuario_nome");
+
+    if (nomeDisplay) {
+        if (nomeSalvo) {
+            nomeDisplay.textContent = nomeSalvo;
+        } else {
+            nomeDisplay.textContent = "Paciente";
+        }
+    }
+
+    // 2. Navegação de abas do Dashboard
     const botoes = document.querySelectorAll("[data-page]");
     const paginas = document.querySelectorAll(".page");
     const titulo = document.getElementById("titulo-pagina");
@@ -957,29 +969,35 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 
     botoes.forEach(botao => {
-        botao.addEventListener("click", function() {
+        botao.addEventListener("click", function () {
             const destino = this.dataset.page;
 
+            // Esconde todas as páginas
             paginas.forEach(pagina => {
                 pagina.classList.remove("active");
             });
 
+            // Mostra a página selecionada
             const paginaSelecionada = document.getElementById("page-" + destino);
             if (!paginaSelecionada) return;
 
             paginaSelecionada.classList.add("active");
 
+            // Atualiza botão ativo no menu
             document.querySelectorAll(".menu button").forEach(item => {
                 item.classList.remove("active");
             });
+            document.querySelector(`.menu button[data-page="${destino}"]`)?.classList.add("active");
 
-            document.querySelector('.menu button[data-page="' + destino + '"]')?.classList.add("active");
-
+            // Atualiza o título
             if (titulo && nomes[destino]) {
                 titulo.textContent = nomes[destino];
             }
 
-            sidebar.classList.remove("open");
+            // Fecha menu mobile
+            if (sidebar) {
+                sidebar.classList.remove("open");
+            }
 
             // Execuções específicas por aba
             if (destino === "historico" && typeof carregarHistorico === "function") {
@@ -988,22 +1006,32 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // 2. Botão de menu mobile
+    // 3. Botão de menu mobile
     const mobileToggle = document.getElementById("mobile-toggle");
     if (mobileToggle) {
         mobileToggle.addEventListener("click", () => {
-            sidebar.classList.toggle("open");
+            sidebar?.classList.toggle("open");
         });
     }
 
-    // 3. Botão Sair / Logout
+    // 4. Botão Sair / Logout
     const btnSair = document.getElementById("btn-sair");
     if (btnSair) {
         btnSair.addEventListener("click", async () => {
             const supabase = window.supabaseClient || window.PASSO_SEGURO?.supabaseClient;
-            if (supabase) {
-                await supabase.auth.signOut();
+
+            try {
+                if (supabase) {
+                    await supabase.auth.signOut();
+                }
+            } catch (error) {
+                console.error("Erro ao fazer logout:", error);
             }
+
+            // Limpa dados locais
+            localStorage.removeItem("usuario_nome");
+
+            // Redireciona para o login
             window.location.href = "login.html";
         });
     }
