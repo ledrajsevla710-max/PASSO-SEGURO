@@ -5,10 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Entrar – Passo Seguro</title>
   <link rel="stylesheet" href="css/style.css">
-
-  <!-- Biblioteca do Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js"></script>
 </head>
 <body>
 
@@ -68,18 +64,18 @@
         </p>
       </section>
 
-   <!-- Aviso clínico -->
-  <div class="aviso-clinico">
-    O Passo Seguro é uma ferramenta de apoio ao autocuidado. 
-    <strong>Não substitui</strong> avaliação profissional.
-  </div>
+      <!-- Aviso clínico -->
+      <div class="aviso-clinico">
+        O Passo Seguro é uma ferramenta de apoio ao autocuidado. 
+        <strong>Não substitui</strong> avaliação profissional.
+      </div>
 
-  </div>
-</main>
+    </div>
+  </main>
 
-<!-- DEPENDÊNCIAS E LÓGICA DE AUTENTICAÇÃO -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/config.js?v=2"></script>
-<script src="js/auth.js"></script>
+  <!-- ORDEM CORRETA DOS SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
 </body>
 </html>
