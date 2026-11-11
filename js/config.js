@@ -4,7 +4,7 @@
 // Configuração central e credenciais do Supabase
 // =====================================================
 
-(function() {
+(function () {
     // 1. CREDENCIAIS DO SUPABASE
     const SUPABASE_URL = "https://mzswyxklinbgkfqiatnc.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_fBH2HbtJY3NajxGpR5985A_hAmdDGwd";
@@ -12,12 +12,16 @@
     // 2. INICIALIZAÇÃO DO CLIENTE
     let supabaseClient = null;
 
-    if (typeof supabase !== "undefined" && supabase.createClient) {
-        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log("Passo Seguro: Supabase inicializado com sucesso.");
+    if (typeof supabase !== "undefined" && typeof supabase.createClient === "function") {
+        try {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log("Passo Seguro: Supabase inicializado com sucesso.");
+        } catch (error) {
+            console.error("Passo Seguro: Erro ao criar o cliente Supabase:", error);
+        }
     } else {
         console.error(
-            "Passo Seguro: Biblioteca do Supabase não encontrada. Verifique se o script cdn foi carregado antes do config.js."
+            "Passo Seguro: Biblioteca do Supabase não encontrada. Verifique se o script do CDN foi carregado antes do config.js."
         );
     }
 
@@ -56,7 +60,7 @@
     // 6. TIPOS DE ALTERAÇÃO
     const TIPOS_ALTERACAO = [
         { id: "vermelhidao", label: "Vermelhidão" },
-        { id: "inchaço", label: "Inchaço" },
+        { id: "inchaco", label: "Inchaço" },
         { id: "calor", label: "Calor local" },
         { id: "bolha", label: "Bolha" },
         { id: "calo", label: "Calo ou endurecimento" },
@@ -66,7 +70,7 @@
         { id: "outro", label: "Outra alteração" }
     ];
 
-    // Exposição segura no escopo global sem conflitos de redeclarar variáveis
+    // 7. Exposição segura no escopo global
     window.PASSO_SEGURO = {
         supabaseClient,
         TABELAS,
@@ -74,7 +78,7 @@
         LOCAIS_PE,
         TIPOS_ALTERACAO
     };
-    
-    // Atalho global utilitário para retrocompatibilidade
+
+    // Atalho global (mantido por compatibilidade)
     window.supabaseClient = supabaseClient;
 })();
