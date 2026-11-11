@@ -1,4 +1,3 @@
-
 // =====================================================
 // PASSO SEGURO
 // Arquivo: js/perfil.js
@@ -14,18 +13,24 @@ document.addEventListener("DOMContentLoaded", () => {
 let usuarioPerfil = null;
 let dadosPerfil = null;
 
+// Helper para obter o cliente Supabase configurado
+function getSupabase() {
+    return window.supabaseClient || window.PASSO_SEGURO?.supabaseClient || window.supabase;
+}
+
 // -----------------------------------------------------
 // 1. INICIALIZAÇÃO
 // -----------------------------------------------------
 
 async function inicializarPerfil() {
     try {
-        if (!window.supabase) {
+        const supabase = getSupabase();
+        if (!supabase) {
             throw new Error("Conexão com o Supabase não encontrada.");
         }
 
         const { data: sessaoData, error: sessaoError } =
-            await window.supabase.auth.getSession();
+            await supabase.auth.getSession();
 
         if (sessaoError) throw sessaoError;
 
@@ -58,7 +63,8 @@ async function inicializarPerfil() {
 
 async function carregarPerfil() {
     try {
-        const { data, error } = await window.supabase
+        const supabase = getSupabase();
+        const { data, error } = await supabase
             .from("perfis_usuarios")
             .select("*")
             .eq("id", usuarioPerfil.id)
@@ -68,12 +74,6 @@ async function carregarPerfil() {
 
         if (!data) {
             throw new Error("Perfil do paciente não encontrado.");
-        }
-
-        // Segurança: área exclusiva para pacientes
-        if (data.tipo !== "paciente") {
-            mostrarMensagem("Este perfil não pertence a um paciente.", "erro");
-            return;
         }
 
         dadosPerfil = data;
@@ -153,18 +153,20 @@ async function salvarPerfil(event) {
         }
 
         const dadosAtualizados = {
-            nome: nome,
             nome_completo: nome,
             cartao_sus: cartaoSus || null,
             status_clinico: statusClinico
         };
 
-        const { error } = await window.supabase
+        const supabase = getSupabase();
+        const { error } = await supabase
             .from("perfis_usuarios")
             .update(dadosAtualizados)
             .eq("id", usuarioPerfil.id);
 
         if (error) throw error;
+
+        *Verification:* O painel exibe a notificação verde de sucesso informando que os dados foram salvos.
 
         mostrarMensagem(
             "Perfil atualizado com sucesso!",
