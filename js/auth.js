@@ -1,185 +1,150 @@
-// js/auth.js
-// Autenticação do Passo Seguro (login, logout e verificação de sessão)
+// =====================================================
+// PASSO SEGURO - MÓDULO DE AUTENTICAÇÃO E CADASTRO
+// =====================================================
 
-(function () {
-  "use strict";
+function getSupabase() {
+    return window.supabaseClient || window.PASSO_SEGURO?.supabaseClient || window.supabase;
+}
 
-  // Aguarda o config.js e o Supabase estarem prontos
-  const { supabaseClient, APP } = window.PASSO_SEGURO || {};
-
-  if (!supabaseClient) {
-    console.error("Passo Seguro: supabaseClient não disponível. Verifique o config.js.");
-    return;
-  }
-
-  // ============================================
-  // Funções auxiliares de interface
-  // ============================================
-
-  function mostrarMensagem(texto, tipo = "erro") {
-    const el = document.getElementById("mensagem");
-    if (!el) return;
-
-    el.className = ""; // limpa classes anteriores
-    el.classList.add("alerta");
-
-    if (tipo === "sucesso") {
-      el.classList.add("alerta-sucesso");
-    } else if (tipo === "info") {
-      el.classList.add("alerta-info");
-    } else {
-      el.classList.add("alerta-erro");
+document.addEventListener("DOMContentLoaded", () => {
+    const formCadastro = document.getElementById("form-cadastro");
+    if (formCadastro) {
+        formCadastro.addEventListener("submit", lidarComCadastro);
     }
 
-    el.textContent = texto;
-    el.classList.remove("escondido");
-  }
-
-  function esconderMensagem() {
-    const el = document.getElementById("mensagem");
-    if (el) {
-      el.classList.add("escondido");
-      el.textContent = "";
-    }
-  }
-
-  function setBotaoCarregando(botao, carregando, textoOriginal) {
-    if (!botao) return;
-    botao.disabled = carregando;
-    botao.textContent = carregando ? "Aguarde..." : textoOriginal;
-  }
-
-  // ============================================
-  // Login
-  // ============================================
-
-  async function fazerLogin(email, senha) {
-    const { data, error } = await supabaseClient.auth.signInWithPassword({
-      email: email.trim(),
-      password: senha
-    });
-
-    if (error) {
-      throw error;
-    }
-
-    return data;
-  }
-
-  // ============================================
-  // Logout
-  // ============================================
-
-  async function fazerLogout() {
-    const { error } = await supabaseClient.auth.signOut();
-    if (error) {
-      console.error("Erro ao sair:", error.message);
-    }
-    // Sempre redireciona para o login
-    window.location.href = "login.html";
-  }
-
-  // ============================================
-  // Verificar se já existe sessão ativa
-  // ============================================
-
-  async function verificarSessao() {
-    const { data: { session }, error } = await supabaseClient.auth.getSession();
-
-    if (error) {
-      console.error("Erro ao verificar sessão:", error.message);
-      return null;
-    }
-
-    return session;
-  }
-
-  // ============================================
-  // Proteger páginas (redireciona se não estiver logado)
-  // ============================================
-
-  async function exigirAutenticacao() {
-    const session = await verificarSessao();
-
-    if (!session) {
-      window.location.href = "login.html";
-      return null;
-    }
-
-    return session;
-  }
-
-  // ============================================
-  // Inicialização da página de Login
-  // ============================================
-
-  document.addEventListener("DOMContentLoaded", async () => {
     const formLogin = document.getElementById("form-login");
-    const btnEntrar = document.getElementById("btn-entrar");
-
-    // Se já estiver logado, redireciona para o dashboard
-    const session = await verificarSessao();
-    if (session && formLogin) {
-      window.location.href = "dashboard.html";
-      return;
-    }
-
-    // Configura o formulário de login
     if (formLogin) {
-      formLogin.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        esconderMensagem();
+        formLogin.addEventListener("submit", lidarComLogin);
+    }
+});
 
-        const email = document.getElementById("email").value;
-        const senha = document.getElementById("senha").value;
+// -----------------------------------------------------
+// FUNÇÃO DE CADASTRO
+// -----------------------------------------------------
+async function lidarComCadastro(event) {
+    event.preventDefault();
 
-        if (!email || !senha) {
-          mostrarMensagem("Preencha e-mail e senha.");
-          return;
-        }
-
-        setBotaoCarregando(btnEntrar, true, "Entrar");
-
-        try {
-          await fazerLogin(email, senha);
-          // Login bem-sucedido → vai para o dashboard
-          window.location.href = "dashboard.html";
-        } catch (err) {
-          console.error(err);
-          let msg = "Não foi possível entrar. Verifique e-mail e senha.";
-
-          if (err.message?.includes("Invalid login credentials")) {
-            msg = "E-mail ou senha incorretos.";
-          } else if (err.message?.includes("Email not confirmed")) {
-            msg = "Confirme seu e-mail antes de entrar.";
-          }
-
-          mostrarMensagem(msg);
-        } finally {
-          setBotaoCarregando(btnEntrar, false, "Entrar");
-        }
-      });
+    const supabase = getSupabase();
+    if (!supabase) {
+        mostrarMensagemErro("Erro: Cliente Supabase não inicializado.", "erro");
+        return;
     }
 
-    // Botão de logout (presente em várias páginas)
-    const btnSair = document.getElementById("btn-sair");
-    if (btnSair) {
-      btnSair.addEventListener("click", async (e) => {
-        e.preventDefault();
-        await fazerLogout();
-      });
+    // Captura dos campos do formulário
+    const nome = document.getElementById("nome").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const senha = document.getElementById("senha").value;
+    const confirmarSenha = document.getElementById("confirmar-senha").value;
+    const dataNascimento = document.getElementById("data-nascimento").value || null;
+    const cartaoSus = document.getElementById("cartao-sus").value.trim() || null;
+    
+    // Radios
+    const historicoUlcera = document.querySelector('input[name="historico_ulcera"]:checked')?.value || "sim";
+    const dataCicatrizacao = document.getElementById("data-cicatrizacao").value || null;
+    const amputacao = document.querySelector('input[name="amputacao"]:checked')?.value || "nao";
+    const aceite = document.getElementById("aceite").checked;
+
+    // Validações básicas
+    if (!nome || !email || !senha) {
+        mostrarMensagemErro("Preencha todos os campos obrigatórios de acesso.", "erro");
+        return;
     }
-  });
 
-  // ============================================
-  // Exporta funções úteis para outros arquivos
-  // ============================================
+    if (senha.length < 6) {
+        mostrarMensagemErro("A senha precisa ter pelo menos 6 caracteres.", "erro");
+        return;
+    }
 
-  window.Auth = {
-    fazerLogin,
-    fazerLogout,
-    verificarSessao,
-    exigirAutenticacao,
-    mostrarMensagem
-  };
-})();
+    if (senha !== confirmarSenha) {
+        mostrarMensagemErro("As senhas não coincidem.", "erro");
+        return;
+    }
+
+    if (!aceite) {
+        mostrarMensagemErro("Você precisa aceitar os termos de apoio ao autocuidado.", "erro");
+        return;
+    }
+
+    try {
+        mostrarMensagemErro("Criando conta...", "sucesso");
+
+        // 1. Criar usuário no Supabase Auth
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+            email: email,
+            password: senha
+        });
+
+        if (authError) throw authError;
+
+        const userId = authData.user?.id;
+        if (!userId) throw new Error("ID de usuário não retornado.");
+
+        // 2. Inserir dados complementares na tabela perfis_usuarios
+        const { error: perfilError } = await supabase
+            .from("perfis_usuarios")
+            .insert([
+                {
+                    id: userId,
+                    nome_completo: nome,
+                    data_nascimento: dataNascimento,
+                    cartao_sus: cartaoSus,
+                    possui_diabetes: "sim",
+                    historico_ulcera: historicoUlcera,
+                    data_cicatrizacao: dataCicatrizacao,
+                    historico_amputacao: amputacao
+                }
+            ]);
+
+        if (perfilError) throw perfilError;
+
+        mostrarMensagemErro("Conta criada com sucesso! Redirecionando...", "sucesso");
+        
+        setTimeout(() => {
+            window.location.href = "dashboard.html";
+        }, 1500);
+
+    } catch (error) {
+        console.error("Erro no cadastro:", error);
+        mostrarMensagemErro("Erro ao cadastrar: " + (error.message || error), "erro");
+    }
+}
+
+// -----------------------------------------------------
+// FUNÇÃO DE LOGIN
+// -----------------------------------------------------
+async function lidarComLogin(event) {
+    event.preventDefault();
+
+    const supabase = getSupabase();
+    const email = document.getElementById("email").value.trim();
+    const senha = document.getElementById("senha").value;
+
+    try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: senha
+        });
+
+        if (error) throw error;
+
+        window.location.href = "dashboard.html";
+
+    } catch (error) {
+        console.error("Erro no login:", error);
+        mostrarMensagemErro("E-mail ou senha incorretos.", "erro");
+    }
+}
+
+// Helper de mensagens na tela
+function mostrarMensagem(texto, tipo) {
+    const div = document.getElementById("mensagem");
+    if (!div) {
+        alert(texto);
+        return;
+    }
+    div.textContent = texto;
+    div.className = tipo === "sucesso" ? "notificacao notificacao-sucesso" : "notificacao notificacao-erro";
+    div.style.display = "block";
+}
+// Alias para compatibilidade
+const mostrarMensagemErro = mostrarMensagem;
