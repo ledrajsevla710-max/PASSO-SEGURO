@@ -1,90 +1,75 @@
 // =====================================================
 // PASSO SEGURO
 // Arquivo: js/inspecao.js
-// Módulo: Inspeção guiada dos pés
-// Banco: Supabase (Tabelas: inspecoes e alteracoes)
+// Registro de Inspeções e Alterações dos Pés
+// Integração: Supabase (Tabelas: inspecoes e alteracoes)
 // =====================================================
 
-let usuarioInspecao = null;
+document.addEventListener("DOMContentLoaded", () => {
+    const formInspecao = document.getElementById("form-inspecao");
+    if (formInspecao) {
+        formInspecao.addEventListener("submit", registrarInspecao);
+    }
+});
 
-// Helper para obter o cliente Supabase padronizado no projeto
+// Helper para obter o cliente Supabase padronizado
 function getSupabase() {
     return window.supabaseClient || window.PASSO_SEGURO?.supabaseClient || window.supabase;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    inicializarInspecao();
-});
+// -----------------------------------------------------
+// FUNÇÃO PRINCIPAL DE REGISTRO DE INSPEÇÃO
+// -----------------------------------------------------
+async function registrarInspecao(event) {
+    event.preventDefault();
 
-async function inicializarInspecao() {
+    const supabase = getSupabase();
+    if (!supabase) {
+        mostrarMensagemInspecao("Erro de conexão com o Supabase.", "erro");
+        return;
+    }
+
     try {
-        const supabase = getSupabase();
-        if (!supabase) {
-            throw new Error("Supabase não inicializado.");
-        }
+        // 1. Verificar usuário autenticado
+        const { data: sessaoData, error: sessaoError } = await supabase.auth.getSession();
+        if (sessaoError) throw sessaoError;
 
-        const { data, error } = await supabase.auth.getUser();
-
-        if (error || !data.user) {
+        const session = sessaoData.session;
+        if (!session) {
+            alert("Sessão expirada. Faça login novamente.");
             window.location.href = "login.html";
             return;
         }
 
-        usuarioInspecao = data.user;
+        const pacienteId = session.user.id;
 
-        const formulario = document.getElementById("form-inspecao");
-        if (formulario) {
-            formulario.addEventListener("submit", registrarInspecao);
-        }
+        // 2. Capturar valores do formulário
+        const peObservado = document.getElementById("pe-observado").value; // "direito", "esquerdo", "ambos"
+        const regiaoBase = document.getElementById("regiao-pe").value;     // "planta", "calcanhar", "entre_dedos", "dorso"
+        const observacoes = document.getElementById("observacoes-inspecao").value.trim();
 
-        await carregarHistoricoInspecao();
+        // Capturar checkboxes de alterações marcadas
+        const checkboxesMarcados = document.querySelectorAll('input[name="alteracao"]:checked');
+        const alteracoesSelecionadas = Array.from(checkboxesMarcados).map(cb => cb.value);
 
-    } catch (erro) {
-        console.error("Erro na inspeção:", erro);
-        mostrarMensagemInspecao("Não foi possível iniciar a inspeção.");
-    }
-}
+        const identificouAlteracao = alteracoesSelecionadas.length > 0;
 
-// -----------------------------------------------------
-// 2. REGISTRAR INSPEÇÃO (Salvando nas tabelas relacionais)
-// -----------------------------------------------------
+        // Definir quais pés foram inspecionados com base na seleção
+        const peDireitoInspecionado = (peObservado === "direito" || peObservado === "ambos");
+        const peEsquerdoInspecionado = (peObservado === "esquerdo" || peObservado === "ambos");
 
-async function registrarInspecao(event) {
-    event.preventDefault();
+        mostrarMensagemInspecao("Registrando inspeção...", "sucesso");
 
-    try {
-        const supabase = getSupabase();
-        if (!usuarioInspecao) {
-            throw new Error("Usuário não autenticado.");
-        }
-
-        const pe = document.getElementById("pe-observado").value; // "direito", "esquerdo", "ambos"
-        const regiao = document.getElementById("regiao-pe").value; // "planta", "calcanhar", etc.
-        const observacoes = document.getElementById("observacoes-inspecao")?.value || "";
-
-        const checkboxesAlteracoes = document.querySelectorAll('input[name="alteracao"]:checked');
-        const alteracoesValues = Array.from(checkboxesAlteracoes).map(campo => campo.value);
-
-        if (!pe || !regiao) {
-            mostrarMensagemInspecao("Preencha os campos obrigatórios.");
-            return;
-        }
-
-        // Mapeamento para as colunas booleanas da tabela 'inspecoes'
-        const peDireitoInspecionado = (pe === "direito" || pe === "ambos");
-        const peEsquerdoInspecionado = (pe === "esquerdo" || pe === "ambos");
-        const identificouAlteracao = alteracoesValues.length > 0;
-
-        // 1. Insere o registro principal na tabela 'inspecoes'
-        const { data: inspecaoCriada, error: inspecaoError } = await supabase
+        // 3. Inserir o registro principal na tabela `inspecoes`
+        const { data: inspecaoData, error: inspecaoError } = await supabase
             .from("inspecoes")
             .insert([
                 {
-                    paciente_id: usuarioInspecao.id,
+                    paciente_id: pacienteId,
                     pe_direito_inspecionado: peDireitoInspecionado,
                     pe_esquerdo_inspecionado: peEsquerdoInspecionado,
                     identificou_alteracao: identificouAlteracao,
-                    observacoes: observacoes
+                    observacoes: observacoes || null
                 }
             ])
             .select()
@@ -92,116 +77,83 @@ async function registrarInspecao(event) {
 
         if (inspecaoError) throw inspecaoError;
 
-        const inspecaoId = inspecaoCriada.id;
+        const inspecaoId = inspecaoData.id;
 
-        // 2. Se houver alterações selecionadas, grava na tabela filha 'alteracoes'
+        // 4. Se houver alterações marcadas, inserir na tabela `alteracoes`
         if (identificouAlteracao && inspecaoId) {
-            const registrosAlteracoes = alteracoesValues.map(tipo => ({
-                inspecao_id: inspecaoId,
-                tipo_alteracao: tipo,
-                regiao: regiao
-            }));
+            // Determinar o sufixo do pé com base no campo peObservado
+            let sufixoPes = [];
+            if (peObservado === "direito") sufixoPes = ["_direito"];
+            else if (peObservado === "esquerdo") sufixoPes = ["_esquerdo"];
+            else sufixoPes = ["_direito", "_esquerdo"]; // Se ambos, aplica ao lado principal ou ambos conforme escolha
 
-            const { error: alteracoesError } = await supabase
-                .from("alteracoes")
-                .insert(registrosAlteracoes);
+            const listaAlteracoesParaInserir = [];
 
-            if (alteracoesError) throw alteracoesError;
+            alteracoesSelecionadas.forEach(altLabel => {
+                // Normalizar o tipo de alteração para bater com a constraint do banco
+                let tipoAlteracao = normalizarTipoAlteracao(altLabel);
+
+                sufixoPes.forEach(sufixo => {
+                    let localPe = regiaoBase + sufixo; // Ex: "planta_direita"
+                    
+                    listaAlteracoesParaInserir.push({
+                        inspecao_id: inspecaoId,
+                        tipo_alteracao: tipoAlteracao,
+                        local_pe: localPe,
+                        descricao: observacoes || null
+                    });
+                });
+            });
+
+            if (listaAlteracoesParaInserir.length > 0) {
+                const { error: altError } = await supabase
+                    .from("alteracoes")
+                    .insert(listaAlteracoesParaInserir);
+
+                if (altError) throw altError;
+            }
         }
 
-        mostrarMensagemInspecao("Inspeção registrada com sucesso!");
+        mostrarMensagemInspecao("Inspeção registrada com sucesso!", "sucesso");
 
+        // Limpar formulário após o sucesso
         document.getElementById("form-inspecao").reset();
 
-        await carregarHistoricoInspecao();
-
-    } catch (erro) {
-        console.error("Erro ao registrar:", erro);
-        mostrarMensagemInspecao("Erro ao salvar inspeção: " + erro.message);
-    }
-}
-
-// -----------------------------------------------------
-// 3. CARREGAR HISTÓRICO (Consumindo a VIEW historico_inspecoes)
-// -----------------------------------------------------
-
-async function carregarHistoricoInspecao() {
-    const container = document.getElementById("container-historico-inspecoes") || document.getElementById("lista-historico");
-
-    if (!container || !usuarioInspecao) return;
-
-    container.textContent = "Carregando histórico...";
-
-    try {
-        const supabase = getSupabase();
-
-        const { data, error } = await supabase
-            .from("historico_inspecoes")
-            .select("*")
-            .eq("paciente_id", usuarioInspecao.id)
-            .order("data_inspecao", { ascending: false })
-            .limit(30);
-
-        if (error) throw error;
-
-        if (!data || data.length === 0) {
-            container.textContent = "Nenhuma inspeção registrada até o momento.";
-            return;
+        // Opcional: Atualizar selects de fotos caso exista a aba de fotos
+        if (typeof carregarSelectInspecoes === "function") {
+            carregarSelectInspecoes();
         }
 
-        const lista = document.createElement("div");
-
-        data.forEach(registro => {
-            const card = document.createElement("div");
-            card.style.cssText = "padding:14px;margin-bottom:12px;border:1px solid #dbe3ea;border-radius:8px;background:#fff;";
-
-            const dataRegistro = new Date(registro.data_inspecao || registro.created_at).toLocaleString("pt-BR");
-
-            const titulo = document.createElement("strong");
-            titulo.textContent = "Data: " + dataRegistro;
-
-            const pes = [];
-            if (registro.pe_direito_inspecionado) pes.push("Pé Direito");
-            if (registro.pe_esquerdo_inspecionado) pes.push("Pé Esquerdo");
-
-            const pe = document.createElement("p");
-            pe.style.margin = "6px 0 4px";
-            pe.textContent = "Pés inspecionados: " + (pes.join(" e ") || "Não especificado");
-
-            const alteracoes = document.createElement("p");
-            alteracoes.style.margin = "0";
-            alteracoes.textContent = "Total de alterações encontradas: " + (registro.total_alteracoes || 0);
-
-            card.append(titulo, pe, alteracoes);
-            lista.appendChild(card);
-        });
-
-        container.replaceChildren(lista);
-
-    } catch (erro) {
-        console.error("Erro no histórico:", erro);
-        container.textContent = "Não foi possível carregar o histórico.";
+    } catch (error) {
+        console.error("Erro ao registrar inspeção:", error);
+        mostrarMensagemInspecao("Erro ao registrar: " + (error.message || error), "erro");
     }
 }
 
 // -----------------------------------------------------
-// 4. MENSAGENS
+// FUNÇÃO AUXILIAR: NORMALIZAR TIPO DE ALTERAÇÃO
 // -----------------------------------------------------
-
-function mostrarMensagemInspecao(mensagem) {
-    const elemento = document.getElementById("mensagem-inspecao");
-
-    if (elemento) {
-        elemento.textContent = mensagem;
-        elemento.style.display = "block";
-    } else {
-        alert(mensagem);
-    }
+function normalizarTipoAlteracao(label) {
+    const texto = label.toLowerCase();
+    if (texto.includes("vermelhidão")) return "vermelhidao";
+    if (texto.includes("quente") || texto.includes("inchado") || texto.includes("inchaço")) return "inchaço";
+    if (texto.includes("calor")) return "calor";
+    if (texto.includes("bolha")) return "bolha";
+    if (texto.includes("calo")) return "calo";
+    if (texto.includes("ferida") || texto.includes("curativo")) return "ferimento";
+    if (texto.includes("secreção")) return "secrecao";
+    if (texto.includes("dor")) return "dor";
+    return "outro";
 }
 
 // -----------------------------------------------------
-// 5. FUNÇÕES GLOBAIS
+// FUNÇÃO AUXILIAR DE MENSAGENS NA TELA
 // -----------------------------------------------------
+function mostrarMensagemInspecao(mensagem, tipo) {
+    const div = document.getElementById("mensagem-inspecao");
+    if (!div) return;
 
-window.registrarInspecao = registrarInspecao;
-window.carregarHistoricoInspecao = carregarHistoricoInspecao;
+    div.textContent = mensagem;
+    div.style.display = "block";
+    div.className = tipo === "sucesso" ? "message notificacao-sucesso" : "message notificacao-erro";
+}
