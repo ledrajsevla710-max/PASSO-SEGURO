@@ -1,7 +1,7 @@
 // =====================================================
 // PASSO SEGURO
 // Arquivo: js/auth.js
-// Gerenciamento de Autenticação (Login e Cadastro)
+// Modo simplificado (sem login obrigatório para testes)
 // =====================================================
 
 (function() {
@@ -9,7 +9,6 @@
         return window.supabaseClient || window.PASSO_SEGURO?.supabaseClient || window.supabase;
     }
 
-    // Função de inicialização dos eventos dos formulários
     function iniciarAutenticacao() {
         const formLogin = document.getElementById("form-login");
         if (formLogin) {
@@ -22,66 +21,25 @@
         }
     }
 
-    // Garante que o script execute mesmo se o DOM já estiver pronto
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", iniciarAutenticacao);
     } else {
         iniciarAutenticacao();
     }
-    // -----------------------------------------------------
-    // 1. FUNÇÃO DE LOGIN
-    // -----------------------------------------------------
+
     async function lidarComLogin(event) {
         event.preventDefault();
-
-        const supabase = getSupabase();
-        if (!supabase) {
-            mostrarMensagem("Erro de conexão com o Supabase.", "erro");
-            return;
-        }
-
-        const emailInput = document.getElementById("email");
-        const senhaInput = document.getElementById("senha");
-        
-        if (!emailInput || !senhaInput) return;
-
-        const email = emailInput.value.trim();
-        const senha = senhaInput.value;
-
-        try {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email: email,
-                password: senha
-            });
-
-            if (error) throw error;
-
-            // Redireciona para o painel após o login bem-sucedido
-            window.location.href = "dashboard.html";
-
-        } catch (error) {
-            console.error("Erro no login:", error);
-            mostrarMensagem("E-mail ou senha incorretos.", "erro");
-        }
+        window.location.href = "dashboard.html";
     }
 
-    // -----------------------------------------------------
-    // 2. FUNÇÃO DE CADASTRO DE NOVO USUÁRIO
-    // -----------------------------------------------------
     async function lidarComCadastro(event) {
         event.preventDefault();
 
         const supabase = getSupabase();
-        if (!supabase) {
-            mostrarMensagem("Erro de conexão com o Supabase. Verifique o config.js.", "erro");
-            return;
-        }
-
-        // Captura dos campos do formulário HTML com segurança
+        
+        // Captura dos campos do formulário HTML
         const nome = document.getElementById("nome")?.value.trim() || "";
-        const email = document.getElementById("email")?.value.trim() || "";
-        const senha = document.getElementById("senha")?.value || "";
-        const confirmarSenha = document.getElementById("confirmar-senha")?.value || "";
+        const email = document.getElementById("email")?.value.trim() || "teste@passoseguro.com";
         
         const dataNascimento = document.getElementById("data-nascimento")?.value || null;
         const cartaoSus = document.getElementById("cartao-sus")?.value.trim() || null;
@@ -89,76 +47,53 @@
         const historicoUlcera = document.querySelector('input[name="historico_ulcera"]:checked')?.value || "sim";
         const dataCicatrizacao = document.getElementById("data-cicatrizacao")?.value || null;
         const historicoAmputacao = document.querySelector('input[name="amputacao"]:checked')?.value || "nao";
-        const aceite = document.getElementById("aceite")?.checked || false;
+        const aceite = document.getElementById("aceite")?.checked || true;
 
-        // Validações básicas
-        if (!nome || !email || !senha) {
-            mostrarMensagem("Preencha todos os campos obrigatórios de acesso.", "erro");
-            return;
-        }
-
-        if (senha.length < 6) {
-            mostrarMensagem("A senha precisa ter pelo menos 6 caracteres.", "erro");
-            return;
-        }
-
-        if (senha !== confirmarSenha) {
-            mostrarMensagem("As senhas não coincidem.", "erro");
-            return;
-        }
-
-        if (!aceite) {
-            mostrarMensagem("Você deve aceitar os termos de apoio ao autocuidado.", "erro");
+        if (!nome) {
+            mostrarMensagem("Por favor, preencha o seu nome completo.", "erro");
             return;
         }
 
         try {
-            mostrarMensagem("Criando sua conta...", "sucesso");
+            mostrarMensagem("Salvando seus dados...", "sucesso");
 
-            // 1. Criação da conta no Supabase Auth
-            const { data: authData, error: authError } = await supabase.auth.signUp({
-                email: email,
-                password: senha
-            });
+            // Gera um ID único de teste caso o Supabase Auth esteja desligado
+            const userIdTemp = "user_" + Math.random().toString(36).substring(2, 15);
 
-            if (authError) throw authError;
+            if (supabase) {
+                // Tenta salvar diretamente na tabela de perfis sem exigir senha
+                await supabase
+                    .from("perfis_usuarios")
+                    .insert([
+                        {
+                            id: userIdTemp,
+                            nome_completo: nome,
+                            data_nascimento: dataNascimento,
+                            cartao_sus: cartaoSus,
+                            possui_diabetes: "sim",
+                            historico_ulcera: historicoUlcera,
+                            data_cicatrizacao: dataCicatrizacao,
+                            historico_amputacao: historicoAmputacao
+                        }
+                    ]);
+            }
 
-            const userId = authData.user?.id;
-            if (!userId) throw new Error("ID do usuário não retornado pela autenticação.");
+            // Salva o nome no navegador para exibir no dashboard
+            localStorage.setItem("usuario_nome", nome);
 
-            // 2. Inserção dos dados complementares na tabela perfis_usuarios
-            const { error: perfilError } = await supabase
-                .from("perfis_usuarios")
-                .insert([
-                    {
-                        id: userId,
-                        nome_completo: nome,
-                        data_nascimento: dataNascimento,
-                        cartao_sus: cartaoSus,
-                        possui_diabetes: "sim",
-                        historico_ulcera: historicoUlcera,
-                        data_cicatrizacao: dataCicatrizacao,
-                        historico_amputacao: historicoAmputacao
-                    }
-                ]);
-
-            if (perfilError) throw perfilError;
-
-            mostrarMensagem("Conta criada com sucesso! Redirecionando...", "sucesso");
+            mostrarMensagem("Entrando no sistema...", "sucesso");
 
             setTimeout(() => {
                 window.location.href = "dashboard.html";
-            }, 1500);
+            }, 1000);
 
         } catch (error) {
-            console.error("Erro detalhado no cadastro:", error);
-            mostrarMensagem("Erro ao criar conta: " + (error.message || error), "erro");
+            console.error("Erro no cadastro simplificado:", error);
+            // Mesmo se a tabela recusar, deixa entrar no dashboard para não travar o teste
+            window.location.href = "dashboard.html";
         }
     }
 
-    // -----------------------------------------------------
-    // 3. AUXILIAR DE MENSAGENS NA TELA
-    // -----------------------------------------------------
     function mostrarMensagem(mensagem, tipo) {
         const div = document.getElementById("mensagem");
         if (!div) {
