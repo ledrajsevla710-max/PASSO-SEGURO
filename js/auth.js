@@ -1,7 +1,7 @@
 // =====================================================
 // PASSO SEGURO
 // Arquivo: js/auth.js
-// Autenticação (Login + Cadastro) com Supabase
+// Autenticação real (Login + Cadastro) com Supabase
 // =====================================================
 
 (function () {
@@ -9,11 +9,7 @@
         return window.supabaseClient || window.PASSO_SEGURO?.supabaseClient || null;
     }
 
-    // -------------------------------------------------
-    // Inicialização
-    // -------------------------------------------------
     function iniciarAutenticacao() {
-        // Se já estiver logado, manda direto pro dashboard
         verificarSessaoExistente();
 
         const formLogin = document.getElementById("form-login");
@@ -34,7 +30,7 @@
     }
 
     // -------------------------------------------------
-    // Verifica se já existe sessão ativa
+    // Verifica se já existe sessão
     // -------------------------------------------------
     async function verificarSessaoExistente() {
         const supabase = getSupabase();
@@ -43,7 +39,6 @@
         try {
             const { data: { session } } = await supabase.auth.getSession();
             if (session) {
-                // Já está logado → vai pro dashboard
                 window.location.href = "dashboard.html";
             }
         } catch (error) {
@@ -75,13 +70,25 @@
             mostrarMensagem("Entrando...", "sucesso");
 
             const { data, error } = await supabase.auth.signInWithPassword({
-                email: email,
+                email,
                 password: senha
             });
 
             if (error) throw error;
 
-            // Login ok → vai pro dashboard
+            // Busca o nome para mostrar no dashboard
+            if (data.user) {
+                const { data: perfil } = await supabase
+                    .from("perfis_usuarios")
+                    .select("nome_completo")
+                    .eq("id", data.user.id)
+                    .single();
+
+                if (perfil?.nome_completo) {
+                    localStorage.setItem("usuario_nome", perfil.nome_completo);
+                }
+            }
+
             window.location.href = "dashboard.html";
 
         } catch (error) {
@@ -110,7 +117,7 @@
             return;
         }
 
-        // Captura dos campos
+        // Captura de todos os campos
         const nome = document.getElementById("nome")?.value.trim() || "";
         const email = document.getElementById("email")?.value.trim() || "";
         const senha = document.getElementById("senha")?.value || "";
@@ -122,9 +129,10 @@
         const historicoUlcera = document.querySelector('input[name="historico_ulcera"]:checked')?.value || "sim";
         const dataCicatrizacao = document.getElementById("data-cicatrizacao")?.value || null;
         const historicoAmputacao = document.querySelector('input[name="amputacao"]:checked')?.value || "nao";
+        const temCuidador = document.querySelector('input[name="tem_cuidador"]:checked')?.value || "nao";
         const aceite = document.getElementById("aceite")?.checked || false;
 
-        // Validações básicas
+        // Validações
         if (!nome) {
             mostrarMensagem("Por favor, preencha o seu nome completo.", "erro");
             return;
@@ -149,9 +157,9 @@
         try {
             mostrarMensagem("Criando sua conta...", "sucesso");
 
-            // 1. Cria o usuário no Supabase Auth
+            // 1. Cria o usuário no Auth
             const { data: authData, error: authError } = await supabase.auth.signUp({
-                email: email,
+                email,
                 password: senha,
                 options: {
                     data: {
@@ -163,39 +171,35 @@
             if (authError) throw authError;
 
             const user = authData.user;
-
             if (!user) {
                 throw new Error("Não foi possível criar o usuário.");
             }
 
-            // 2. Salva o perfil na tabela
+            // 2. Salva TODOS os dados do perfil na tabela
             const { error: perfilError } = await supabase
                 .from("perfis_usuarios")
-                .insert([
-                    {
-                        id: user.id, // importante: usa o ID real do Auth
-                        nome_completo: nome,
-                        data_nascimento: dataNascimento,
-                        cartao_sus: cartaoSus,
-                        possui_diabetes: "sim",
-                        historico_ulcera: historicoUlcera,
-                        data_cicatrizacao: dataCicatrizacao,
-                        historico_amputacao: historicoAmputacao
-                    }
-                ]);
+                .insert([{
+                    id: user.id,                        // ID real do Auth
+                    nome_completo: nome,
+                    data_nascimento: dataNascimento,
+                    cartao_sus: cartaoSus,
+                    possui_diabetes: "sim",
+                    historico_ulcera: historicoUlcera,
+                    data_cicatrizacao: dataCicatrizacao,
+                    historico_amputacao: historicoAmputacao,
+                    tem_cuidador: temCuidador
+                }]);
 
             if (perfilError) {
                 console.error("Erro ao salvar perfil:", perfilError);
-                // Mesmo se o perfil falhar, o usuário já foi criado no Auth
-                // Você pode tratar isso depois (ex: tentar novamente)
+                // Mesmo com erro no perfil, o usuário já foi criado no Auth
             }
 
-            // Salva o nome localmente (útil para exibir no dashboard)
+            // Salva o nome localmente
             localStorage.setItem("usuario_nome", nome);
 
             mostrarMensagem("Conta criada com sucesso! Entrando...", "sucesso");
 
-            // Aguarda um pouco e redireciona
             setTimeout(() => {
                 window.location.href = "dashboard.html";
             }, 1200);
@@ -218,7 +222,7 @@
     }
 
     // -------------------------------------------------
-    // Função auxiliar de mensagens
+    // Mensagens
     // -------------------------------------------------
     function mostrarMensagem(mensagem, tipo) {
         const div = document.getElementById("mensagem");
