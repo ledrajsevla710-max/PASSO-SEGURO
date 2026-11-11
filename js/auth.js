@@ -5,25 +5,29 @@
 // =====================================================
 
 (function() {
-    // Helper para obter o cliente Supabase padronizado no projeto
     function getSupabase() {
         return window.supabaseClient || window.PASSO_SEGURO?.supabaseClient || window.supabase;
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-        // Vincula o formulário de login se existir na página
+    // Função de inicialização dos eventos dos formulários
+    function iniciarAutenticacao() {
         const formLogin = document.getElementById("form-login");
         if (formLogin) {
             formLogin.addEventListener("submit", lidarComLogin);
         }
 
-        // Vincula o formulário de cadastro se existir na página
         const formCadastro = document.getElementById("form-cadastro");
         if (formCadastro) {
             formCadastro.addEventListener("submit", lidarComCadastro);
         }
-    });
+    }
 
+    // Garante que o script execute mesmo se o DOM já estiver pronto
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", iniciarAutenticacao);
+    } else {
+        iniciarAutenticacao();
+    }
     // -----------------------------------------------------
     // 1. FUNÇÃO DE LOGIN
     // -----------------------------------------------------
